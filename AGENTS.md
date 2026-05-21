@@ -28,6 +28,7 @@ Before declaring a migration or structural change complete:
 
 ```powershell
 python tools\validate_cgs.py
+python tools\validate_smoke_fixture.py
 ```
 
 For plugin and skill edits, verify:
@@ -37,6 +38,8 @@ For plugin and skill edits, verify:
 - Every skill name starts with `cgs-`.
 - Skill descriptions mention both the original slash command and the Codex skill name.
 - Counts remain at 73 skills, 49 role cards, and 11 path rules unless the change explicitly updates those numbers.
+- Core v0.1 workflows remain concise and Codex-native: `cgs-start`, `cgs-help`, `cgs-project-stage-detect`, `cgs-brainstorm`, `cgs-setup-engine`, `cgs-map-systems`, `cgs-design-system`, `cgs-create-architecture`, `cgs-create-epics`, `cgs-create-stories`, `cgs-story-readiness`, `cgs-dev-story`, `cgs-story-done`, and `cgs-gate-check`.
+- `tests/fixtures/empty-game/` stays usable for smoke checks of onboarding, stage detection, story pickup, and story closure review.
 
 ## Collaboration Defaults
 

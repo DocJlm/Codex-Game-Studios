@@ -13,7 +13,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 2 | `tools/migrate_from_claude.py`, `tools/validate_cgs.py` |
+| Validation scripts | 4 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_smoke_fixture.py` |
 
 ## Quick Start
 
@@ -34,6 +34,17 @@ Use $cgs-dev-story to implement the next story.
 使用 $cgs-project-stage-detect 检查这个已有游戏项目现在处于哪个阶段。
 使用 $cgs-dev-story 按下一个 story 实现功能。
 ```
+
+### Fallback When Local Plugin Install Is Unavailable
+
+Some Codex desktop builds do not expose repo-local plugin installation in the UI yet. In that case, keep this repository open and explicitly reference the skill path in your request:
+
+```text
+Use the skill at plugins/codex-game-studios/skills/cgs-start/SKILL.md to set up this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKILL.md to audit this project.
+```
+
+这不是另一套流程，只是本地插件无法直接安装时的调用方式；skill 内容和验证脚本仍然相同。
 
 ## Command Mapping
 
@@ -73,16 +84,30 @@ prototypes/   src/          tests/       tools/
 
 ```powershell
 python tools\validate_cgs.py
+python tools\validate_smoke_fixture.py
 ```
 
 从本地上游副本重新同步：
 
 ```powershell
 python tools\migrate_from_claude.py
+python tools\prepare_v01.py
 python tools\validate_cgs.py
+python tools\validate_smoke_fixture.py
 ```
 
 The migration script expects the upstream checkout at `D:\Git\Claude-Code-Game-Studios`.
+
+## Smoke Fixture
+
+`tests/fixtures/empty-game/` is a tiny project used to exercise the v0.1 workflow loop:
+
+- `$cgs-start`
+- `$cgs-project-stage-detect`
+- `$cgs-dev-story`
+- `$cgs-story-done`
+
+It is intentionally small and does not contain a real game implementation.
 
 ## Hook Policy
 
