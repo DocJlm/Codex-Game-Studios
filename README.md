@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 7 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/scan_legacy_tokens.py` |
+| Validation scripts | 8 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/validate_plugin_install_docs.py`, `tools/scan_legacy_tokens.py` |
 
 ## Quick Start
 
@@ -89,6 +89,7 @@ python tools\validate_cgs.py
 python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
 python tools\validate_transcripts.py
+python tools\validate_plugin_install_docs.py
 python tools\scan_legacy_tokens.py
 ```
 
@@ -101,6 +102,7 @@ python tools\validate_cgs.py
 python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
 python tools\validate_transcripts.py
+python tools\validate_plugin_install_docs.py
 python tools\scan_legacy_tokens.py
 ```
 
@@ -119,6 +121,10 @@ It is intentionally small and does not contain a real game implementation. See `
 
 For a fuller concept-to-story demonstration, see `docs/transcripts/concept-to-story.md`.
 
+## Plugin Install UX
+
+Local plugin installation depends on the Codex build you are using. The supported discovery files and fallback prompts are documented in `docs/install/local-plugin.md`.
+
 ## Hook Policy
 
 Claude hooks are not installed as Codex runtime hooks in this first adaptation. Legacy hook scripts are preserved under `plugins/codex-game-studios/scripts/checks/legacy-claude-hooks/` for reference only. Safety behavior is handled by explicit validation scripts and skill instructions until the Codex plugin hook schema is pinned.
@@ -129,6 +135,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v0.4.0`: local plugin install UX and fallback documentation. See `docs/releases/v0.4.0.md`.
 - `v0.3.0`: demo transcript and high-frequency workflow polish. See `docs/releases/v0.3.0.md`.
 - `v0.2.0`: self-contained validation, repeatable regeneration, and workflow polish. See `docs/releases/v0.2.0.md`.
 - `v0.1.0`: initial public release. See `docs/releases/v0.1.0.md`.

@@ -33,6 +33,9 @@ jobs:
       - name: Validate demo transcripts
         run: python tools/validate_transcripts.py
 
+      - name: Validate plugin install docs
+        run: python tools/validate_plugin_install_docs.py
+
       - name: Validate JSON manifests
         run: |
           python -m json.tool plugins/codex-game-studios/.codex-plugin/plugin.json > /dev/null

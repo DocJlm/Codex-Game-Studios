@@ -31,6 +31,7 @@ python tools\validate_cgs.py
 python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
 python tools\validate_transcripts.py
+python tools\validate_plugin_install_docs.py
 python tools\scan_legacy_tokens.py
 ```
 

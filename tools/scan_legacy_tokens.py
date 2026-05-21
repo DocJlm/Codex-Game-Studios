@@ -16,6 +16,7 @@ SCAN_ROOTS = [
     ROOT / "plugins/codex-game-studios/references/studio-docs",
     ROOT / "docs/transcripts",
     ROOT / "docs/workflows",
+    ROOT / "docs/install",
 ]
 
 TOKENS = [

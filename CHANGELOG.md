@@ -2,6 +2,14 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.4.0 - 2026-05-22
+
+- Added local plugin install UX documentation in `docs/install/local-plugin.md`.
+- Documented preferred local plugin discovery, verification prompts, and path-based fallback prompts.
+- Added `tools/validate_plugin_install_docs.py` and wired it into CI.
+- Extended legacy-token scanning to install documentation.
+- Bumped regenerated plugin metadata to `0.4.0`.
+
 ## v0.3.0 - 2026-05-22
 
 - Added a concept-to-story transcript showing the intended Codex Game Studios demo flow from `$cgs-start` through `$cgs-story-done`.
