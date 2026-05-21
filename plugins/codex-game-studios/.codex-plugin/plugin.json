@@ -1,0 +1,39 @@
+{
+  "name": "codex-game-studios",
+  "version": "0.1.0",
+  "description": "Codex plugin and project template for structured solo and small-team game development workflows.",
+  "author": {
+    "name": "Codex Game Studios maintainers",
+    "email": "maintainers@example.com",
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/",
+  "repository": "https://github.com/",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "game-development",
+    "skills",
+    "studio-workflow",
+    "templates"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Game Studios",
+    "shortDescription": "Game studio workflows, role cards, gates, and templates for Codex.",
+    "longDescription": "A Codex-adapted version of Claude Code Game Studios. It provides cgs-* skills, studio role cards, design and production templates, rules, engine references, and validation scripts for guided game development.",
+    "developerName": "Codex Game Studios maintainers",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write",
+      "Analysis"
+    ],
+    "defaultPrompt": [
+      "Use $cgs-start to set up a new game project.",
+      "Use $cgs-project-stage-detect on this existing game.",
+      "Use $cgs-dev-story to implement the next story."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

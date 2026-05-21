@@ -1,0 +1,29 @@
+# Codex Game Studios
+.DS_Store
+Thumbs.db
+
+# Runtime and local state
+.env
+.env.*
+*.log
+production/agent-memory/
+production/session-log/
+
+# Engine/build outputs
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+.godot/
+.import/
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# Test/cache outputs
+.pytest_cache/
+node_modules/
+dist/
+coverage/

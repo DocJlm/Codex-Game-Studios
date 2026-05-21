@@ -1,0 +1,12 @@
+Codex Game Studios
+
+This project adapts and reorganizes concepts, workflows, prompts, role
+definitions, templates, and validation ideas from:
+
+  Claude Code Game Studios
+  https://github.com/Donchitos/Claude-Code-Game-Studios
+
+The upstream project is licensed under the MIT License. This repository keeps
+the MIT license and preserves attribution while changing the runtime packaging
+from Claude Code-specific `.claude` assets to a Codex plugin plus project
+template layout.
