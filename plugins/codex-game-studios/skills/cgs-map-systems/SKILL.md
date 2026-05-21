@@ -1,6 +1,6 @@
 ---
 name: cgs-map-systems
-description: "Codex Game Studios core workflow adapted from original /map-systems. Use when the user asks for /map-systems, $cgs-map-systems, or Break an approved game concept into systems and dependency order."
+description: "Codex Game Studios curated workflow adapted from original /map-systems. Use when the user asks for /map-systems, $cgs-map-systems, or Break an approved game concept into systems and dependency order."
 ---
 
 # CGS Map Systems

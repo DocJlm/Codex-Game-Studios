@@ -1,6 +1,6 @@
 ---
 name: cgs-create-architecture
-description: "Codex Game Studios core workflow adapted from original /create-architecture. Use when the user asks for /create-architecture, $cgs-create-architecture, or Create the master architecture plan from approved design docs."
+description: "Codex Game Studios curated workflow adapted from original /create-architecture. Use when the user asks for /create-architecture, $cgs-create-architecture, or Create the master architecture plan from approved design docs."
 ---
 
 # CGS Create Architecture

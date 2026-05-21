@@ -1,6 +1,6 @@
 ---
 name: cgs-setup-engine
-description: "Codex Game Studios core workflow adapted from original /setup-engine. Use when the user asks for /setup-engine, $cgs-setup-engine, or Configure engine, version, language, and technical preferences."
+description: "Codex Game Studios curated workflow adapted from original /setup-engine. Use when the user asks for /setup-engine, $cgs-setup-engine, or Configure engine, version, language, and technical preferences."
 ---
 
 # CGS Setup Engine

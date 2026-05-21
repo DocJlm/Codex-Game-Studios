@@ -1,6 +1,6 @@
 ---
 name: cgs-dev-story
-description: "Codex Game Studios core workflow adapted from original /dev-story. Use when the user asks for /dev-story, $cgs-dev-story, or Implement one ready story using Codex-native engineering workflow."
+description: "Codex Game Studios curated workflow adapted from original /dev-story. Use when the user asks for /dev-story, $cgs-dev-story, or Implement one ready story using Codex-native engineering workflow."
 ---
 
 # CGS Dev Story

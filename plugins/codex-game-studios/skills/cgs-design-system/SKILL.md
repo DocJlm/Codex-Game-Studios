@@ -1,6 +1,6 @@
 ---
 name: cgs-design-system
-description: "Codex Game Studios core workflow adapted from original /design-system. Use when the user asks for /design-system, $cgs-design-system, or Create or revise a focused game design document for one system."
+description: "Codex Game Studios curated workflow adapted from original /design-system. Use when the user asks for /design-system, $cgs-design-system, or Create or revise a focused game design document for one system."
 ---
 
 # CGS Design System

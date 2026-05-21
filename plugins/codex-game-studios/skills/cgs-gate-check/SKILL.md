@@ -1,6 +1,6 @@
 ---
 name: cgs-gate-check
-description: "Codex Game Studios core workflow adapted from original /gate-check. Use when the user asks for /gate-check, $cgs-gate-check, or Run an advisory phase gate before advancing the game project."
+description: "Codex Game Studios curated workflow adapted from original /gate-check. Use when the user asks for /gate-check, $cgs-gate-check, or Run an advisory phase gate before advancing the game project."
 ---
 
 # CGS Gate Check

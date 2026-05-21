@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the empty-game smoke fixture for v0.1 workflow checks."""
+"""Validate the empty-game smoke fixture for workflow smoke checks."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 
 REQUIRED_FILES = [
     "README.md",
+    "WALKTHROUGH.md",
     "AGENTS.md",
     "production/stage.txt",
     "production/review-mode.txt",
@@ -48,6 +49,16 @@ def main() -> int:
         for skill in EXPECTED_SKILLS:
             if skill not in text:
                 errors.append(f"smoke checklist missing {skill}")
+
+    walkthrough = FIXTURE / "WALKTHROUGH.md"
+    if walkthrough.exists():
+        text = walkthrough.read_text(encoding="utf-8")
+        for skill in EXPECTED_SKILLS:
+            if skill not in text:
+                errors.append(f"walkthrough missing {skill}")
+        for token in ["Expected result", "PRODUCTION", "NEEDS FIXES"]:
+            if token not in text:
+                errors.append(f"walkthrough missing token: {token}")
 
     if errors:
         print("Smoke fixture validation failed:")

@@ -1,6 +1,6 @@
 ---
 name: cgs-story-readiness
-description: "Codex Game Studios core workflow adapted from original /story-readiness. Use when the user asks for /story-readiness, $cgs-story-readiness, or Check whether a story is ready before implementation begins."
+description: "Codex Game Studios curated workflow adapted from original /story-readiness. Use when the user asks for /story-readiness, $cgs-story-readiness, or Check whether a story is ready before implementation begins."
 ---
 
 # CGS Story Readiness

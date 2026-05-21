@@ -1,6 +1,6 @@
 ---
 name: cgs-story-done
-description: "Codex Game Studios core workflow adapted from original /story-done. Use when the user asks for /story-done, $cgs-story-done, or Verify and close a completed implementation story."
+description: "Codex Game Studios curated workflow adapted from original /story-done. Use when the user asks for /story-done, $cgs-story-done, or Verify and close a completed implementation story."
 ---
 
 # CGS Story Done

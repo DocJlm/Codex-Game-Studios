@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare the v0.1 Codex-native workflow layer."""
+"""Prepare curated Codex-native workflows for the current release."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
+RELEASE_VERSION = "0.2.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -285,6 +286,102 @@ Return verdict: `PASS`, `PASS WITH CONCERNS`, or `FAIL`.
 Include required fixes, optional fixes, and user decision options.
 """,
     ),
+    "code-review": (
+        "Review game code changes for correctness, scope, tests, and story alignment.",
+        """# CGS Code Review
+
+Use `$cgs-code-review` when the user asks for a review of game code, a story diff, or a pull-request-style check.
+
+## Procedure
+
+1. Inspect the requested diff or changed files before summarizing.
+2. Read the active story, linked GDDs, ADRs, path rules, and test notes when they exist.
+3. Prioritize findings that can break gameplay, saves, builds, performance budgets, or acceptance criteria.
+4. Keep role-card use sequential: technical director, lead programmer, qa lead, then producer only when scope drift is possible.
+5. Do not rewrite the code during review unless the user explicitly asks for fixes.
+
+## Output Contract
+
+Lead with findings ordered by severity and include file paths plus line numbers when possible.
+If no issues are found, say that clearly and list any test gaps or residual risks.
+""",
+    ),
+    "qa-plan": (
+        "Create a focused QA plan for a story, milestone, prototype, or release candidate.",
+        """# CGS QA Plan
+
+Use `$cgs-qa-plan` when the user needs test coverage for a gameplay story, milestone, prototype, or release candidate.
+
+## Procedure
+
+1. Read the story, epic, GDDs, architecture notes, known bugs, and target platforms.
+2. Identify risk areas: core loop, input, save/load, UI feedback, performance, accessibility, localization, and platform differences.
+3. Split checks into automated tests, manual smoke tests, exploratory passes, and evidence to capture.
+4. Keep the plan small enough to run for the requested scope.
+5. Offer to write or update `tests/SMOKE-CHECKLIST.md` or story-local QA notes after approval.
+
+## Output Contract
+
+Return scope, risk matrix, test list, evidence requirements, and exit criteria.
+""",
+    ),
+    "smoke-check": (
+        "Run or design a fast smoke check for core game workflows.",
+        """# CGS Smoke Check
+
+Use `$cgs-smoke-check` when the user wants a fast confidence pass after changes.
+
+## Procedure
+
+1. Identify the smallest playable or verifiable path for the current story or milestone.
+2. Prefer existing commands in `AGENTS.md`, package manifests, engine project files, or test docs.
+3. Run safe automated checks when available, then list manual checks that still require the user or a game runtime.
+4. Capture failures with exact commands, paths, and reproduction steps.
+5. Avoid broad regression testing unless the user asks for a full QA pass.
+
+## Output Contract
+
+Return commands run, pass/fail results, manual checks remaining, and the next fix or verification step.
+""",
+    ),
+    "architecture-review": (
+        "Review architecture against design goals, engine constraints, and production stories.",
+        """# CGS Architecture Review
+
+Use `$cgs-architecture-review` when architecture, module boundaries, ADRs, or technical direction need review.
+
+## Procedure
+
+1. Read `docs/architecture/architecture.md`, ADRs, technical preferences, control manifest, GDDs, and relevant source.
+2. Check module ownership, data flow, persistence, scene or entity boundaries, UI separation, testability, and engine constraints.
+3. Compare the architecture to active epics and stories; flag gaps that will block implementation.
+4. Use technical director and lead programmer role-card perspectives sequentially.
+5. Recommend ADRs only for decisions that need durable project memory.
+
+## Output Contract
+
+Return strengths, risks, required changes, optional improvements, and ADR recommendations.
+""",
+    ),
+    "ux-design": (
+        "Design or review player-facing UX flows for a game feature.",
+        """# CGS UX Design
+
+Use `$cgs-ux-design` when the user needs player-facing UX for menus, HUD, onboarding, controls, accessibility, or feedback loops.
+
+## Procedure
+
+1. Read the concept, relevant GDDs, art direction, accessibility notes, platform targets, and input constraints.
+2. Define the player goal, screen or flow states, feedback moments, error states, and accessibility considerations.
+3. Keep recommendations tied to gameplay readability and repeated use, not marketing copy.
+4. If implementation is requested, map UX states to files, components, scenes, or prefabs before editing.
+5. Offer to write `design/ux/<feature-slug>.md` after the draft is accepted.
+
+## Output Contract
+
+Return flow outline, state list, interaction notes, accessibility checks, and implementation handoff notes.
+""",
+    ),
 }
 
 
@@ -297,7 +394,7 @@ def write_core_skills() -> None:
     for name, (summary, body) in CORE_SKILLS.items():
         skill_name = f"cgs-{name}"
         description = (
-            f"Codex Game Studios core workflow adapted from original /{name}. "
+            f"Codex Game Studios curated workflow adapted from original /{name}. "
             f"Use when the user asks for /{name}, ${skill_name}, or {summary}"
         )
         content = f"---\nname: {skill_name}\ndescription: \"{description}\"\n---\n\n{body.strip()}\n"
@@ -307,7 +404,7 @@ def write_core_skills() -> None:
 def update_plugin_metadata() -> None:
     path = PLUGIN / ".codex-plugin" / "plugin.json"
     data = json.loads(path.read_text(encoding="utf-8"))
-    data["version"] = "0.1.0"
+    data["version"] = RELEASE_VERSION
     data["author"] = {
         "name": "DocJlm",
         "email": "1952199902@qq.com",
@@ -315,6 +412,7 @@ def update_plugin_metadata() -> None:
     }
     data["homepage"] = "https://github.com/DocJlm/Codex-Game-Studios"
     data["repository"] = "https://github.com/DocJlm/Codex-Game-Studios"
+    data.setdefault("interface", {})["developerName"] = "DocJlm"
     write_text(path, json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 
 
@@ -330,6 +428,44 @@ Expected smoke path:
 2. `$cgs-project-stage-detect` reports `PRODUCTION` because concept, engine preferences, architecture, epic, and ready story exist.
 3. `$cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md` has a small ready story to inspect.
 4. `$cgs-story-done production/epics/core-loop/STORY-001-player-loop.md` can report missing implementation evidence.
+
+See `WALKTHROUGH.md` for the expected transcript shape.
+""",
+        "WALKTHROUGH.md": """# Empty Game Workflow Walkthrough
+
+This fixture is not a real game implementation. It is a stable project shape for checking that the core Codex Game Studios loop gives useful, bounded answers.
+
+## `$cgs-start`
+
+Expected result:
+- Detects an existing Codex Game Studios workspace.
+- Reports `production/stage.txt` as `production` and `production/review-mode.txt` as `lean`.
+- Does not recreate existing folders or overwrite planning files.
+- Recommends `$cgs-project-stage-detect` or `$cgs-dev-story` as the next step.
+
+## `$cgs-project-stage-detect`
+
+Expected result:
+- Detects Godot 4.3 / GDScript preferences from `docs/architecture/technical-preferences.md`.
+- Reports `PRODUCTION` because concept, systems index, architecture, epic, and ready story exist.
+- Lists evidence paths for the concept, architecture, epic, story, and smoke checklist.
+- Calls out that source implementation evidence is intentionally absent.
+
+## `$cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md`
+
+Expected result:
+- Reads exactly one ready story.
+- Produces a short implementation plan instead of broad project restructuring.
+- Proposes scoped gameplay files and tests for movement, score, timer, and reset.
+- Asks before writing unless the user has explicitly requested implementation.
+
+## `$cgs-story-done production/epics/core-loop/STORY-001-player-loop.md`
+
+Expected result:
+- Returns `NEEDS FIXES` or `BLOCKED`, not `DONE`, because no implementation files or test evidence exist.
+- Checks all four acceptance criteria.
+- Names missing evidence: source changes, automated score/timer tests, and manual smoke result.
+- Recommends `$cgs-dev-story` as the next action.
 """,
         "AGENTS.md": """# Fixture Agent Guide
 
@@ -415,7 +551,7 @@ def main() -> None:
     write_core_skills()
     update_plugin_metadata()
     write_fixture()
-    print("Prepared v0.1 core skills, plugin metadata, and empty-game fixture")
+    print(f"Prepared v{RELEASE_VERSION} curated skills, plugin metadata, and empty-game fixture")
 
 
 if __name__ == "__main__":

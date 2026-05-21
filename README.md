@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 4 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_smoke_fixture.py` |
+| Validation scripts | 6 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/scan_legacy_tokens.py` |
 
 ## Quick Start
 
@@ -86,7 +86,9 @@ prototypes/   src/          tests/       tools/
 
 ```powershell
 python tools\validate_cgs.py
+python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
+python tools\scan_legacy_tokens.py
 ```
 
 从本地上游副本重新同步：
@@ -95,21 +97,23 @@ python tools\validate_smoke_fixture.py
 python tools\migrate_from_claude.py
 python tools\prepare_v01.py
 python tools\validate_cgs.py
+python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
+python tools\scan_legacy_tokens.py
 ```
 
 The migration script expects the upstream checkout at `D:\Git\Claude-Code-Game-Studios`.
 
 ## Smoke Fixture
 
-`tests/fixtures/empty-game/` is a tiny project used to exercise the v0.1 workflow loop:
+`tests/fixtures/empty-game/` is a tiny project used to exercise the v0.2 workflow loop:
 
 - `$cgs-start`
 - `$cgs-project-stage-detect`
 - `$cgs-dev-story`
 - `$cgs-story-done`
 
-It is intentionally small and does not contain a real game implementation.
+It is intentionally small and does not contain a real game implementation. See `tests/fixtures/empty-game/WALKTHROUGH.md` for expected output shape.
 
 ## Hook Policy
 
@@ -121,4 +125,5 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v0.2.0`: self-contained validation, repeatable regeneration, and workflow polish. See `docs/releases/v0.2.0.md`.
 - `v0.1.0`: initial public release. See `docs/releases/v0.1.0.md`.

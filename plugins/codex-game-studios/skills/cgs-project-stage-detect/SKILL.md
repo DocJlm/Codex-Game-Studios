@@ -1,6 +1,6 @@
 ---
 name: cgs-project-stage-detect
-description: "Codex Game Studios core workflow adapted from original /project-stage-detect. Use when the user asks for /project-stage-detect, $cgs-project-stage-detect, or Audit an existing game project and classify its Codex Game Studios stage."
+description: "Codex Game Studios curated workflow adapted from original /project-stage-detect. Use when the user asks for /project-stage-detect, $cgs-project-stage-detect, or Audit an existing game project and classify its Codex Game Studios stage."
 ---
 
 # CGS Project Stage Detect

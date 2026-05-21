@@ -223,15 +223,15 @@ def transform_text_tree(root: Path) -> None:
 def write_manifest_files() -> None:
     plugin_json = {
         "name": "codex-game-studios",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "description": "Codex plugin and project template for structured solo and small-team game development workflows.",
         "author": {
-            "name": "Codex Game Studios maintainers",
-            "email": "maintainers@example.com",
-            "url": "https://github.com/",
+            "name": "DocJlm",
+            "email": "1952199902@qq.com",
+            "url": "https://github.com/DocJlm",
         },
-        "homepage": "https://github.com/",
-        "repository": "https://github.com/",
+        "homepage": "https://github.com/DocJlm/Codex-Game-Studios",
+        "repository": "https://github.com/DocJlm/Codex-Game-Studios",
         "license": "MIT",
         "keywords": ["codex", "game-development", "skills", "studio-workflow", "templates"],
         "skills": "./skills/",
@@ -243,7 +243,7 @@ def write_manifest_files() -> None:
                 "studio role cards, design and production templates, rules, engine references, "
                 "and validation scripts for guided game development."
             ),
-            "developerName": "Codex Game Studios maintainers",
+            "developerName": "DocJlm",
             "category": "Productivity",
             "capabilities": ["Interactive", "Write", "Analysis"],
             "defaultPrompt": [

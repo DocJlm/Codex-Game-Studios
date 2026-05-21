@@ -1,6 +1,6 @@
 ---
 name: cgs-create-stories
-description: "Codex Game Studios core workflow adapted from original /create-stories. Use when the user asks for /create-stories, $cgs-create-stories, or Break one epic into implementable production stories."
+description: "Codex Game Studios curated workflow adapted from original /create-stories. Use when the user asks for /create-stories, $cgs-create-stories, or Break one epic into implementable production stories."
 ---
 
 # CGS Create Stories

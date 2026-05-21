@@ -1,6 +1,6 @@
 ---
 name: cgs-create-epics
-description: "Codex Game Studios core workflow adapted from original /create-epics. Use when the user asks for /create-epics, $cgs-create-epics, or Translate approved design and architecture into production epics."
+description: "Codex Game Studios curated workflow adapted from original /create-epics. Use when the user asks for /create-epics, $cgs-create-epics, or Translate approved design and architecture into production epics."
 ---
 
 # CGS Create Epics

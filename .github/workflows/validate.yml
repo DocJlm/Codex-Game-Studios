@@ -24,6 +24,9 @@ jobs:
       - name: Validate plugin structure
         run: python tools/validate_cgs.py
 
+      - name: Validate Codex skills
+        run: python tools/validate_skills.py
+
       - name: Validate smoke fixture
         run: python tools/validate_smoke_fixture.py
 

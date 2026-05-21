@@ -1,6 +1,6 @@
 ---
 name: cgs-brainstorm
-description: "Codex Game Studios core workflow adapted from original /brainstorm. Use when the user asks for /brainstorm, $cgs-brainstorm, or Guided ideation for turning a theme or blank slate into a game concept."
+description: "Codex Game Studios curated workflow adapted from original /brainstorm. Use when the user asks for /brainstorm, $cgs-brainstorm, or Guided ideation for turning a theme or blank slate into a game concept."
 ---
 
 # CGS Brainstorm

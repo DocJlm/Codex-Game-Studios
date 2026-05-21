@@ -20,6 +20,8 @@ MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 EXPECTED_SKILLS = 73
 EXPECTED_ROLE_CARDS = 49
 EXPECTED_RULES = 11
+EXPECTED_VERSION = "0.2.0"
+EXPECTED_REPOSITORY = "https://github.com/DocJlm/Codex-Game-Studios"
 
 
 def fail(errors: list[str], message: str) -> None:
@@ -61,10 +63,22 @@ def validate_plugin_json(errors: list[str]) -> None:
         return
     if data.get("name") != "codex-game-studios":
         fail(errors, "plugin.json name must be codex-game-studios")
+    if data.get("version") != EXPECTED_VERSION:
+        fail(errors, f"plugin.json version must be {EXPECTED_VERSION}")
+    if data.get("homepage") != EXPECTED_REPOSITORY:
+        fail(errors, f"plugin.json homepage must be {EXPECTED_REPOSITORY}")
+    if data.get("repository") != EXPECTED_REPOSITORY:
+        fail(errors, f"plugin.json repository must be {EXPECTED_REPOSITORY}")
+    author = data.get("author", {})
+    if author.get("name") != "DocJlm" or author.get("email") == "maintainers@example.com":
+        fail(errors, "plugin.json author metadata must use DocJlm release metadata")
     if data.get("skills") != "./skills/":
         fail(errors, "plugin.json skills path must be ./skills/")
     if "hooks" in data:
         fail(errors, "plugin.json must not declare hooks until Codex hook schema is pinned")
+    developer_name = data.get("interface", {}).get("developerName")
+    if developer_name != "DocJlm":
+        fail(errors, "plugin.json interface.developerName must be DocJlm")
     prompts = data.get("interface", {}).get("defaultPrompt", [])
     if len(prompts) != 3:
         fail(errors, "plugin.json interface.defaultPrompt must contain exactly 3 starter prompts")

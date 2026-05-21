@@ -8,7 +8,7 @@ This repository is both a Codex plugin package and a game project template.
 - Treat upstream slash commands as aliases only: `/dev-story` means `$cgs-dev-story`, `/gate-check` means `$cgs-gate-check`, and so on.
 - Read role cards from `plugins/codex-game-studios/references/role-cards/` when a workflow asks for a studio role.
 - Do not assume role cards are automatically available subagents. Run role reviews sequentially unless the user explicitly requests parallel agent work.
-- Do not wire legacy Claude hooks into Codex runtime behavior. Use `python tools\validate_cgs.py` for repository structure validation.
+- Do not wire legacy Claude hooks into Codex runtime behavior. Use the validators under `tools/` for repository and skill checks.
 
 ## Project Layout
 
@@ -28,7 +28,9 @@ Before declaring a migration or structural change complete:
 
 ```powershell
 python tools\validate_cgs.py
+python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
+python tools\scan_legacy_tokens.py
 ```
 
 For plugin and skill edits, verify:
@@ -38,7 +40,7 @@ For plugin and skill edits, verify:
 - Every skill name starts with `cgs-`.
 - Skill descriptions mention both the original slash command and the Codex skill name.
 - Counts remain at 73 skills, 49 role cards, and 11 path rules unless the change explicitly updates those numbers.
-- Core v0.1 workflows remain concise and Codex-native: `cgs-start`, `cgs-help`, `cgs-project-stage-detect`, `cgs-brainstorm`, `cgs-setup-engine`, `cgs-map-systems`, `cgs-design-system`, `cgs-create-architecture`, `cgs-create-epics`, `cgs-create-stories`, `cgs-story-readiness`, `cgs-dev-story`, `cgs-story-done`, and `cgs-gate-check`.
+- Curated workflows remain concise and Codex-native: `cgs-start`, `cgs-help`, `cgs-project-stage-detect`, `cgs-brainstorm`, `cgs-setup-engine`, `cgs-map-systems`, `cgs-design-system`, `cgs-create-architecture`, `cgs-create-epics`, `cgs-create-stories`, `cgs-story-readiness`, `cgs-dev-story`, `cgs-story-done`, `cgs-gate-check`, `cgs-code-review`, `cgs-qa-plan`, `cgs-smoke-check`, `cgs-architecture-review`, and `cgs-ux-design`.
 - `tests/fixtures/empty-game/` stays usable for smoke checks of onboarding, stage detection, story pickup, and story closure review.
 
 ## Collaboration Defaults

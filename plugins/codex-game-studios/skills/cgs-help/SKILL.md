@@ -1,6 +1,6 @@
 ---
 name: cgs-help
-description: "Codex Game Studios core workflow adapted from original /help. Use when the user asks for /help, $cgs-help, or Context-aware next-step navigator for Codex Game Studios projects."
+description: "Codex Game Studios curated workflow adapted from original /help. Use when the user asks for /help, $cgs-help, or Context-aware next-step navigator for Codex Game Studios projects."
 ---
 
 # CGS Help

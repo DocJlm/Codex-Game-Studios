@@ -1,6 +1,6 @@
 ---
 name: cgs-start
-description: "Codex Game Studios core workflow adapted from original /start. Use when the user asks for /start, $cgs-start, or First-run onboarding for a new or unorganized game project."
+description: "Codex Game Studios curated workflow adapted from original /start. Use when the user asks for /start, $cgs-start, or First-run onboarding for a new or unorganized game project."
 ---
 
 # CGS Start
