@@ -1,0 +1,42 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate plugin and template
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate plugin structure
+        run: python tools/validate_cgs.py
+
+      - name: Validate smoke fixture
+        run: python tools/validate_smoke_fixture.py
+
+      - name: Validate JSON manifests
+        run: |
+          python -m json.tool plugins/codex-game-studios/.codex-plugin/plugin.json > /dev/null
+          python -m json.tool .agents/plugins/marketplace.json > /dev/null
+
+      - name: Scan legacy runtime tokens
+        run: python tools/scan_legacy_tokens.py
+
+      - name: Count migrated assets
+        run: |
+          test "$(find plugins/codex-game-studios/skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)" -eq 73
+          test "$(find plugins/codex-game-studios/references/role-cards -maxdepth 1 -name '*.md' | wc -l)" -eq 49
+          test "$(find plugins/codex-game-studios/references/rules -maxdepth 1 -name '*.md' | wc -l)" -eq 11

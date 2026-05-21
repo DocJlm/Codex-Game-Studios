@@ -1,5 +1,7 @@
 # Codex Game Studios
 
+[![Validate](https://github.com/DocJlm/Codex-Game-Studios/actions/workflows/validate.yml/badge.svg)](https://github.com/DocJlm/Codex-Game-Studios/actions/workflows/validate.yml)
+
 把一个 Codex 工作区变成结构化的游戏开发工作室：73 个 `cgs-*` skills、49 个工作室角色卡、阶段门、规则、设计模板、引擎参考和校验脚本。
 
 This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios). It keeps the studio workflow idea, but packages it as a repo-local Codex plugin plus a game project template.
@@ -116,3 +118,7 @@ Claude hooks are not installed as Codex runtime hooks in this first adaptation. 
 ## License
 
 MIT. See `LICENSE` and `NOTICE`.
+
+## Releases
+
+- `v0.1.0`: initial public release. See `docs/releases/v0.1.0.md`.
