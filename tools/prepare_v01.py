@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
-RELEASE_VERSION = "0.2.0"
+RELEASE_VERSION = "0.3.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -294,16 +294,24 @@ Use `$cgs-code-review` when the user asks for a review of game code, a story dif
 
 ## Procedure
 
-1. Inspect the requested diff or changed files before summarizing.
+1. Inspect the requested diff or changed files before summarizing; use `git diff`, PR files, or explicit paths.
 2. Read the active story, linked GDDs, ADRs, path rules, and test notes when they exist.
-3. Prioritize findings that can break gameplay, saves, builds, performance budgets, or acceptance criteria.
+3. Prioritize findings that can break gameplay, saves, builds, performance budgets, platform constraints, or acceptance criteria.
 4. Keep role-card use sequential: technical director, lead programmer, qa lead, then producer only when scope drift is possible.
-5. Do not rewrite the code during review unless the user explicitly asks for fixes.
+5. Do not rewrite code during review unless the user explicitly asks for fixes.
+
+## Severity Rules
+
+- `P0`: corrupts data, prevents launch, blocks shipping, or makes the game unplayable.
+- `P1`: breaks story acceptance criteria, core loop behavior, tests, or important platform behavior.
+- `P2`: creates maintainability, UX, performance, or coverage risk that should be fixed soon.
+- `P3`: polish or follow-up note.
 
 ## Output Contract
 
-Lead with findings ordered by severity and include file paths plus line numbers when possible.
-If no issues are found, say that clearly and list any test gaps or residual risks.
+Lead with findings ordered by severity. Include file paths and line numbers when possible.
+Then list open questions, test gaps, and a short change summary.
+If no issues are found, say that clearly and still report residual risk.
 """,
     ),
     "qa-plan": (
@@ -316,13 +324,19 @@ Use `$cgs-qa-plan` when the user needs test coverage for a gameplay story, miles
 
 1. Read the story, epic, GDDs, architecture notes, known bugs, and target platforms.
 2. Identify risk areas: core loop, input, save/load, UI feedback, performance, accessibility, localization, and platform differences.
-3. Split checks into automated tests, manual smoke tests, exploratory passes, and evidence to capture.
-4. Keep the plan small enough to run for the requested scope.
-5. Offer to write or update `tests/SMOKE-CHECKLIST.md` or story-local QA notes after approval.
+3. Split checks into automated tests, manual smoke tests, exploratory passes, device or platform checks, and evidence to capture.
+4. Keep the plan small enough to run for the requested scope; name what is intentionally out of scope.
+5. Offer to write or update `tests/SMOKE-CHECKLIST.md`, story-local QA notes, or a release candidate checklist after approval.
+
+## Evidence Rules
+
+- Each acceptance criterion needs at least one verification path.
+- Manual checks must name the scene, input path, expected result, and evidence artifact.
+- Automated checks must name the command and the behavior they cover.
 
 ## Output Contract
 
-Return scope, risk matrix, test list, evidence requirements, and exit criteria.
+Return scope, risk matrix, test matrix, evidence requirements, owner handoff, and exit criteria.
 """,
     ),
     "smoke-check": (
@@ -335,9 +349,14 @@ Use `$cgs-smoke-check` when the user wants a fast confidence pass after changes.
 
 1. Identify the smallest playable or verifiable path for the current story or milestone.
 2. Prefer existing commands in `AGENTS.md`, package manifests, engine project files, or test docs.
-3. Run safe automated checks when available, then list manual checks that still require the user or a game runtime.
-4. Capture failures with exact commands, paths, and reproduction steps.
+3. Run safe automated checks when available, then list manual checks that still require the user, editor, or game runtime.
+4. Capture failures with exact commands, paths, expected result, actual result, and reproduction steps.
 5. Avoid broad regression testing unless the user asks for a full QA pass.
+
+## Smoke Scope
+
+Cover only launch, the touched gameplay loop, one success path, one failure or timeout path, and the acceptance criteria changed by the story.
+Route broader coverage to `$cgs-qa-plan`.
 
 ## Output Contract
 
@@ -547,10 +566,265 @@ Create the smallest playable loop skeleton for the empty game fixture.
         write_text(FIXTURE / relative, content)
 
 
+def write_transcripts() -> None:
+    write_text(
+        ROOT / "docs" / "transcripts" / "concept-to-story.md",
+        """# Concept-to-Story Transcript
+
+This transcript shows the intended v0.3 Codex Game Studios feel: concise, project-aware, and bounded by explicit write confirmations. It uses a fictional small game called Spark Sprint.
+
+## 1. Start A New Project
+
+User:
+
+```text
+Use $cgs-start. I want a tiny arcade game prototype about collecting sparks before a timer ends.
+```
+
+Expected Codex shape:
+
+```text
+Detected state: fresh workspace with no production stage, concept, engine preferences, or epics.
+Missing decisions: engine, target platform, review mode.
+Suggested setup:
+- production/stage.txt = concept
+- production/review-mode.txt = lean
+- design/gdd/game-concept.md starter draft
+Before writing: confirm engine and review mode.
+Next skill: $cgs-brainstorm or $cgs-setup-engine
+```
+
+User:
+
+```text
+Use Godot 4.3, desktop, lean review. Write the starter files.
+```
+
+Expected Codex shape:
+
+```text
+Files updated:
+- production/stage.txt
+- production/review-mode.txt
+- design/gdd/game-concept.md
+Next: $cgs-setup-engine to capture technical preferences.
+```
+
+## 2. Capture Engine Preferences
+
+User:
+
+```text
+Use $cgs-setup-engine for Godot 4.3 and GDScript.
+```
+
+Expected Codex shape:
+
+```text
+Detected engine: no project.godot yet, user selected Godot 4.3.
+Decisions captured:
+- Language: GDScript
+- Platform: desktop
+- Test command placeholder: godot --headless --run-tests
+File proposed: docs/architecture/technical-preferences.md
+Next skill: $cgs-map-systems
+```
+
+## 3. Map Systems
+
+User:
+
+```text
+Use $cgs-map-systems from the current game concept.
+```
+
+Expected Codex shape:
+
+```text
+MVP systems:
+- Player movement
+- Collectible spawning and pickup
+- Timer and round state
+- Score display
+Dependency order:
+1. Timer and score state
+2. Player movement
+3. Collectible pickup
+4. HUD feedback
+File proposed: design/gdd/systems-index.md
+Next skill: $cgs-create-architecture
+```
+
+## 4. Create Architecture
+
+User:
+
+```text
+Use $cgs-create-architecture. Keep it small.
+```
+
+Expected Codex shape:
+
+```text
+Architecture summary:
+- GameController owns round state.
+- PlayerController owns movement input.
+- Collectible nodes emit pickup events.
+- HUD observes score and timer.
+Required ADRs: none for this tiny prototype.
+File proposed: docs/architecture/architecture.md
+Next skill: $cgs-create-epics
+```
+
+## 5. Create Epic And Story
+
+User:
+
+```text
+Use $cgs-create-epics, then split the first epic with $cgs-create-stories.
+```
+
+Expected Codex shape:
+
+```text
+Epic: Core Loop
+Goal: Build a playable timer-based collection loop.
+Stories:
+1. Player Loop Skeleton
+2. HUD Feedback
+3. Round Reset
+First story path:
+production/epics/core-loop/STORY-001-player-loop.md
+Next skill: $cgs-story-readiness
+```
+
+## 6. Pick Up A Story
+
+User:
+
+```text
+Use $cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md. Implement it if ready.
+```
+
+Expected Codex shape before edits:
+
+```text
+Readiness: READY
+Plan:
+- Inspect existing Godot project files.
+- Add or update player movement, score, timer, and reset logic.
+- Add score/timer tests if the project test harness exists.
+Files likely touched:
+- src/gameplay/player_controller.gd
+- src/gameplay/game_controller.gd
+- tests/test_game_controller.gd
+As requested, proceeding with implementation.
+```
+
+Expected Codex shape after edits:
+
+```text
+Changed files: listed with paths.
+Tests run: command and result.
+Acceptance criteria:
+- Player moves: pass or manual check required
+- Pickup increments score: pass
+- Timer ends round: pass
+- Reset restores timer and score: pass
+Next skill: $cgs-story-done
+```
+
+## 7. Close The Story
+
+User:
+
+```text
+Use $cgs-story-done production/epics/core-loop/STORY-001-player-loop.md.
+```
+
+Expected Codex shape:
+
+```text
+Verdict: DONE or NEEDS FIXES
+Evidence:
+- Diff paths reviewed
+- Automated tests and manual smoke checks
+- Acceptance criteria checklist
+If complete: offer to update story status.
+If incomplete: list blockers and route back to $cgs-dev-story or $cgs-smoke-check.
+```
+
+## 8. Review And QA Follow-Up
+
+User:
+
+```text
+Use $cgs-code-review on the current diff, then $cgs-qa-plan for the Core Loop epic.
+```
+
+Expected Codex shape:
+
+```text
+$cgs-code-review:
+- Findings first, ordered P0-P3.
+- File and line references when possible.
+- Test gaps and residual risk.
+
+$cgs-qa-plan:
+- Risk matrix.
+- Automated and manual checks.
+- Evidence artifacts.
+- Exit criteria for the epic.
+```
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "workflows" / "high-frequency-workflows.md",
+        """# High-Frequency Workflow Notes
+
+These notes document the v0.3 polish targets for the first workflows users are likely to repeat during production.
+
+## `$cgs-code-review`
+
+Use it like a code review, not a rewrite command. It should inspect the diff, read the story context when available, and lead with concrete findings. A good answer starts with severity-ordered risks and only then gives summary context.
+
+Minimum useful output:
+- Findings with severity, file path, and line when possible.
+- Open questions or assumptions.
+- Test gaps and residual risk.
+- Short change summary.
+
+## `$cgs-qa-plan`
+
+Use it when the user needs a scoped test plan. It should map acceptance criteria to verification paths and separate automated checks from manual gameplay checks.
+
+Minimum useful output:
+- Scope and out-of-scope boundaries.
+- Risk matrix.
+- Test matrix.
+- Evidence artifacts.
+- Exit criteria.
+
+## `$cgs-smoke-check`
+
+Use it for a fast confidence pass after implementation. It should run safe commands when available and clearly mark checks that require the game editor or a human play session.
+
+Minimum useful output:
+- Commands run.
+- Pass/fail result.
+- Manual checks remaining.
+- Reproduction details for failures.
+- Next fix or verification step.
+""",
+    )
+
+
 def main() -> None:
     write_core_skills()
     update_plugin_metadata()
     write_fixture()
+    write_transcripts()
     print(f"Prepared v{RELEASE_VERSION} curated skills, plugin metadata, and empty-game fixture")
 
 

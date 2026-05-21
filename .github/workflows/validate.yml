@@ -30,6 +30,9 @@ jobs:
       - name: Validate smoke fixture
         run: python tools/validate_smoke_fixture.py
 
+      - name: Validate demo transcripts
+        run: python tools/validate_transcripts.py
+
       - name: Validate JSON manifests
         run: |
           python -m json.tool plugins/codex-game-studios/.codex-plugin/plugin.json > /dev/null

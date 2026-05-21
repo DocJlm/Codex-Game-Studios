@@ -2,6 +2,15 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.3.0 - 2026-05-22
+
+- Added a concept-to-story transcript showing the intended Codex Game Studios demo flow from `$cgs-start` through `$cgs-story-done`.
+- Added high-frequency workflow notes for `$cgs-code-review`, `$cgs-qa-plan`, and `$cgs-smoke-check`.
+- Tightened `$cgs-code-review` severity rules and review output expectations.
+- Tightened `$cgs-qa-plan` evidence rules and scoped test-matrix expectations.
+- Tightened `$cgs-smoke-check` smoke scope and failure reporting.
+- Added transcript validation to local checks and CI.
+
 ## v0.2.0 - 2026-05-22
 
 - Fixed repeatable migration drift by writing the real `DocJlm/Codex-Game-Studios` metadata from `tools/migrate_from_claude.py`.

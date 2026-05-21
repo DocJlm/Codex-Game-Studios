@@ -14,6 +14,8 @@ SCAN_ROOTS = [
     ROOT / "plugins/codex-game-studios/references/role-cards",
     ROOT / "plugins/codex-game-studios/assets/templates",
     ROOT / "plugins/codex-game-studios/references/studio-docs",
+    ROOT / "docs/transcripts",
+    ROOT / "docs/workflows",
 ]
 
 TOKENS = [
