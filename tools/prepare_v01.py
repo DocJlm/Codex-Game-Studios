@@ -12,7 +12,7 @@ PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 EXAMPLE = ROOT / "examples" / "spark-sprint"
-RELEASE_VERSION = "1.5.0"
+RELEASE_VERSION = "1.6.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -1250,7 +1250,10 @@ def write_install_docs() -> None:
 This guide describes how to use Codex Game Studios as a repo-local Codex plugin, and what to do when the current Codex build does not expose local plugin installation in the UI.
 
 For a dated local field test, see `docs/install/field-test-2026-05-22.md`.
+For Codex Desktop setup, see `docs/install/codex-desktop.md`.
+For upgrades, see `docs/install/upgrade.md`.
 For platform-specific setup, see `docs/platforms/windows.md` and `docs/platforms/macos.md`.
+For CI reproduction, see `docs/platforms/ci.md`.
 
 ## Files Codex Should Discover
 
@@ -1317,6 +1320,10 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 ```
 
 This is the same workflow content. It only bypasses plugin discovery.
+
+## Upgrade Path
+
+When updating an existing clone, follow `docs/install/upgrade.md` before debugging plugin discovery. Most install issues after an upgrade are either stale Codex Desktop discovery state or a local working tree that did not actually pull the new plugin metadata.
 
 ## Local Validation
 
@@ -2123,7 +2130,7 @@ def write_v1_readiness_docs() -> None:
         ROOT / "docs" / "v1-readiness" / "freeze-checklist.md",
         """# v1 Readiness Freeze Checklist
 
-This checklist defines the Codex Game Studios v1.x compatibility boundary. It is a release gate, not a roadmap wish list, and v1.1 adds Windows and macOS usability checks.
+This checklist defines the Codex Game Studios v1.x compatibility boundary. It is a release gate, not a roadmap wish list, and v1.6 adds user-facing install, upgrade, CI, and community documentation checks.
 
 ## Frozen Public Interfaces
 
@@ -2145,7 +2152,9 @@ This checklist defines the Codex Game Studios v1.x compatibility boundary. It is
 - Path rules: 11
 - Static example project: `examples/spark-sprint/`
 - Smoke fixture: `tests/fixtures/empty-game/`
-- Windows and macOS platform docs: `docs/platforms/windows.md`, `docs/platforms/macos.md`
+- Windows, macOS, and CI platform docs: `docs/platforms/windows.md`, `docs/platforms/macos.md`, `docs/platforms/ci.md`
+- Codex Desktop, fallback, and upgrade docs: `docs/install/codex-desktop.md`, `docs/install/local-plugin.md`, `docs/install/upgrade.md`
+- Community contribution guide: `docs/community/contributing.md`
 
 ## Documentation Audit
 
@@ -2155,14 +2164,19 @@ Before a v1.x release, check these user-facing surfaces:
 - `AGENTS.md`: operating contract, validation checklist, role-card policy.
 - `docs/CODEX-MIGRATION-GUIDE.md`: migration direction and naming policy.
 - `docs/install/local-plugin.md`: discovery files and fallback prompts.
+- `docs/install/codex-desktop.md`: Codex Desktop setup, discovery, and fallback behavior.
+- `docs/install/upgrade.md`: update, tag checkout, and release maintainer steps.
 - `docs/install/field-test-2026-05-22.md`: current local plugin discovery field note.
 - `docs/hooks/runtime-hook-evaluation.md`: no-runtime-hooks decision and future adoption gate.
 - `docs/transcripts/concept-to-story.md`: concept-to-story demonstration.
 - `docs/transcripts/spark-sprint-codex-run.md`: realistic Spark Sprint Codex run.
 - `docs/examples/spark-sprint.md`: example prompt sequence.
 - `docs/getting-started/first-run.md`: Windows and macOS first-run guide.
+- `docs/getting-started/quick-start.md`: copy-paste Codex Desktop and fallback start path.
 - `docs/platforms/windows.md`: Windows setup and troubleshooting.
 - `docs/platforms/macos.md`: macOS setup and troubleshooting.
+- `docs/platforms/ci.md`: GitHub Actions matrix and local CI reproduction.
+- `docs/community/contributing.md`: contribution and issue-reporting expectations.
 - `docs/releases/`: release notes from `v0.1.0` through the current release.
 
 ## Validation Gate
@@ -2195,6 +2209,10 @@ python tools\\validate_plugin_install_docs.py
 python tools\\validate_hook_policy.py
 python tools\\validate_examples.py
 python tools\\validate_godot_example.py
+python tools\\validate_upstream_parity.py
+python tools\\validate_codex_native_skills.py
+python tools\\validate_testing_framework_paths.py
+python tools\\validate_user_docs.py
 python tools\\validate_workflow_polish.py
 python tools\\validate_v1_readiness.py
 python tools\\validate_cross_platform.py
@@ -2203,7 +2221,7 @@ python -m json.tool plugins\\codex-game-studios\\.codex-plugin\\plugin.json
 python -m json.tool .agents\\plugins\\marketplace.json
 ```
 
-GitHub Actions must run the same structural validators on Windows, macOS, and Linux, including `tools/validate_v1_readiness.py` and `tools/validate_cross_platform.py`.
+GitHub Actions must run the same structural validators on Windows, macOS, and Linux, including `tools/validate_v1_readiness.py`, `tools/validate_cross_platform.py`, and `tools/validate_user_docs.py`.
 
 ## Fresh Clone Gate
 
@@ -2230,7 +2248,7 @@ Any v1.x release is ready when:
 - The validation gate passes in GitHub Actions.
 - The fresh clone gate passes.
 - Open GitHub issues for `v1-readiness` are closed or explicitly deferred.
-- README, install docs, migration guide, release notes, validators, manifest, marketplace entry, and examples agree on the same public interfaces.
+- README, install docs, platform docs, community docs, migration guide, release notes, validators, manifest, marketplace entry, and examples agree on the same public interfaces.
 """,
     )
 
@@ -2256,6 +2274,8 @@ From PowerShell in the repository root:
 ```powershell
 python tools\\run_all_validators.py
 ```
+
+The same command is used by GitHub Actions through `docs/platforms/ci.md`.
 
 For release-maintainer checks that regenerate curated docs and metadata:
 
@@ -2289,6 +2309,7 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - Use the cloned repository root as the workspace. Do not depend on a machine-specific absolute path.
 - Backslash examples are for PowerShell. Forward-slash paths in prompts also work because Codex reads repository files, not shell paths.
 - If Godot 4.x is installed, `python tools\\validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.
+- For Codex Desktop setup and fallback prompts, see `docs/install/codex-desktop.md`.
 """,
     )
 
@@ -2327,6 +2348,8 @@ python3 tools/prepare_v01.py
 python3 tools/run_all_validators.py
 ```
 
+The same validator entrypoint is used by GitHub Actions through `docs/platforms/ci.md`.
+
 ## Use The Plugin
 
 Preferred path:
@@ -2351,6 +2374,7 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - The repo-local marketplace entry is `.agents/plugins/marketplace.json`.
 - If the Codex build does not expose repo-local plugin installation, use the path-based fallback prompts above.
 - If Godot 4.x is installed, `python3 tools/validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.
+- For Codex Desktop setup and fallback prompts, see `docs/install/codex-desktop.md`.
 """,
     )
 
@@ -2358,7 +2382,7 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
         ROOT / "docs" / "getting-started" / "first-run.md",
         """# First Run Guide
 
-This guide is the shortest path from a fresh clone to a useful Codex Game Studios session on Windows or macOS.
+This guide is the shortest path from a fresh clone to a useful Codex Game Studios session on Windows or macOS. For the shorter copy-paste version, see `docs/getting-started/quick-start.md`.
 
 ## 1. Open The Repository
 
@@ -2418,9 +2442,13 @@ Use $cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md. Inspect 
 
 ## 5. Platform References
 
+- Quick start: `docs/getting-started/quick-start.md`
+- Codex Desktop setup: `docs/install/codex-desktop.md`
 - Windows: `docs/platforms/windows.md`
 - macOS: `docs/platforms/macos.md`
+- CI: `docs/platforms/ci.md`
 - Plugin install and fallback behavior: `docs/install/local-plugin.md`
+- Upgrade guide: `docs/install/upgrade.md`
 
 ## Optional Spark Sprint Runtime Check
 
@@ -2439,6 +2467,208 @@ python tools/validate_godot_example.py
     )
 
 
+def write_user_docs() -> None:
+    write_text(
+        ROOT / "docs" / "getting-started" / "quick-start.md",
+        """# Quick Start
+
+This is the copy-paste path for Codex Desktop, the repo-local plugin, and the path-based fallback.
+
+## Validate
+
+Windows PowerShell:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+## Codex Desktop
+
+Open the repository root in Codex Desktop. If repo-local plugin discovery is visible, enable `codex-game-studios` and verify:
+
+```text
+Use $cgs-help and tell me the next Codex Game Studios step for this repository.
+```
+
+## Path-Based Fallback
+
+If `$cgs-start` is not recognized by name, use:
+
+```text
+Use the skill at plugins/codex-game-studios/skills/cgs-start/SKILL.md to set up this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKILL.md to audit this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for production/epics/core-loop/STORY-001-player-loop.md.
+```
+
+## First Workflow
+
+```text
+Use $cgs-start. I want to create a small game from scratch.
+```
+
+Related docs: `docs/install/codex-desktop.md`, `docs/install/local-plugin.md`, `docs/install/upgrade.md`, `docs/platforms/ci.md`, and `docs/community/contributing.md`.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "install" / "codex-desktop.md",
+        """# Codex Desktop Setup
+
+Open the repository root so Codex Desktop can see:
+
+```text
+.agents/plugins/marketplace.json
+plugins/codex-game-studios/.codex-plugin/plugin.json
+plugins/codex-game-studios/skills/
+AGENTS.md
+```
+
+Validate:
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+Windows:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+If repo-local plugin discovery is available, enable `codex-game-studios` and verify:
+
+```text
+Use $cgs-help and tell me the next Codex Game Studios step for this repository.
+```
+
+## Path-Based Fallback
+
+```text
+Use the skill at plugins/codex-game-studios/skills/cgs-start/SKILL.md to set up this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKILL.md to audit this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-gate-check/SKILL.md to review phase readiness.
+```
+
+Runtime hooks are intentionally not wired. Safety checks stay explicit through validators, skill instructions, and GitHub Actions.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "install" / "upgrade.md",
+        """# Upgrade Guide
+
+Check local work before updating:
+
+```bash
+git status --short
+```
+
+Update to latest main:
+
+```bash
+git fetch origin
+git pull --ff-only origin main
+git fetch --tags origin
+```
+
+Windows PowerShell:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+Update to a tag:
+
+```bash
+git fetch --tags origin
+git switch --detach v1.6.0
+python3 tools/run_all_validators.py
+```
+
+For maintainers: bump plugin metadata, validators, README, CHANGELOG, release notes, and the v1 readiness checklist; run validators; commit; tag; push main and the tag; verify the remote SHA.
+
+Do not copy legacy runtime hooks into the Codex plugin package.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "platforms" / "ci.md",
+        """# CI Usage
+
+The validation workflow lives at `.github/workflows/validate.yml`.
+
+It runs on:
+
+```text
+windows-latest
+macos-latest
+ubuntu-latest
+```
+
+The workflow installs Python 3.12 and runs:
+
+```bash
+python tools/run_all_validators.py
+```
+
+Local reproduction:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+Avoid POSIX-only shell assumptions in CI. Keep Godot optional and prefer explicit validators over hidden runtime behavior.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "community" / "contributing.md",
+        """# Contribution Guide
+
+Read `AGENTS.md`, `docs/v1-readiness/freeze-checklist.md`, `docs/upstream-parity.md`, and `docs/install/upgrade.md` before changing public behavior.
+
+Run:
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+Windows:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+Stable interfaces:
+
+- 73 skills under `plugins/codex-game-studios/skills/cgs-*/SKILL.md`
+- 49 role cards under `plugins/codex-game-studios/references/role-cards/`
+- 11 path rules under `plugins/codex-game-studios/references/rules/`
+- No runtime hooks in the plugin package
+
+For skill edits, keep frontmatter to exactly `name` and `description`, keep `cgs-` names, mention the original slash command and Codex skill name, and update testing specs when behavior changes.
+
+If a new user-facing doc path becomes required, add it to `tools/validate_user_docs.py`.
+""",
+    )
+
+
 def main() -> None:
     write_core_skills()
     update_plugin_metadata()
@@ -2450,6 +2680,7 @@ def main() -> None:
     write_example_project()
     write_v1_readiness_docs()
     write_platform_docs()
+    write_user_docs()
     print(f"Prepared v{RELEASE_VERSION} curated skills, plugin metadata, and empty-game fixture")
 
 

@@ -17,6 +17,8 @@ REQUIRED_TOKENS = [
     "plugins/codex-game-studios/.codex-plugin/plugin.json",
     "plugins/codex-game-studios/skills/",
     "docs/install/field-test-2026-05-22.md",
+    "docs/install/codex-desktop.md",
+    "docs/install/upgrade.md",
     "docs/platforms/windows.md",
     "docs/platforms/macos.md",
     "$cgs-start",
@@ -26,6 +28,7 @@ REQUIRED_TOKENS = [
     "python tools\\run_all_validators.py",
     "python3 tools/run_all_validators.py",
     "runtime hooks",
+    "Upgrade Path",
 ]
 
 FIELD_TEST_TOKENS = [

@@ -31,6 +31,8 @@ python3 tools/prepare_v01.py
 python3 tools/run_all_validators.py
 ```
 
+The same validator entrypoint is used by GitHub Actions through `docs/platforms/ci.md`.
+
 ## Use The Plugin
 
 Preferred path:
@@ -55,3 +57,4 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - The repo-local marketplace entry is `.agents/plugins/marketplace.json`.
 - If the Codex build does not expose repo-local plugin installation, use the path-based fallback prompts above.
 - If Godot 4.x is installed, `python3 tools/validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.
+- For Codex Desktop setup and fallback prompts, see `docs/install/codex-desktop.md`.

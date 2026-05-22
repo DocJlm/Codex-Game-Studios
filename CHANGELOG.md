@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.6.0 - 2026-05-22
+
+- Added Codex Desktop, upgrade, CI, quick-start, and contribution documentation.
+- Linked the user setup path across README, first-run, platform, install, and v1 readiness docs.
+- Added `tools/validate_user_docs.py` and wired it into `tools/run_all_validators.py`.
+- Bumped plugin metadata to `1.6.0`.
+
 ## v1.5.0 - 2026-05-22
 
 - Replaced stale testing framework root path references with repo-local `plugins/codex-game-studios/references/testing-framework/...` paths.

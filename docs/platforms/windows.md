@@ -17,6 +17,8 @@ From PowerShell in the repository root:
 python tools\run_all_validators.py
 ```
 
+The same command is used by GitHub Actions through `docs/platforms/ci.md`.
+
 For release-maintainer checks that regenerate curated docs and metadata:
 
 ```powershell
@@ -49,3 +51,4 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - Use the cloned repository root as the workspace. Do not depend on a machine-specific absolute path.
 - Backslash examples are for PowerShell. Forward-slash paths in prompts also work because Codex reads repository files, not shell paths.
 - If Godot 4.x is installed, `python tools\validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.
+- For Codex Desktop setup and fallback prompts, see `docs/install/codex-desktop.md`.

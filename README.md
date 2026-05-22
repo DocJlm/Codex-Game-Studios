@@ -15,9 +15,11 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40 | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 18 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
+| Validation scripts | 19 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_user_docs.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
 
 ## Quick Start
+
+For the copy-paste first session path, see `docs/getting-started/quick-start.md`.
 
 1. Open this repository in Codex.
 2. Install or enable the repo-local plugin from `.agents/plugins/marketplace.json` if your Codex build exposes local plugin installation.
@@ -69,6 +71,8 @@ python tools/run_all_validators.py
 Platform notes:
 - Windows: `docs/platforms/windows.md`
 - macOS: `docs/platforms/macos.md`
+- CI: `docs/platforms/ci.md`
+- Quick start: `docs/getting-started/quick-start.md`
 - First run guide: `docs/getting-started/first-run.md`
 
 ## Command Mapping
@@ -157,7 +161,11 @@ See `docs/examples/spark-sprint.md` for the prompt sequence.
 
 ## Plugin Install UX
 
-Local plugin installation depends on the Codex build you are using. The supported discovery files and fallback prompts are documented in `docs/install/local-plugin.md`. The current dated field note is `docs/install/field-test-2026-05-22.md`.
+Local plugin installation depends on the Codex build you are using. The supported Codex Desktop path is documented in `docs/install/codex-desktop.md`; discovery files and fallback prompts are documented in `docs/install/local-plugin.md`; upgrade steps are documented in `docs/install/upgrade.md`. The current dated field note is `docs/install/field-test-2026-05-22.md`.
+
+## Community
+
+Contribution and issue-reporting expectations are documented in `docs/community/contributing.md`.
 
 ## v1 Readiness
 
@@ -177,6 +185,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.6.0`: Codex Desktop, upgrade, CI, quick-start, and contribution docs with user-doc validation. See `docs/releases/v1.6.0.md`.
 - `v1.5.0`: repo-local testing framework path cleanup and validator. See `docs/releases/v1.5.0.md`.
 - `v1.4.0`: Codex-native migration pass for the remaining full-migration skills. See `docs/releases/v1.4.0.md`.
 - `v1.3.0`: upstream parity report and validator. See `docs/releases/v1.3.0.md`.

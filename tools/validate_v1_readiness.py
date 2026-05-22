@@ -31,19 +31,27 @@ REQUIRED_DOC_TOKENS = [
     "Windows and macOS",
     "python tools\\validate_v1_readiness.py",
     "python tools\\validate_cross_platform.py",
+    "python tools\\validate_user_docs.py",
     "python tools/run_all_validators.py",
+    "docs/getting-started/quick-start.md",
+    "docs/install/codex-desktop.md",
+    "docs/install/upgrade.md",
+    "docs/platforms/ci.md",
+    "docs/community/contributing.md",
 ]
 
 REQUIRED_README_TOKENS = [
     "docs/v1-readiness/freeze-checklist.md",
     "tools/run_all_validators.py",
     "tools/validate_cross_platform.py",
+    "tools/validate_user_docs.py",
 ]
 
 REQUIRED_AGENTS_TOKENS = [
     "docs/v1-readiness/freeze-checklist.md",
     "tools\\validate_v1_readiness.py",
     "tools\\validate_cross_platform.py",
+    "tools\\validate_user_docs.py",
 ]
 
 LEGACY_RUNTIME_TOKENS = [
@@ -86,6 +94,8 @@ def main() -> int:
         errors.append("GitHub Actions workflow missing cross-platform validator runner")
     if "python tools/validate_v1_readiness.py" not in workflow and "python tools/run_all_validators.py" not in workflow:
         errors.append("GitHub Actions workflow missing v1 readiness validator")
+    if "python tools/validate_user_docs.py" not in workflow and "python tools/run_all_validators.py" not in workflow:
+        errors.append("GitHub Actions workflow missing user docs validator")
 
     for token in LEGACY_RUNTIME_TOKENS:
         if token in doc:

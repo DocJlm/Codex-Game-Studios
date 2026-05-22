@@ -16,8 +16,10 @@ V1 = ROOT / "docs" / "v1-readiness" / "freeze-checklist.md"
 WINDOWS = ROOT / "docs" / "platforms" / "windows.md"
 MACOS = ROOT / "docs" / "platforms" / "macos.md"
 GETTING_STARTED = ROOT / "docs" / "getting-started" / "first-run.md"
+QUICK_START = ROOT / "docs" / "getting-started" / "quick-start.md"
+CI = ROOT / "docs" / "platforms" / "ci.md"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
-RELEASE = ROOT / "docs" / "releases" / "v1.5.0.md"
+RELEASE = ROOT / "docs" / "releases" / "v1.6.0.md"
 
 DOCS_TO_SCAN_FOR_ABSOLUTE_WINDOWS_PATHS = [
     README,
@@ -27,6 +29,8 @@ DOCS_TO_SCAN_FOR_ABSOLUTE_WINDOWS_PATHS = [
     WINDOWS,
     MACOS,
     GETTING_STARTED,
+    QUICK_START,
+    CI,
 ]
 
 REQUIRED_TOKENS = {
@@ -36,6 +40,8 @@ REQUIRED_TOKENS = {
         "python tools\\run_all_validators.py",
         "docs/platforms/windows.md",
         "docs/platforms/macos.md",
+        "docs/platforms/ci.md",
+        "docs/getting-started/quick-start.md",
         "docs/getting-started/first-run.md",
         "plugins/codex-game-studios/skills/cgs-start/SKILL.md",
     ],
@@ -47,6 +53,7 @@ REQUIRED_TOKENS = {
     LOCAL_PLUGIN: [
         "Windows",
         "macOS",
+        "docs/platforms/ci.md",
         "python tools/run_all_validators.py",
         "python tools\\run_all_validators.py",
         "Fallback Path",
@@ -61,12 +68,14 @@ REQUIRED_TOKENS = {
         "# Windows Usage",
         "PowerShell",
         "python tools\\run_all_validators.py",
+        "docs/platforms/ci.md",
         "plugins/codex-game-studios/skills/cgs-start/SKILL.md",
     ],
     MACOS: [
         "# macOS Usage",
         "zsh",
         "python3 tools/run_all_validators.py",
+        "docs/platforms/ci.md",
         "plugins/codex-game-studios/skills/cgs-start/SKILL.md",
     ],
     GETTING_STARTED: [
@@ -76,13 +85,29 @@ REQUIRED_TOKENS = {
         "$cgs-start",
         "$cgs-project-stage-detect",
         "$cgs-dev-story",
+        "docs/getting-started/quick-start.md",
+    ],
+    QUICK_START: [
+        "# Quick Start",
+        "Codex Desktop",
+        "repo-local plugin",
+        "path-based fallback",
+        "python tools\\run_all_validators.py",
+        "python3 tools/run_all_validators.py",
+    ],
+    CI: [
+        "# CI Usage",
+        "windows-latest",
+        "macos-latest",
+        "ubuntu-latest",
+        "python tools/run_all_validators.py",
     ],
     RELEASE: [
-        "# Codex Game Studios v1.5.0",
+        "# Codex Game Studios v1.6.0",
         "Windows",
         "macOS",
         "tools/run_all_validators.py",
-        "tools/validate_godot_example.py",
+        "tools/validate_user_docs.py",
     ],
 }
 

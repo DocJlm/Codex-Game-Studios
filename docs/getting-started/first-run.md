@@ -1,6 +1,6 @@
 # First Run Guide
 
-This guide is the shortest path from a fresh clone to a useful Codex Game Studios session on Windows or macOS.
+This guide is the shortest path from a fresh clone to a useful Codex Game Studios session on Windows or macOS. For the shorter copy-paste version, see `docs/getting-started/quick-start.md`.
 
 ## 1. Open The Repository
 
@@ -60,9 +60,13 @@ Use $cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md. Inspect 
 
 ## 5. Platform References
 
+- Quick start: `docs/getting-started/quick-start.md`
+- Codex Desktop setup: `docs/install/codex-desktop.md`
 - Windows: `docs/platforms/windows.md`
 - macOS: `docs/platforms/macos.md`
+- CI: `docs/platforms/ci.md`
 - Plugin install and fallback behavior: `docs/install/local-plugin.md`
+- Upgrade guide: `docs/install/upgrade.md`
 
 ## Optional Spark Sprint Runtime Check
 

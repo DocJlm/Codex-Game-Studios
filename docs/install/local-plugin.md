@@ -3,7 +3,10 @@
 This guide describes how to use Codex Game Studios as a repo-local Codex plugin, and what to do when the current Codex build does not expose local plugin installation in the UI.
 
 For a dated local field test, see `docs/install/field-test-2026-05-22.md`.
+For Codex Desktop setup, see `docs/install/codex-desktop.md`.
+For upgrades, see `docs/install/upgrade.md`.
 For platform-specific setup, see `docs/platforms/windows.md` and `docs/platforms/macos.md`.
+For CI reproduction, see `docs/platforms/ci.md`.
 
 ## Files Codex Should Discover
 
@@ -70,6 +73,10 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 ```
 
 This is the same workflow content. It only bypasses plugin discovery.
+
+## Upgrade Path
+
+When updating an existing clone, follow `docs/install/upgrade.md` before debugging plugin discovery. Most install issues after an upgrade are either stale Codex Desktop discovery state or a local working tree that did not actually pull the new plugin metadata.
 
 ## Local Validation
 
