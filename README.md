@@ -126,6 +126,7 @@ The migration script expects the upstream checkout at `D:\Git\Claude-Code-Game-S
 It is intentionally small and does not contain a real game implementation. See `tests/fixtures/empty-game/WALKTHROUGH.md` for expected output shape.
 
 For a fuller concept-to-story demonstration, see `docs/transcripts/concept-to-story.md`.
+For a realistic Spark Sprint Codex pass, see `docs/transcripts/spark-sprint-codex-run.md`.
 
 ## Examples
 
@@ -147,6 +148,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v0.8.0`: realistic Spark Sprint Codex run transcript. See `docs/releases/v0.8.0.md`.
 - `v0.7.0`: second-batch production workflow polish. See `docs/releases/v0.7.0.md`.
 - `v0.6.0`: static Spark Sprint example project and example validation. See `docs/releases/v0.6.0.md`.
 - `v0.5.0`: runtime hook evaluation and no-hook policy validation. See `docs/releases/v0.5.0.md`.

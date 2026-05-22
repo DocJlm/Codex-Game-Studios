@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.8.0 - 2026-05-22
+
+- Added `docs/transcripts/spark-sprint-codex-run.md`, a realistic Codex pass through the Spark Sprint example.
+- Linked the transcript from `docs/examples/spark-sprint.md` and the README.
+- Extended transcript and example validation so the v0.8 transcript is CI-covered.
+- Bumped regenerated plugin metadata to `0.8.0`.
+
 ## v0.7.0 - 2026-05-22
 
 - Polished second-batch production workflows: `$cgs-story-readiness`, `$cgs-scope-check`, `$cgs-test-evidence-review`, `$cgs-regression-suite`, and `$cgs-release-checklist`.

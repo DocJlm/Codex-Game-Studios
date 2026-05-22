@@ -8,6 +8,12 @@ Example path:
 examples/spark-sprint/
 ```
 
+Realistic Codex run transcript:
+
+```text
+docs/transcripts/spark-sprint-codex-run.md
+```
+
 Suggested prompt sequence:
 
 ```text

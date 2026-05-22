@@ -110,6 +110,9 @@ def main() -> int:
         if skill not in doc_text:
             errors.append(f"docs example missing {skill}")
 
+    if "docs/transcripts/spark-sprint-codex-run.md" not in doc_text:
+        errors.append("docs example missing Spark Sprint transcript link")
+
     for relative, tokens in SOURCE_TOKENS.items():
         text = read(relative, errors)
         for token in tokens:

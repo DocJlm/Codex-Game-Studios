@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 TRANSCRIPT = ROOT / "docs" / "transcripts" / "concept-to-story.md"
+SPARK_SPRINT_TRANSCRIPT = ROOT / "docs" / "transcripts" / "spark-sprint-codex-run.md"
 WORKFLOW_NOTES = ROOT / "docs" / "workflows" / "high-frequency-workflows.md"
 
 REQUIRED_SKILLS = [
@@ -51,6 +52,7 @@ def check_file(path: Path, errors: list[str]) -> str:
 def main() -> int:
     errors: list[str] = []
     transcript = check_file(TRANSCRIPT, errors)
+    spark_sprint = check_file(SPARK_SPRINT_TRANSCRIPT, errors)
     notes = check_file(WORKFLOW_NOTES, errors)
 
     for skill in REQUIRED_SKILLS:
@@ -60,6 +62,30 @@ def main() -> int:
     for token in ["Expected Codex shape", "Files updated", "Verdict", "Evidence"]:
         if token not in transcript:
             errors.append(f"transcript missing token: {token}")
+
+    for skill in [
+        "$cgs-start",
+        "$cgs-project-stage-detect",
+        "$cgs-dev-story",
+        "$cgs-smoke-check",
+        "$cgs-story-done",
+        "$cgs-code-review",
+        "$cgs-qa-plan",
+    ]:
+        if skill not in spark_sprint:
+            errors.append(f"spark sprint transcript missing {skill}")
+
+    for token in [
+        "examples/spark-sprint/",
+        "Verdict: PRODUCTION",
+        "Files updated: none",
+        "python tools\\validate_examples.py",
+        "Manual checks remaining",
+        "No Godot runtime test was executed",
+        "Final State",
+    ]:
+        if token not in spark_sprint:
+            errors.append(f"spark sprint transcript missing token: {token}")
 
     for skill in ["$cgs-code-review", "$cgs-qa-plan", "$cgs-smoke-check"]:
         if skill not in notes:
@@ -73,6 +99,7 @@ def main() -> int:
 
     print("Transcript validation passed")
     print(f"- transcript: {TRANSCRIPT.relative_to(ROOT).as_posix()}")
+    print(f"- spark sprint transcript: {SPARK_SPRINT_TRANSCRIPT.relative_to(ROOT).as_posix()}")
     print(f"- workflow notes: {WORKFLOW_NOTES.relative_to(ROOT).as_posix()}")
     return 0
 
