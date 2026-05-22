@@ -34,6 +34,7 @@ python tools\validate_transcripts.py
 python tools\validate_plugin_install_docs.py
 python tools\validate_hook_policy.py
 python tools\validate_examples.py
+python tools\validate_workflow_polish.py
 python tools\scan_legacy_tokens.py
 ```
 

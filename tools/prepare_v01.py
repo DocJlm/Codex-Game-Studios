@@ -12,7 +12,7 @@ PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 EXAMPLE = ROOT / "examples" / "spark-sprint"
-RELEASE_VERSION = "0.6.0"
+RELEASE_VERSION = "0.7.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -218,15 +218,22 @@ Use `$cgs-story-readiness` before `$cgs-dev-story` or when a story feels ambiguo
 
 ## Procedure
 
-1. Read the target story, its epic, linked GDDs, ADRs, and control manifest.
-2. Check scope, acceptance criteria, dependencies, assets, testability, and missing decisions.
-3. Do not edit implementation files.
-4. If blocked, provide the smallest question or upstream doc change needed.
+1. Read exactly one target story plus its epic, linked GDDs, ADRs, control manifest, and available test notes.
+2. Check implementation scope, acceptance criteria, dependencies, required assets, data readiness, testability, and unresolved decisions.
+3. Inspect relevant source only to confirm existing context; do not edit implementation files.
+4. Identify the smallest unblocker: one question, one upstream doc fix, or one dependency to finish.
+5. If ready, name the first `$cgs-dev-story` implementation focus and the tests that should prove it.
+
+## Readiness Rules
+
+- `READY`: scope is bounded, criteria are testable, dependencies are available, and the next implementation step is clear.
+- `NEEDS WORK`: story can be fixed locally by clarifying criteria, narrowing scope, or adding missing test notes.
+- `BLOCKED`: implementation depends on missing design, architecture, asset, engine, or product decisions.
 
 ## Output Contract
 
 Return verdict: `READY`, `NEEDS WORK`, or `BLOCKED`.
-Include evidence and next action.
+Include evidence paths, blockers, smallest next action, and recommended next skill.
 """,
     ),
     "dev-story": (
@@ -400,6 +407,109 @@ Use `$cgs-ux-design` when the user needs player-facing UX for menus, HUD, onboar
 ## Output Contract
 
 Return flow outline, state list, interaction notes, accessibility checks, and implementation handoff notes.
+""",
+    ),
+    "scope-check": (
+        "Detect scope creep by comparing a story, epic, sprint, or milestone against its baseline plan.",
+        """# CGS Scope Check
+
+Use `$cgs-scope-check` when the user asks whether a story, epic, sprint, milestone, or feature has drifted from the approved plan.
+
+## Procedure
+
+1. Identify the baseline: story, epic, sprint plan, milestone, GDD, or architecture document.
+2. Inspect current implementation, open story notes, changed files, and relevant commits when available.
+3. Compare planned items to current items; separate additions, removals, and substitutions.
+4. Classify each change as required discovery, optional polish, accidental creep, or formal re-scope.
+5. Recommend cuts or deferrals that preserve the player-facing core loop.
+
+## Verdict Rules
+
+- `PASS`: net change is small and acceptance criteria remain intact.
+- `CONCERNS`: additions are manageable but need explicit cuts, deferrals, or owner approval.
+- `FAIL`: scope no longer matches the baseline and needs re-planning before more implementation.
+
+## Output Contract
+
+Return baseline evidence, current evidence, additions, removals, risk, verdict, and the smallest re-scope action.
+Do not edit planning or implementation files unless the user explicitly asks.
+""",
+    ),
+    "test-evidence-review": (
+        "Review whether test files and manual evidence are strong enough to support story or milestone closure.",
+        """# CGS Test Evidence Review
+
+Use `$cgs-test-evidence-review` before `$cgs-story-done`, QA handoff, milestone review, or release review when evidence quality matters.
+
+## Procedure
+
+1. Read the target story, epic, acceptance criteria, test plan, and referenced evidence files.
+2. Locate automated tests, smoke check notes, manual evidence, screenshots, transcripts, CI logs, or playtest notes.
+3. Map each acceptance criterion to at least one evidence item.
+4. Review evidence quality: meaningful assertions, edge cases, manual sign-off, freshness, and reproducibility.
+5. Keep the pass read-only unless the user asks to write a persistent review note.
+
+## Verdict Rules
+
+- `ADEQUATE`: every closure-critical criterion has credible evidence.
+- `INCOMPLETE`: evidence exists but is thin, stale, missing sign-off, or missing important edge cases.
+- `MISSING`: one or more closure-critical criteria have no evidence.
+
+## Output Contract
+
+Return scope, evidence table, criterion coverage, blocking gaps, advisory gaps, verdict, and next skill.
+Route missing implementation evidence to `$cgs-dev-story`; route missing smoke evidence to `$cgs-smoke-check`.
+""",
+    ),
+    "regression-suite": (
+        "Audit or maintain a regression-suite manifest for critical paths and fixed bugs.",
+        """# CGS Regression Suite
+
+Use `$cgs-regression-suite` when preparing a release, closing a sprint, or checking whether fixed bugs and critical paths have regression coverage.
+
+## Procedure
+
+1. Determine mode: `report` for read-only status, `audit` for full coverage review, or `update` when the user explicitly wants manifest changes.
+2. Read existing `tests/regression-suite.md` if present, then inspect tests, closed bugs, recent stories, GDD critical paths, and release notes.
+3. Map critical paths and fixed bugs to existing automated or manual regression evidence.
+4. Identify missing, partial, stale, flaky, and quarantined coverage.
+5. Write or update the manifest only after explicit user approval.
+
+## Coverage Rules
+
+- Critical gameplay state machines, formulas, save/load paths, and fixed severe bugs should have regression coverage.
+- Visual or feel checks can be manual, but must name evidence and owner.
+- Quarantined tests remain listed; they are not silently removed.
+
+## Output Contract
+
+Return mode, files scanned, coverage summary, missing regression tests, stale entries, recommended manifest changes, and verdict: `OK`, `GAPS`, or `STALE`.
+""",
+    ),
+    "release-checklist": (
+        "Create a focused release readiness checklist for one version and target platform set.",
+        """# CGS Release Checklist
+
+Use `$cgs-release-checklist` only when the user explicitly asks for a release checklist, launch checklist, or go/no-go preparation.
+
+## Procedure
+
+1. Identify version, platform targets, release type, and milestone scope; default platform to `all` only if the user did not specify one.
+2. Read milestone notes, release notes, known bugs, regression suite status, QA evidence, store/distribution notes, and CI/build evidence.
+3. Separate blockers from advisory launch risks.
+4. Include platform sections only for requested targets: PC, console, mobile, web, or custom.
+5. Offer to write `production/releases/release-checklist-<version>.md` only after the user approves the draft.
+
+## Gate Rules
+
+- `READY`: no known blocker, build/test evidence exists, and sign-off owners are named.
+- `READY WITH RISKS`: launch is possible but explicit risk acceptance is required.
+- `NOT READY`: blocker bugs, missing build evidence, missing regression coverage, or missing required release assets.
+
+## Output Contract
+
+Return release scope, blocker list, checklist grouped by build/QA/content/store/ops/sign-off, go-no-go verdict, and next skill.
+Recommend `$cgs-gate-check` or `$cgs-team-release` for final approval.
 """,
     ),
 }
@@ -817,6 +927,71 @@ Minimum useful output:
 - Manual checks remaining.
 - Reproduction details for failures.
 - Next fix or verification step.
+""",
+    )
+
+
+def write_workflow_polish_docs() -> None:
+    write_text(
+        ROOT / "docs" / "workflows" / "production-readiness-workflows.md",
+        """# Production Readiness Workflow Notes
+
+These notes document the v0.7 polish targets for workflows used around story readiness, scope control, evidence review, regression coverage, and release readiness.
+
+## `$cgs-story-readiness`
+
+Use before implementation starts. The skill should decide whether one story is implementable now, not redesign the story or edit code.
+
+Minimum useful output:
+- Verdict: `READY`, `NEEDS WORK`, or `BLOCKED`.
+- Evidence paths.
+- Blocking decisions or dependencies.
+- Smallest next action.
+- Recommended next skill.
+
+## `$cgs-scope-check`
+
+Use when a story, epic, sprint, milestone, or feature may have drifted from its baseline. The skill should compare planned scope to current state and recommend cuts or formal re-scope.
+
+Minimum useful output:
+- Baseline evidence.
+- Current evidence.
+- Additions and removals.
+- Schedule, quality, and integration risk.
+- Verdict: `PASS`, `CONCERNS`, or `FAIL`.
+
+## `$cgs-test-evidence-review`
+
+Use before story closure, QA handoff, milestone review, or release review. The skill should map acceptance criteria to actual evidence and flag closure blockers.
+
+Minimum useful output:
+- Evidence table.
+- Criterion coverage.
+- Blocking gaps and advisory gaps.
+- Verdict: `ADEQUATE`, `INCOMPLETE`, or `MISSING`.
+- Routing to `$cgs-dev-story` or `$cgs-smoke-check` when evidence is absent.
+
+## `$cgs-regression-suite`
+
+Use before release gates, sprint close, or after bug fixes. The skill should report or update the regression-suite manifest only with explicit approval.
+
+Minimum useful output:
+- Mode: `report`, `audit`, or `update`.
+- Critical-path and bug-fix coverage summary.
+- Missing, partial, stale, flaky, and quarantined coverage.
+- Recommended manifest changes.
+- Verdict: `OK`, `GAPS`, or `STALE`.
+
+## `$cgs-release-checklist`
+
+Use only when explicitly requested for release readiness or go/no-go preparation. The skill should produce a focused checklist for a version and platform set.
+
+Minimum useful output:
+- Release scope and target platforms.
+- Blocker list.
+- Build, QA, content, store, ops, and sign-off checklist.
+- Verdict: `READY`, `READY WITH RISKS`, or `NOT READY`.
+- Routing to `$cgs-gate-check` or `$cgs-team-release`.
 """,
     )
 
@@ -1433,6 +1608,7 @@ def main() -> None:
     update_plugin_metadata()
     write_fixture()
     write_transcripts()
+    write_workflow_polish_docs()
     write_install_docs()
     write_hook_policy_docs()
     write_example_project()

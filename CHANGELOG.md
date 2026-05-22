@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.7.0 - 2026-05-22
+
+- Polished second-batch production workflows: `$cgs-story-readiness`, `$cgs-scope-check`, `$cgs-test-evidence-review`, `$cgs-regression-suite`, and `$cgs-release-checklist`.
+- Added `docs/workflows/production-readiness-workflows.md` with expected output contracts.
+- Added `tools/validate_workflow_polish.py` and wired it into CI.
+- Bumped regenerated plugin metadata to `0.7.0`.
+
 ## v0.6.0 - 2026-05-22
 
 - Added the static `examples/spark-sprint/` Godot 4.3 / GDScript-style example project.

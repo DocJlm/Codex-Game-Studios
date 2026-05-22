@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 10 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/validate_plugin_install_docs.py`, `tools/validate_hook_policy.py`, `tools/validate_examples.py`, `tools/scan_legacy_tokens.py` |
+| Validation scripts | 11 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/validate_plugin_install_docs.py`, `tools/validate_hook_policy.py`, `tools/validate_examples.py`, `tools/validate_workflow_polish.py`, `tools/scan_legacy_tokens.py` |
 
 ## Quick Start
 
@@ -92,6 +92,7 @@ python tools\validate_transcripts.py
 python tools\validate_plugin_install_docs.py
 python tools\validate_hook_policy.py
 python tools\validate_examples.py
+python tools\validate_workflow_polish.py
 python tools\scan_legacy_tokens.py
 ```
 
@@ -107,6 +108,7 @@ python tools\validate_transcripts.py
 python tools\validate_plugin_install_docs.py
 python tools\validate_hook_policy.py
 python tools\validate_examples.py
+python tools\validate_workflow_polish.py
 python tools\scan_legacy_tokens.py
 ```
 
@@ -145,6 +147,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v0.7.0`: second-batch production workflow polish. See `docs/releases/v0.7.0.md`.
 - `v0.6.0`: static Spark Sprint example project and example validation. See `docs/releases/v0.6.0.md`.
 - `v0.5.0`: runtime hook evaluation and no-hook policy validation. See `docs/releases/v0.5.0.md`.
 - `v0.4.0`: local plugin install UX and fallback documentation. See `docs/releases/v0.4.0.md`.
