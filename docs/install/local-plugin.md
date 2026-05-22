@@ -2,6 +2,8 @@
 
 This guide describes how to use Codex Game Studios as a repo-local Codex plugin, and what to do when the current Codex build does not expose local plugin installation in the UI.
 
+For a dated local field test, see `docs/install/field-test-2026-05-22.md`.
+
 ## Files Codex Should Discover
 
 The repo-local marketplace entry is:

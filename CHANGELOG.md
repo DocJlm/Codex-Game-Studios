@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.9.0 - 2026-05-22
+
+- Added `docs/install/field-test-2026-05-22.md` with current local plugin discovery behavior, success signs, fallback signs, and reporting guidance.
+- Linked the field note from README and `docs/install/local-plugin.md`.
+- Extended plugin install documentation validation to cover the field note.
+- Bumped regenerated plugin metadata to `0.9.0`.
+
 ## v0.8.0 - 2026-05-22
 
 - Added `docs/transcripts/spark-sprint-codex-run.md`, a realistic Codex pass through the Spark Sprint example.

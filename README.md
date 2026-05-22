@@ -136,7 +136,7 @@ See `docs/examples/spark-sprint.md` for the prompt sequence.
 
 ## Plugin Install UX
 
-Local plugin installation depends on the Codex build you are using. The supported discovery files and fallback prompts are documented in `docs/install/local-plugin.md`.
+Local plugin installation depends on the Codex build you are using. The supported discovery files and fallback prompts are documented in `docs/install/local-plugin.md`. The current dated field note is `docs/install/field-test-2026-05-22.md`.
 
 ## Hook Policy
 
@@ -148,6 +148,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v0.9.0`: local plugin discovery field test notes. See `docs/releases/v0.9.0.md`.
 - `v0.8.0`: realistic Spark Sprint Codex run transcript. See `docs/releases/v0.8.0.md`.
 - `v0.7.0`: second-batch production workflow polish. See `docs/releases/v0.7.0.md`.
 - `v0.6.0`: static Spark Sprint example project and example validation. See `docs/releases/v0.6.0.md`.

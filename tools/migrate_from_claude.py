@@ -223,7 +223,7 @@ def transform_text_tree(root: Path) -> None:
 def write_manifest_files() -> None:
     plugin_json = {
         "name": "codex-game-studios",
-        "version": "0.8.0",
+        "version": "0.9.0",
         "description": "Codex plugin and project template for structured solo and small-team game development workflows.",
         "author": {
             "name": "DocJlm",
