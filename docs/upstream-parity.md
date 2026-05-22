@@ -1,0 +1,49 @@
+# Upstream Parity Report
+
+Checked on 2026-05-22 against `https://github.com/Donchitos/Claude-Code-Game-Studios` at commit `984023ddac0d5e27624f2baacde6105e45de375f`.
+
+This report tracks capability parity, not byte-for-byte runtime parity. Codex Game Studios keeps the studio workflow, roles, templates, rules, examples, and checks, but adapts invocation and safety behavior to Codex-native skills and explicit validators. The runtime policy remains `no-runtime-hooks`.
+
+## Surface Matrix
+
+| Upstream surface | Upstream count | Codex-native surface | Local count | Status |
+| --- | ---: | --- | ---: | --- |
+| `.claude/skills/<name>/SKILL.md` | 73 | `plugins/codex-game-studios/skills/cgs-<name>/SKILL.md` | 73 | Complete, exact name set with `cgs-` prefix |
+| `.claude/agents/*.md` | 49 | `plugins/codex-game-studios/references/role-cards/*.md` | 49 | Complete, exact role-card name set |
+| `.claude/rules/*.md` | 11 | `plugins/codex-game-studios/references/rules/*.md` | 11 | Complete, exact filename set |
+| `.claude/docs/templates/*.md` | 40 | `plugins/codex-game-studios/assets/templates/*.md` | 40 | Complete, exact relative path set |
+| `.claude/hooks/*.sh` | 12 | Reference scripts plus explicit validators and skill instructions | 12 reference scripts | Complete as non-runtime parity |
+| `.claude/docs/*.md` and `workflow-catalog.yaml` | 22 docs plus templates | `plugins/codex-game-studios/references/studio-docs/` | Mirrored reference set | Complete as reference material |
+| `CCGS Skill Testing Framework/` | 126 Markdown specs/docs | `plugins/codex-game-studios/references/testing-framework/` | Mirrored reference set | Present, path cleanup planned for v1.5.0 |
+
+## Template Count Evidence
+
+The upstream README currently advertises 41 templates, but the checked upstream tree contains 40 Markdown files under `.claude/docs/templates/`. The Codex-native tree has the same 40 relative template paths under `plugins/codex-game-studios/assets/templates/`.
+
+Codex Game Studios therefore documents the public template count as 40 for now. If upstream later adds a real 41st template file, the next parity pass should copy or adapt it and update the count.
+
+## Hook Intent Mapping
+
+Codex Game Studios intentionally does not install Claude runtime hooks. The 12 upstream hook scripts are preserved under `plugins/codex-game-studios/scripts/checks/legacy-claude-hooks/` for review, while safety behavior is handled through visible commands, CI, and skill instructions.
+
+| Upstream hook | Codex-native replacement |
+| --- | --- |
+| `validate-commit.sh` | `python3 tools/run_all_validators.py`, `$cgs-code-review`, and project-specific tests before committing |
+| `validate-push.sh` | GitHub Actions `Validate` workflow, release protocol checks, and explicit `git ls-remote` verification after push |
+| `validate-assets.sh` | Path rules, asset-focused skills such as `$cgs-asset-spec` and `$cgs-asset-audit`, plus project-specific asset validators |
+| `validate-skill-change.sh` | `tools/validate_skills.py`, `tools/validate_upstream_parity.py`, and `$cgs-skill-test` guidance |
+| `detect-gaps.sh` | `$cgs-start`, `$cgs-project-stage-detect`, and smoke fixture validation |
+| `session-start.sh` | `AGENTS.md`, `$cgs-help`, and explicit repo inspection at workflow start |
+| `session-stop.sh` | `$cgs-story-done`, release notes, changelog, and visible git status checks |
+| `pre-compact.sh` | `plugins/codex-game-studios/references/studio-docs/context-management.md` and explicit handoff notes |
+| `post-compact.sh` | `AGENTS.md`, current git state, and workflow-specific skill entrypoints |
+| `notify.sh` | Codex UI notifications or user-controlled desktop notifications outside the plugin package |
+| `log-agent.sh` | Role-card review notes in the assistant response or project docs when a workflow asks for role reviews |
+| `log-agent-stop.sh` | Same as `log-agent.sh`; no automatic subagent audit trail is assumed |
+
+## Remaining Parity Work
+
+- v1.4.0 should turn the remaining 50 full-migration skills into concise Codex-native workflows.
+- v1.5.0 should rewrite stale `CCGS Skill Testing Framework/...` references to repo-local paths and validate that they do not regress.
+- v1.6.0 should round out user-facing install, upgrade, community, and contribution documentation for Codex Desktop users.
+- v1.7.0 should deepen executable examples and smoke evidence across the main workflow loop.

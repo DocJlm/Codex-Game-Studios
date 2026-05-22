@@ -17,7 +17,7 @@ WINDOWS = ROOT / "docs" / "platforms" / "windows.md"
 MACOS = ROOT / "docs" / "platforms" / "macos.md"
 GETTING_STARTED = ROOT / "docs" / "getting-started" / "first-run.md"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
-RELEASE = ROOT / "docs" / "releases" / "v1.2.1.md"
+RELEASE = ROOT / "docs" / "releases" / "v1.3.0.md"
 
 DOCS_TO_SCAN_FOR_ABSOLUTE_WINDOWS_PATHS = [
     README,
@@ -78,7 +78,7 @@ REQUIRED_TOKENS = {
         "$cgs-dev-story",
     ],
     RELEASE: [
-        "# Codex Game Studios v1.2.1",
+        "# Codex Game Studios v1.3.0",
         "Windows",
         "macOS",
         "tools/run_all_validators.py",

@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.3.0 - 2026-05-22
+
+- Added `docs/upstream-parity.md` with a checked upstream commit, surface-count matrix, template-count evidence, and hook-intent mapping.
+- Added `tools/validate_upstream_parity.py` and wired it into `tools/run_all_validators.py`.
+- Clarified README template count as the 40 Markdown templates present in both the upstream tree and the Codex-native template assets.
+- Bumped plugin metadata to `1.3.0`.
+
 ## v1.2.1 - 2026-05-22
 
 - Fixed the runnable Spark Sprint Godot scene load by avoiding typed node references that are unavailable without `class_name` registration.

@@ -13,9 +13,9 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Skills | 73 | `plugins/codex-game-studios/skills/cgs-*/SKILL.md` |
 | Role cards | 49 | `plugins/codex-game-studios/references/role-cards/` |
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
-| Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
+| Templates | 40 | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 15 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
+| Validation scripts | 16 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
 
 ## Quick Start
 
@@ -167,12 +167,17 @@ The frozen public interfaces and release gates are documented in `docs/v1-readin
 
 Claude hooks are not installed as Codex runtime hooks. Legacy hook scripts are preserved under `plugins/codex-game-studios/scripts/checks/legacy-claude-hooks/` for reference only. Safety behavior is handled by explicit validation scripts and skill instructions. See `docs/hooks/runtime-hook-evaluation.md` for the current decision and future adoption gate.
 
+## Upstream Parity
+
+The current upstream parity snapshot is documented in `docs/upstream-parity.md`. It records the checked upstream commit, surface counts, template-count evidence, and the Codex-native replacement for each upstream hook intent.
+
 ## License
 
 MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.3.0`: upstream parity report and validator. See `docs/releases/v1.3.0.md`.
 - `v1.2.1`: Godot runtime validation hardening for Spark Sprint. See `docs/releases/v1.2.1.md`.
 - `v1.2.0`: optional runnable Spark Sprint Godot example. See `docs/releases/v1.2.0.md`.
 - `v1.1.0`: Windows and macOS cross-platform validation and usage docs. See `docs/releases/v1.1.0.md`.

@@ -2,6 +2,8 @@
 
 This guide explains how the upstream Claude Code Game Studios layout maps to Codex Game Studios.
 
+For the current checked parity snapshot, see `docs/upstream-parity.md`.
+
 ## Runtime Mapping
 
 | Upstream concept | Codex adaptation |
