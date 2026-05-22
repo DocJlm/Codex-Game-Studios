@@ -2,6 +2,14 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.6.0 - 2026-05-22
+
+- Added the static `examples/spark-sprint/` Godot 4.3 / GDScript-style example project.
+- Added `docs/examples/spark-sprint.md` with the example workflow prompt sequence.
+- Added `tools/validate_examples.py` and wired it into CI.
+- Extended legacy-token scanning to examples and example docs.
+- Bumped regenerated plugin metadata to `0.6.0`.
+
 ## v0.5.0 - 2026-05-22
 
 - Added runtime hook evaluation documentation in `docs/hooks/runtime-hook-evaluation.md`.

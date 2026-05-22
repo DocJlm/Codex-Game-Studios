@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
-RELEASE_VERSION = "0.5.0"
+EXAMPLE = ROOT / "examples" / "spark-sprint"
+RELEASE_VERSION = "0.6.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -1028,6 +1029,405 @@ Until then, `tools/validate_hook_policy.py` enforces the no-runtime-hooks policy
     )
 
 
+def write_example_project() -> None:
+    files = {
+        "README.md": """# Spark Sprint Example
+
+Spark Sprint is a static, Godot-style example project for Codex Game Studios v0.6. It is designed to demonstrate a realistic workflow loop without requiring Godot to be installed.
+
+Use it to exercise:
+
+1. `$cgs-start`
+2. `$cgs-project-stage-detect`
+3. `$cgs-dev-story`
+4. `$cgs-smoke-check`
+5. `$cgs-story-done`
+6. `$cgs-code-review`
+7. `$cgs-qa-plan`
+
+The source and tests are implementation drafts. They are intentionally readable and static-validation friendly; they are not a guaranteed runnable Godot project.
+""",
+        "AGENTS.md": """# Spark Sprint Agent Guide
+
+Use Codex Game Studios workflows for this example.
+Treat files as a static demonstration project unless the user explicitly asks to turn it into a runnable Godot project.
+Do not require a local Godot installation for validation.
+""",
+        "project.godot": """; Engine configuration file.
+; This static example targets Godot 4.3 style structure.
+
+config_version=5
+
+[application]
+config/name="Spark Sprint"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.3")
+
+[input]
+move_left={
+"deadzone": 0.5,
+"events": []
+}
+move_right={
+"deadzone": 0.5,
+"events": []
+}
+move_up={
+"deadzone": 0.5,
+"events": []
+}
+move_down={
+"deadzone": 0.5,
+"events": []
+}
+""",
+        "production/stage.txt": "production\n",
+        "production/review-mode.txt": "lean\n",
+        "docs/architecture/technical-preferences.md": """# Technical Preferences
+
+Engine: Godot 4.3
+Language: GDScript
+Target platform: Desktop
+Review mode: lean
+Test command: static example only; use `python tools\\validate_examples.py` from the repository root.
+
+## Source Layout
+
+- `src/gameplay/`: gameplay state and actors
+- `src/ui/`: HUD presentation
+- `tests/`: GDScript-style test drafts
+""",
+        "design/gdd/game-concept.md": """# Game Concept
+
+Pitch: Spark Sprint is a one-screen arcade prototype where the player collects sparks before the timer ends.
+
+## Pillars
+
+- Fast readability: the next spark and timer are always obvious.
+- Low friction: movement starts immediately and reset is instant.
+- Tiny loop: one round can be understood in under 30 seconds.
+
+## MVP Loop
+
+Move, collect sparks, watch the timer, and reset after win or timeout.
+""",
+        "design/gdd/systems-index.md": """# Systems Index
+
+| System | Priority | Status | Notes |
+| --- | --- | --- | --- |
+| Player Movement | MVP | Drafted | Four-direction input |
+| Spark Pickup | MVP | Drafted | Pickup increments score |
+| Round Timer | MVP | Drafted | Timeout ends round |
+| HUD Feedback | MVP | Drafted | Displays score, timer, and state |
+""",
+        "design/gdd/core-loop.md": """# Core Loop System
+
+## Player Goal
+
+Collect 5 sparks before the 30-second timer reaches zero.
+
+## Rules
+
+- The round starts in `playing` state.
+- Each spark pickup increments score by 1.
+- The player wins when score reaches `target_score`.
+- The player loses when time reaches zero before the target score.
+- Reset restores score, timer, and state.
+
+## Acceptance Criteria
+
+- Movement accepts four-direction input.
+- Spark pickup increments score.
+- Timer reaching zero ends the round.
+- Reset restores initial score, time, and state.
+""",
+        "docs/architecture/architecture.md": """# Architecture
+
+Spark Sprint uses a small controller-driven architecture.
+
+## Modules
+
+- `GameController`: owns score, timer, round state, and reset behavior.
+- `PlayerController`: owns movement input and velocity.
+- `Collectible`: emits pickup behavior and delegates scoring to `GameController`.
+- `Hud`: reads round state and presents score, time, and status text.
+
+## Data Flow
+
+Player overlaps collectible -> collectible calls `GameController.collect_spark()` -> controller updates score/state -> HUD refreshes display.
+""",
+        "docs/architecture/control-manifest.md": """# Control Manifest
+
+- Gameplay constants live in `GameController`.
+- UI never owns gameplay state.
+- Reset must go through `GameController.reset_round()`.
+- Tests should cover score, timer, win, timeout, and reset behavior.
+""",
+        "production/epics/core-loop/EPIC.md": """# Epic: Core Loop
+
+Goal: Build a tiny playable loop for Spark Sprint.
+
+## Included Systems
+
+- Player movement
+- Spark pickup and scoring
+- Timer and round state
+- Reset behavior
+- HUD feedback
+
+## Acceptance
+
+- Core loop can be inspected through source and test drafts.
+- Story evidence maps to design and architecture documents.
+- Smoke checklist covers success, timeout, and reset paths.
+""",
+        "production/epics/core-loop/STORY-001-player-loop.md": """# Story: Player Loop Skeleton
+
+Status: Review
+Owner role: gameplay-programmer
+
+## Context
+
+Implement the smallest Spark Sprint loop: movement, spark pickup, timer, win/timeout state, and reset.
+
+## Acceptance Criteria
+
+- Player entity can move in four directions.
+- Collectible pickup increments score.
+- Timer reaches zero and ends the round.
+- Reset returns score, timer, and round state to initial values.
+
+## Implementation Notes
+
+- Gameplay state lives in `src/gameplay/game_controller.gd`.
+- Movement draft lives in `src/gameplay/player_controller.gd`.
+- Pickup draft lives in `src/gameplay/collectible.gd`.
+- HUD draft lives in `src/ui/hud.gd`.
+
+## Test Plan
+
+- Review `tests/test_game_controller.gd` for score, win, timeout, and reset coverage.
+- Run static repository validation from the root with `python tools\\validate_examples.py`.
+- Manual runtime smoke test is intentionally documented but not required for CI.
+
+## Evidence
+
+- Source draft: `src/gameplay/game_controller.gd`
+- Test draft: `tests/test_game_controller.gd`
+- Smoke checklist: `tests/SMOKE-CHECKLIST.md`
+""",
+        "src/gameplay/game_controller.gd": """extends Node
+class_name GameController
+
+signal score_changed(score: int)
+signal timer_changed(time_left: float)
+signal round_state_changed(state: String)
+
+const ROUND_TIME := 30.0
+const TARGET_SCORE := 5
+
+var score := 0
+var time_left := ROUND_TIME
+var round_state := "playing"
+
+func reset_round() -> void:
+    score = 0
+    time_left = ROUND_TIME
+    round_state = "playing"
+    score_changed.emit(score)
+    timer_changed.emit(time_left)
+    round_state_changed.emit(round_state)
+
+func collect_spark() -> void:
+    if round_state != "playing":
+        return
+    score += 1
+    score_changed.emit(score)
+    if score >= TARGET_SCORE:
+        round_state = "won"
+        round_state_changed.emit(round_state)
+
+func tick_timer(delta: float) -> void:
+    if round_state != "playing":
+        return
+    time_left = max(time_left - delta, 0.0)
+    timer_changed.emit(time_left)
+    if time_left <= 0.0:
+        round_state = "lost"
+        round_state_changed.emit(round_state)
+""",
+        "src/gameplay/player_controller.gd": """extends CharacterBody2D
+class_name PlayerController
+
+@export var speed := 220.0
+
+func _physics_process(_delta: float) -> void:
+    var input_vector := Vector2(
+        Input.get_axis("move_left", "move_right"),
+        Input.get_axis("move_up", "move_down")
+    )
+    velocity = input_vector.normalized() * speed
+    move_and_slide()
+""",
+        "src/gameplay/collectible.gd": """extends Area2D
+class_name Collectible
+
+@export var game_controller_path: NodePath
+
+func _on_body_entered(_body: Node) -> void:
+    var controller := get_node_or_null(game_controller_path)
+    if controller and controller.has_method("collect_spark"):
+        controller.collect_spark()
+        queue_free()
+""",
+        "src/ui/hud.gd": """extends Control
+class_name Hud
+
+@export var score_label_path: NodePath
+@export var timer_label_path: NodePath
+@export var state_label_path: NodePath
+
+func update_score(score: int) -> void:
+    var label := get_node_or_null(score_label_path)
+    if label:
+        label.text = "Score: %d" % score
+
+func update_timer(time_left: float) -> void:
+    var label := get_node_or_null(timer_label_path)
+    if label:
+        label.text = "Time: %.1f" % time_left
+
+func update_state(state: String) -> void:
+    var label := get_node_or_null(state_label_path)
+    if label:
+        label.text = state.capitalize()
+""",
+        "tests/test_game_controller.gd": """extends RefCounted
+
+# Static GDScript-style test draft for documentation and review.
+
+func test_collect_spark_increments_score() -> void:
+    var controller := GameController.new()
+    controller.collect_spark()
+    assert(controller.score == 1)
+
+func test_target_score_wins_round() -> void:
+    var controller := GameController.new()
+    for index in range(controller.TARGET_SCORE):
+        controller.collect_spark()
+    assert(controller.round_state == "won")
+
+func test_timer_timeout_loses_round() -> void:
+    var controller := GameController.new()
+    controller.tick_timer(controller.ROUND_TIME)
+    assert(controller.round_state == "lost")
+
+func test_reset_restores_initial_values() -> void:
+    var controller := GameController.new()
+    controller.collect_spark()
+    controller.tick_timer(5.0)
+    controller.reset_round()
+    assert(controller.score == 0)
+    assert(controller.time_left == controller.ROUND_TIME)
+    assert(controller.round_state == "playing")
+""",
+        "tests/SMOKE-CHECKLIST.md": """# Spark Sprint Smoke Checklist
+
+This is a manual checklist for a future runnable Godot version. CI only validates the static example shape.
+
+- Launch: main scene opens without script errors.
+- Movement: arrow/WASD bindings move the player in four directions.
+- Success path: collecting 5 sparks sets state to `won`.
+- Timeout path: timer reaching zero sets state to `lost`.
+- Reset path: reset returns score to 0, timer to 30, and state to `playing`.
+""",
+        "WALKTHROUGH.md": """# Spark Sprint Workflow Walkthrough
+
+Use this walkthrough to test the v0.6 example project with Codex Game Studios.
+
+## `$cgs-start`
+
+Expected result:
+- Detects an already structured Codex Game Studios project.
+- Finds `production/stage.txt` and `production/review-mode.txt`.
+- Does not overwrite existing design, architecture, epic, or story files.
+
+## `$cgs-project-stage-detect`
+
+Expected result:
+- Reports `PRODUCTION`.
+- Detects Godot 4.3 / GDScript style from `project.godot` and technical preferences.
+- Lists evidence paths for concept, systems index, architecture, epic, story, source, and tests.
+
+## `$cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md`
+
+Expected result:
+- Reads one story and the linked architecture/design context.
+- Identifies existing source and test drafts.
+- Proposes scoped edits only if the user asks to continue implementation.
+
+## `$cgs-smoke-check`
+
+Expected result:
+- Runs static validation when operating from the repository root.
+- Lists manual Godot runtime checks as remaining because this example does not require Godot in CI.
+
+## `$cgs-story-done production/epics/core-loop/STORY-001-player-loop.md`
+
+Expected result:
+- Returns `DONE` only as a static example review if source, tests, and smoke checklist satisfy the story evidence.
+- Calls out that runtime playtest evidence is not present.
+
+## `$cgs-code-review`
+
+Expected result:
+- Reviews the source/test drafts with findings-first output.
+- Mentions no runtime execution was performed unless Godot is available.
+
+## `$cgs-qa-plan`
+
+Expected result:
+- Produces a scoped QA matrix for movement, pickup, timer, reset, HUD, and runtime playtest evidence.
+""",
+    }
+
+    for relative, content in files.items():
+        write_text(EXAMPLE / relative, content)
+
+    write_text(
+        ROOT / "docs" / "examples" / "spark-sprint.md",
+        """# Spark Sprint Example Transcript
+
+This document links the v0.6 static example project to the Codex Game Studios workflow loop.
+
+Example path:
+
+```text
+examples/spark-sprint/
+```
+
+Suggested prompt sequence:
+
+```text
+Use $cgs-start on examples/spark-sprint.
+Use $cgs-project-stage-detect on examples/spark-sprint.
+Use $cgs-dev-story examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md.
+Use $cgs-smoke-check for examples/spark-sprint.
+Use $cgs-story-done examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md.
+Use $cgs-code-review on the Spark Sprint source draft.
+Use $cgs-qa-plan for the Spark Sprint Core Loop epic.
+```
+
+Expected behavior:
+
+- Codex should treat the project as a Godot 4.3 / GDScript static example.
+- Codex should not require Godot to be installed for repository validation.
+- Codex should cite evidence paths before proposing edits.
+- Runtime playtest evidence should be listed as manual follow-up.
+""",
+    )
+
+
 def main() -> None:
     write_core_skills()
     update_plugin_metadata()
@@ -1035,6 +1435,7 @@ def main() -> None:
     write_transcripts()
     write_install_docs()
     write_hook_policy_docs()
+    write_example_project()
     print(f"Prepared v{RELEASE_VERSION} curated skills, plugin metadata, and empty-game fixture")
 
 

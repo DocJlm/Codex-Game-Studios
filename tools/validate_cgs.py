@@ -20,7 +20,7 @@ MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 EXPECTED_SKILLS = 73
 EXPECTED_ROLE_CARDS = 49
 EXPECTED_RULES = 11
-EXPECTED_VERSION = "0.5.0"
+EXPECTED_VERSION = "0.6.0"
 EXPECTED_REPOSITORY = "https://github.com/DocJlm/Codex-Game-Studios"
 
 

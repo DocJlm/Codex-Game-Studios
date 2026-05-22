@@ -18,6 +18,8 @@ SCAN_ROOTS = [
     ROOT / "docs/workflows",
     ROOT / "docs/install",
     ROOT / "docs/hooks",
+    ROOT / "docs/examples",
+    ROOT / "examples",
 ]
 
 TOKENS = [
