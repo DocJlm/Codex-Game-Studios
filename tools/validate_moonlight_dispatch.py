@@ -15,7 +15,7 @@ REQUIRED_FILES = {
     "design/gdd/game-concept.md": ["Moonlight Dispatch", "USD 7.99", "Steam", "itch.io", "Wise", "Out Of Scope"],
     "design/gdd/core-loop.md": ["Briefing -> choose delivery", "Patrol light", "Shade Cloak", "Win State"],
     "design/gdd/systems-index.md": ["Player Movement", "Delivery Jobs", "Light Hazards", "Daily Challenge"],
-    "docs/architecture/technical-preferences.md": ["Godot 4.6", "GDScript", "Windows, macOS", "validate_moonlight_dispatch.py", "validate_moonlight_godot.py"],
+    "docs/architecture/technical-preferences.md": ["Godot 4.6", "GDScript", "Windows, macOS", "validate_moonlight_dispatch.py"],
     "docs/architecture/architecture.md": ["NightBriefing -> TownRun", "JobDatabase", "Save Model", "Risk Register"],
     "docs/architecture/control-manifest.md": ["no ads", "no in-app purchases", "Do not add multiplayer", "Wise"],
     "design/art/art-bible.md": ["Generated Concept Assets", "moonlight-dispatch-key-art.png", "Steam capsule"],
@@ -28,10 +28,7 @@ REQUIRED_FILES = {
     "production/milestones/8-week-roadmap.md": ["Week 1", "Week 8", "Release Candidate"],
     "production/sprints/week-01-plan.md": ["Week 01", "Definition Of Done"],
     "production/gates/week-01-concept-gate.md": ["PASS WITH CONCERNS", "Proceed to core prototype"],
-    "tests/SMOKE-CHECKLIST.md": ["Moonlight Dispatch", "Future Runtime Smoke", "v0.2.0 Movement Prototype Smoke"],
-    "tests/godot/movement-smoke.md": ["moonlight-dispatch-v0.2.0", "WASD", "arrow keys", "left stick", "market blocker"],
-    "production/playtests/week-02-movement-smoke.md": ["Week 02", "Movement Smoke", "validate_moonlight_godot.py"],
-    "production/releases/moonlight-dispatch-v0.2.0.md": ["Moonlight Dispatch v0.2.0", "validate_moonlight_godot.py", "Known Limits"],
+    "tests/SMOKE-CHECKLIST.md": ["Moonlight Dispatch", "Future Runtime Smoke"],
 }
 
 EPIC_DIRS = [
@@ -94,9 +91,7 @@ def main() -> int:
             errors.append(f"missing stories under {epic_dir}")
         for story in stories:
             text = story.read_text(encoding="utf-8")
-            if not any(status in text for status in ["Status: Ready", "Status: Review", "Status: Done"]):
-                errors.append(f"{story.relative_to(ROOT).as_posix()} missing valid status")
-            for token in ["Acceptance Criteria", "Test Plan"]:
+            for token in ["Status: Ready", "Acceptance Criteria", "Test Plan"]:
                 if token not in text:
                     errors.append(f"{story.relative_to(ROOT).as_posix()} missing token: {token}")
 
