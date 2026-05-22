@@ -12,7 +12,7 @@ PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 EXAMPLE = ROOT / "examples" / "spark-sprint"
-RELEASE_VERSION = "1.1.0"
+RELEASE_VERSION = "1.2.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -894,7 +894,7 @@ $cgs-qa-plan:
         ROOT / "docs" / "transcripts" / "spark-sprint-codex-run.md",
         """# Spark Sprint Codex Run Transcript
 
-This v0.8 transcript records a realistic Codex Game Studios pass through the static Spark Sprint example. It is written as a concrete usage transcript, not a runnable Godot log. The example intentionally validates without requiring Godot to be installed.
+This transcript records a realistic Codex Game Studios pass through the Spark Sprint example. It is written as a concrete usage transcript for an optional runnable Godot example that still validates without requiring Godot to be installed.
 
 Project path:
 
@@ -957,12 +957,13 @@ Evidence paths:
 - examples/spark-sprint/project.godot
 - examples/spark-sprint/docs/architecture/technical-preferences.md
 - examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md
+- examples/spark-sprint/scenes/main.tscn
 - examples/spark-sprint/src/gameplay/game_controller.gd
 - examples/spark-sprint/tests/test_game_controller.gd
 
 Next 3 actions:
 1. $cgs-dev-story for the player loop story.
-2. $cgs-smoke-check to verify static evidence and manual runtime gaps.
+2. $cgs-smoke-check to verify static evidence and optional Godot scene loading.
 3. $cgs-story-done to decide whether the story can close.
 ```
 
@@ -980,8 +981,8 @@ Codex:
 Readiness: READY
 
 Plan:
-- Read story, epic, core-loop GDD, architecture, control manifest, and source drafts.
-- Compare acceptance criteria against GameController, PlayerController, Collectible, HUD, and test draft.
+- Read story, epic, core-loop GDD, architecture, control manifest, scene, and source drafts.
+- Compare acceptance criteria against MainScene, GameController, PlayerController, Collectible, HUD, and test draft.
 - Avoid writing changes unless coverage is missing.
 
 Inspection result:
@@ -989,9 +990,10 @@ Inspection result:
 - Score, timer, win, timeout, and reset logic exists: examples/spark-sprint/src/gameplay/game_controller.gd
 - Pickup draft exists: examples/spark-sprint/src/gameplay/collectible.gd
 - HUD draft exists: examples/spark-sprint/src/ui/hud.gd
+- Main scene exists: examples/spark-sprint/scenes/main.tscn
 - Static tests cover score, win, timeout, and reset: examples/spark-sprint/tests/test_game_controller.gd
 
-Files updated: none. The story is already represented by static source and test drafts.
+Files updated: none. The story is already represented by source, scene, and test drafts.
 Next skill: $cgs-smoke-check
 ```
 
@@ -1008,21 +1010,24 @@ Codex:
 ```text
 Commands run:
 - python tools\\validate_examples.py
+- python tools\\validate_godot_example.py
 
 Result:
 - Example validation passed.
+- Godot scene validation loaded the scene when Godot was available, or reported SKIP when Godot was not installed.
 
 Automated coverage:
 - Required project files exist.
 - Walkthrough and docs mention the full workflow sequence.
-- Source drafts include GameController, PlayerController, Collectible, and HUD tokens.
+- Source drafts include MainScene, GameController, PlayerController, Collectible, and HUD tokens.
+- Scene draft references runtime scripts.
 - Test draft includes score, win, timeout, and reset cases.
 
 Manual checks remaining:
-- Launch a future Godot scene.
+- Launch the Godot scene when a local editor/runtime is available.
 - Confirm input bindings move the player.
-- Confirm overlap wiring calls Collectible._on_body_entered().
-- Confirm HUD labels are connected in a real scene.
+- Confirm collecting 5 sparks sets the state to won.
+- Confirm pressing R resets score, timer, and spark visibility.
 
 Next skill: $cgs-story-done
 ```
@@ -1038,15 +1043,17 @@ Use $cgs-story-done examples/spark-sprint/production/epics/core-loop/STORY-001-p
 Codex:
 
 ```text
-Verdict: DONE for static example evidence.
+Verdict: DONE for static example evidence, with optional runtime evidence when Godot is available.
 
 Acceptance criteria:
-- Player entity can move in four directions: covered by PlayerController draft; runtime input check remains manual.
+- Player entity can move in four directions: covered by PlayerController draft and scene.
 - Collectible pickup increments score: covered by Collectible and GameController drafts.
 - Timer reaches zero and ends the round: covered by GameController draft and test draft.
 - Reset returns score, timer, and round state to initial values: covered by GameController draft and test draft.
 
 Evidence:
+- examples/spark-sprint/scenes/main.tscn
+- examples/spark-sprint/src/gameplay/main_scene.gd
 - examples/spark-sprint/src/gameplay/player_controller.gd
 - examples/spark-sprint/src/gameplay/collectible.gd
 - examples/spark-sprint/src/gameplay/game_controller.gd
@@ -1070,15 +1077,15 @@ Codex:
 
 ```text
 Findings:
-- P2 examples/spark-sprint/project.godot: run/main_scene points to res://scenes/main.tscn, but the static example does not include scene files. Acceptable for repository validation; required before a runnable Godot demo.
-- P2 examples/spark-sprint/src/gameplay/collectible.gd: pickup behavior depends on scene signal wiring that is not represented in static files. Add a scene or wiring note before runtime testing.
+- No P0/P1 issues found in the static example review.
+- P2 examples/spark-sprint/tests/test_game_controller.gd: tests are GDScript-style drafts, not an installed Godot test runner. Keep this documented until a real test plugin is added.
 
 Open questions:
-- Should v1 include a runnable Godot scene, or keep examples static-only?
+- Should a future release add a real Godot test runner, or keep this as a lightweight scene demo?
 
 Test gaps:
-- No Godot runtime test was executed.
-- No visual HUD connection check was executed.
+- Optional Godot runtime validation may be skipped when Godot is not installed.
+- Visual playtest evidence is still manual.
 
 Change summary:
 - No source changes were made during review.
@@ -1099,32 +1106,33 @@ Scope:
 - Core loop movement, pickup, score, timer, reset, HUD feedback, and story evidence.
 
 Risk matrix:
-- High: scene wiring for pickup and HUD labels once a real Godot scene exists.
+- Medium: scene wiring for pickup and HUD labels should be checked in a local Godot playtest.
 - Medium: input bindings differ across keyboard layouts or controller support.
 - Medium: timer edge cases around zero and repeated reset.
 - Low: static source/test documentation drift.
 
 Test matrix:
 - Automated static: python tools\\validate_examples.py.
-- Source review: GameController, PlayerController, Collectible, and HUD drafts.
+- Optional runtime load: python tools\\validate_godot_example.py.
+- Source review: MainScene, GameController, PlayerController, Collectible, and HUD drafts.
 - Manual runtime: launch scene, move in four directions, collect 5 sparks, wait for timeout, reset.
 - Evidence: command output, screenshots or short capture for runtime pass, updated smoke checklist.
 
 Exit criteria:
 - Static validator passes.
-- Runtime playtest evidence is attached if the example becomes runnable.
-- Any scene-wiring findings are either fixed or explicitly tracked.
+- Optional Godot validator passes or reports SKIP because Godot is unavailable.
+- Runtime playtest evidence is attached when a local Godot runtime is available.
 ```
 
 ## Final State
 
-The v0.8 run demonstrates the full Spark Sprint loop:
+The current run demonstrates the full Spark Sprint loop:
 
 ```text
 $cgs-start -> $cgs-project-stage-detect -> $cgs-dev-story -> $cgs-smoke-check -> $cgs-story-done -> $cgs-code-review -> $cgs-qa-plan
 ```
 
-The transcript keeps Codex behavior read-first, evidence-based, and explicit about the boundary between static validation and future Godot runtime testing.
+The transcript keeps Codex behavior read-first, evidence-based, and explicit about the boundary between required static validation and optional Godot runtime testing.
 """,
     )
 
@@ -1512,6 +1520,7 @@ python tools\\validate_smoke_fixture.py
 python tools\\validate_transcripts.py
 python tools\\validate_plugin_install_docs.py
 python tools\\validate_hook_policy.py
+python tools\\validate_godot_example.py
 python tools\\scan_legacy_tokens.py
 ```
 
@@ -1554,7 +1563,7 @@ def write_example_project() -> None:
     files = {
         "README.md": """# Spark Sprint Example
 
-Spark Sprint is a static, Godot-style example project for Codex Game Studios v0.6. It is designed to demonstrate a realistic workflow loop without requiring Godot to be installed.
+Spark Sprint is a minimal Godot-style example project for Codex Game Studios. It demonstrates a realistic workflow loop and can optionally run in Godot 4.x, while repository validation still works without Godot installed.
 
 Use it to exercise:
 
@@ -1566,16 +1575,16 @@ Use it to exercise:
 6. `$cgs-code-review`
 7. `$cgs-qa-plan`
 
-The source and tests are implementation drafts. They are intentionally readable and static-validation friendly; they are not a guaranteed runnable Godot project.
+The source, scene, and tests are intentionally small and static-validation friendly. If Godot is available, open `project.godot` and run `scenes/main.tscn` to try the playable loop.
 """,
         "AGENTS.md": """# Spark Sprint Agent Guide
 
 Use Codex Game Studios workflows for this example.
-Treat files as a static demonstration project unless the user explicitly asks to turn it into a runnable Godot project.
-Do not require a local Godot installation for validation.
+Treat files as a minimal runnable Godot example plus static workflow fixture.
+Do not require a local Godot installation for repository validation.
 """,
         "project.godot": """; Engine configuration file.
-; This static example targets Godot 4.3 style structure.
+; This optional runnable example targets Godot 4.3 style structure.
 
 config_version=5
 
@@ -1610,12 +1619,13 @@ Engine: Godot 4.3
 Language: GDScript
 Target platform: Desktop
 Review mode: lean
-Test command: static example only; use `python tools\\validate_examples.py` from the repository root.
+Test command: use `python tools\\validate_examples.py` for static validation and `python tools\\validate_godot_example.py` for optional Godot scene loading.
 
 ## Source Layout
 
 - `src/gameplay/`: gameplay state and actors
 - `src/ui/`: HUD presentation
+- `scenes/`: playable Godot scene
 - `tests/`: GDScript-style test drafts
 """,
         "design/gdd/game-concept.md": """# Game Concept
@@ -1729,13 +1739,122 @@ Implement the smallest Spark Sprint loop: movement, spark pickup, timer, win/tim
 
 - Review `tests/test_game_controller.gd` for score, win, timeout, and reset coverage.
 - Run static repository validation from the root with `python tools\\validate_examples.py`.
-- Manual runtime smoke test is intentionally documented but not required for CI.
+- Run optional scene validation with `python tools\\validate_godot_example.py`; it skips when Godot is not installed.
+- Manual runtime smoke test is documented but not required for CI.
 
 ## Evidence
 
 - Source draft: `src/gameplay/game_controller.gd`
+- Playable scene: `scenes/main.tscn`
 - Test draft: `tests/test_game_controller.gd`
 - Smoke checklist: `tests/SMOKE-CHECKLIST.md`
+""",
+        "scenes/main.tscn": """[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/gameplay/main_scene.gd" id="1_main"]
+[ext_resource type="Script" path="res://src/gameplay/game_controller.gd" id="2_game"]
+[ext_resource type="Script" path="res://src/gameplay/player_controller.gd" id="3_player"]
+[ext_resource type="Script" path="res://src/gameplay/collectible.gd" id="4_spark"]
+[ext_resource type="Script" path="res://src/ui/hud.gd" id="5_hud"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_spark"]
+radius = 12.0
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="GameController" type="Node" parent="."]
+script = ExtResource("2_game")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(320, 240)
+script = ExtResource("3_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Body" type="Polygon2D" parent="Player"]
+color = Color(0.15, 0.65, 1, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="Spark" type="Area2D" parent="."]
+position = Vector2(480, 220)
+script = ExtResource("4_spark")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Spark"]
+shape = SubResource("CircleShape2D_spark")
+
+[node name="Body" type="Polygon2D" parent="Spark"]
+color = Color(1, 0.82, 0.2, 1)
+polygon = PackedVector2Array(0, -18, 5, -5, 18, 0, 5, 5, 0, 18, -5, 5, -18, 0, -5, -5)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Hud" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("5_hud")
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 220.0
+offset_bottom = 38.0
+text = "Score: 0"
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 42.0
+offset_right = 220.0
+offset_bottom = 68.0
+text = "Time: 30.0"
+
+[node name="StateLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 72.0
+offset_right = 360.0
+offset_bottom = 98.0
+text = "Playing"
+
+[node name="HelpLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 410.0
+offset_right = 620.0
+offset_bottom = 450.0
+text = "Move with WASD or arrows. Collect 5 sparks. Press R to reset."
+""",
+        "src/gameplay/main_scene.gd": """extends Node2D
+
+@onready var game_controller: GameController = $GameController
+@onready var player: PlayerController = $Player
+@onready var spark: Collectible = $Spark
+@onready var hud: Hud = $CanvasLayer/Hud
+
+var _reset_key_down := false
+
+func _ready() -> void:
+    game_controller.score_changed.connect(hud.update_score)
+    game_controller.timer_changed.connect(hud.update_timer)
+    game_controller.round_state_changed.connect(hud.update_state)
+    spark.game_controller_path = spark.get_path_to(game_controller)
+    reset_round()
+
+func _process(delta: float) -> void:
+    game_controller.tick_timer(delta)
+    var reset_pressed := Input.is_key_pressed(KEY_R)
+    if reset_pressed and not _reset_key_down:
+        reset_round()
+    _reset_key_down = reset_pressed
+
+func reset_round() -> void:
+    player.position = Vector2(320, 240)
+    game_controller.reset_round()
+    spark.reset_spark()
 """,
         "src/gameplay/game_controller.gd": """extends Node
 class_name GameController
@@ -1781,25 +1900,60 @@ func tick_timer(delta: float) -> void:
 class_name PlayerController
 
 @export var speed := 220.0
+@export var play_area_min := Vector2(24, 100)
+@export var play_area_max := Vector2(616, 392)
 
 func _physics_process(_delta: float) -> void:
-    var input_vector := Vector2(
-        Input.get_axis("move_left", "move_right"),
-        Input.get_axis("move_up", "move_down")
-    )
+    var input_vector := _read_input()
     velocity = input_vector.normalized() * speed
     move_and_slide()
+    position.x = clampf(position.x, play_area_min.x, play_area_max.x)
+    position.y = clampf(position.y, play_area_min.y, play_area_max.y)
+
+func _read_input() -> Vector2:
+    var input_vector := Vector2.ZERO
+    if Input.is_action_pressed("move_left") or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+        input_vector.x -= 1.0
+    if Input.is_action_pressed("move_right") or Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+        input_vector.x += 1.0
+    if Input.is_action_pressed("move_up") or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+        input_vector.y -= 1.0
+    if Input.is_action_pressed("move_down") or Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+        input_vector.y += 1.0
+    return input_vector
 """,
         "src/gameplay/collectible.gd": """extends Area2D
 class_name Collectible
 
 @export var game_controller_path: NodePath
+@export var play_area_min := Vector2(80, 120)
+@export var play_area_max := Vector2(560, 360)
+
+func _ready() -> void:
+    var callback := Callable(self, "_on_body_entered")
+    if not body_entered.is_connected(callback):
+        body_entered.connect(callback)
+
+func reset_spark() -> void:
+    visible = true
+    monitoring = true
+    randomize_position()
 
 func _on_body_entered(_body: Node) -> void:
     var controller := get_node_or_null(game_controller_path)
     if controller and controller.has_method("collect_spark"):
         controller.collect_spark()
-        queue_free()
+        if controller.round_state == "playing":
+            randomize_position()
+        else:
+            visible = false
+            monitoring = false
+
+func randomize_position() -> void:
+    position = Vector2(
+        randf_range(play_area_min.x, play_area_max.x),
+        randf_range(play_area_min.y, play_area_max.y)
+    )
 """,
         "src/ui/hud.gd": """extends Control
 class_name Hud
@@ -1809,19 +1963,26 @@ class_name Hud
 @export var state_label_path: NodePath
 
 func update_score(score: int) -> void:
-    var label := get_node_or_null(score_label_path)
+    var label := _get_label(score_label_path, "ScoreLabel")
     if label:
         label.text = "Score: %d" % score
 
 func update_timer(time_left: float) -> void:
-    var label := get_node_or_null(timer_label_path)
+    var label := _get_label(timer_label_path, "TimerLabel")
     if label:
         label.text = "Time: %.1f" % time_left
 
 func update_state(state: String) -> void:
-    var label := get_node_or_null(state_label_path)
+    var label := _get_label(state_label_path, "StateLabel")
     if label:
         label.text = state.capitalize()
+
+func _get_label(path: NodePath, fallback_name: String) -> Label:
+    if path != NodePath(""):
+        var explicit_label := get_node_or_null(path) as Label
+        if explicit_label:
+            return explicit_label
+    return get_node_or_null(fallback_name) as Label
 """,
         "tests/test_game_controller.gd": """extends RefCounted
 
@@ -1854,17 +2015,17 @@ func test_reset_restores_initial_values() -> void:
 """,
         "tests/SMOKE-CHECKLIST.md": """# Spark Sprint Smoke Checklist
 
-This is a manual checklist for a future runnable Godot version. CI only validates the static example shape.
+This is a manual checklist for the optional runnable Godot version. CI validates the static example shape and skips runtime loading when Godot is not installed.
 
 - Launch: main scene opens without script errors.
 - Movement: arrow/WASD bindings move the player in four directions.
 - Success path: collecting 5 sparks sets state to `won`.
 - Timeout path: timer reaching zero sets state to `lost`.
-- Reset path: reset returns score to 0, timer to 30, and state to `playing`.
+- Reset path: pressing R returns score to 0, timer to 30, and state to `playing`.
 """,
         "WALKTHROUGH.md": """# Spark Sprint Workflow Walkthrough
 
-Use this walkthrough to test the v0.6 example project with Codex Game Studios.
+Use this walkthrough to test the v1.2 example project with Codex Game Studios.
 
 ## `$cgs-start`
 
@@ -1884,26 +2045,27 @@ Expected result:
 
 Expected result:
 - Reads one story and the linked architecture/design context.
-- Identifies existing source and test drafts.
+- Identifies existing source, scene, and test drafts.
 - Proposes scoped edits only if the user asks to continue implementation.
 
 ## `$cgs-smoke-check`
 
 Expected result:
 - Runs static validation when operating from the repository root.
-- Lists manual Godot runtime checks as remaining because this example does not require Godot in CI.
+- Runs `python tools\\validate_godot_example.py`; this loads the scene when Godot is installed and reports `SKIP` otherwise.
 
 ## `$cgs-story-done production/epics/core-loop/STORY-001-player-loop.md`
 
 Expected result:
-- Returns `DONE` only as a static example review if source, tests, and smoke checklist satisfy the story evidence.
-- Calls out that runtime playtest evidence is not present.
+- Returns `DONE` for static evidence if source, scene, tests, and smoke checklist satisfy the story.
+- Calls out runtime playtest evidence as optional when Godot is unavailable.
 
 ## `$cgs-code-review`
 
 Expected result:
 - Reviews the source/test drafts with findings-first output.
-- Mentions no runtime execution was performed unless Godot is available.
+- Checks that `scenes/main.tscn` exists and references the runtime scripts.
+- Mentions whether optional Godot loading was run or skipped.
 
 ## `$cgs-qa-plan`
 
@@ -1919,7 +2081,7 @@ Expected result:
         ROOT / "docs" / "examples" / "spark-sprint.md",
         """# Spark Sprint Example Transcript
 
-This document links the v0.6 static example project to the Codex Game Studios workflow loop.
+This document links the Spark Sprint example project to the Codex Game Studios workflow loop. It is statically validated by default and optionally runnable in Godot 4.x.
 
 Example path:
 
@@ -1947,10 +2109,11 @@ Use $cgs-qa-plan for the Spark Sprint Core Loop epic.
 
 Expected behavior:
 
-- Codex should treat the project as a Godot 4.3 / GDScript static example.
+- Codex should treat the project as a Godot 4.3 / GDScript optional runnable example.
 - Codex should not require Godot to be installed for repository validation.
+- `python tools\\validate_godot_example.py` should report `SKIP` when Godot is unavailable and try to load `scenes/main.tscn` when Godot is available.
 - Codex should cite evidence paths before proposing edits.
-- Runtime playtest evidence should be listed as manual follow-up.
+- Runtime playtest evidence should be listed as optional manual follow-up.
 """,
     )
 
@@ -2031,6 +2194,7 @@ python tools\\validate_transcripts.py
 python tools\\validate_plugin_install_docs.py
 python tools\\validate_hook_policy.py
 python tools\\validate_examples.py
+python tools\\validate_godot_example.py
 python tools\\validate_workflow_polish.py
 python tools\\validate_v1_readiness.py
 python tools\\validate_cross_platform.py
@@ -2124,6 +2288,7 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - If PowerShell renders Chinese text incorrectly, the Markdown files are still UTF-8. View them in Codex, VS Code, GitHub, or another UTF-8-aware editor.
 - Use the cloned repository root as the workspace. Do not depend on a machine-specific absolute path.
 - Backslash examples are for PowerShell. Forward-slash paths in prompts also work because Codex reads repository files, not shell paths.
+- If Godot 4.x is installed, `python tools\\validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.
 """,
     )
 
@@ -2185,6 +2350,7 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - Use forward-slash repository paths in shell commands and prompts.
 - The repo-local marketplace entry is `.agents/plugins/marketplace.json`.
 - If the Codex build does not expose repo-local plugin installation, use the path-based fallback prompts above.
+- If Godot 4.x is installed, `python3 tools/validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.
 """,
     )
 
@@ -2255,6 +2421,20 @@ Use $cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md. Inspect 
 - Windows: `docs/platforms/windows.md`
 - macOS: `docs/platforms/macos.md`
 - Plugin install and fallback behavior: `docs/install/local-plugin.md`
+
+## Optional Spark Sprint Runtime Check
+
+Spark Sprint validates without Godot, but if Godot 4.x is installed you can also try:
+
+```text
+Open examples/spark-sprint/project.godot and run scenes/main.tscn.
+```
+
+or run:
+
+```bash
+python tools/validate_godot_example.py
+```
 """,
     )
 

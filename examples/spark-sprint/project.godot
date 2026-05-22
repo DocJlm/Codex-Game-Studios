@@ -1,5 +1,5 @@
 ; Engine configuration file.
-; This static example targets Godot 4.3 style structure.
+; This optional runnable example targets Godot 4.3 style structure.
 
 config_version=5
 

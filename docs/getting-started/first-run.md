@@ -63,3 +63,17 @@ Use $cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md. Inspect 
 - Windows: `docs/platforms/windows.md`
 - macOS: `docs/platforms/macos.md`
 - Plugin install and fallback behavior: `docs/install/local-plugin.md`
+
+## Optional Spark Sprint Runtime Check
+
+Spark Sprint validates without Godot, but if Godot 4.x is installed you can also try:
+
+```text
+Open examples/spark-sprint/project.godot and run scenes/main.tscn.
+```
+
+or run:
+
+```bash
+python tools/validate_godot_example.py
+```

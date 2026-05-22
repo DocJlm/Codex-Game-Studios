@@ -1,6 +1,6 @@
 # Spark Sprint Workflow Walkthrough
 
-Use this walkthrough to test the v0.6 example project with Codex Game Studios.
+Use this walkthrough to test the v1.2 example project with Codex Game Studios.
 
 ## `$cgs-start`
 
@@ -20,26 +20,27 @@ Expected result:
 
 Expected result:
 - Reads one story and the linked architecture/design context.
-- Identifies existing source and test drafts.
+- Identifies existing source, scene, and test drafts.
 - Proposes scoped edits only if the user asks to continue implementation.
 
 ## `$cgs-smoke-check`
 
 Expected result:
 - Runs static validation when operating from the repository root.
-- Lists manual Godot runtime checks as remaining because this example does not require Godot in CI.
+- Runs `python tools\validate_godot_example.py`; this loads the scene when Godot is installed and reports `SKIP` otherwise.
 
 ## `$cgs-story-done production/epics/core-loop/STORY-001-player-loop.md`
 
 Expected result:
-- Returns `DONE` only as a static example review if source, tests, and smoke checklist satisfy the story evidence.
-- Calls out that runtime playtest evidence is not present.
+- Returns `DONE` for static evidence if source, scene, tests, and smoke checklist satisfy the story.
+- Calls out runtime playtest evidence as optional when Godot is unavailable.
 
 ## `$cgs-code-review`
 
 Expected result:
 - Reviews the source/test drafts with findings-first output.
-- Mentions no runtime execution was performed unless Godot is available.
+- Checks that `scenes/main.tscn` exists and references the runtime scripts.
+- Mentions whether optional Godot loading was run or skipped.
 
 ## `$cgs-qa-plan`
 

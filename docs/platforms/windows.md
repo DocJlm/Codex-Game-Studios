@@ -48,3 +48,4 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - If PowerShell renders Chinese text incorrectly, the Markdown files are still UTF-8. View them in Codex, VS Code, GitHub, or another UTF-8-aware editor.
 - Use the cloned repository root as the workspace. Do not depend on a machine-specific absolute path.
 - Backslash examples are for PowerShell. Forward-slash paths in prompts also work because Codex reads repository files, not shell paths.
+- If Godot 4.x is installed, `python tools\validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.

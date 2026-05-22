@@ -54,3 +54,4 @@ Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for pr
 - Use forward-slash repository paths in shell commands and prompts.
 - The repo-local marketplace entry is `.agents/plugins/marketplace.json`.
 - If the Codex build does not expose repo-local plugin installation, use the path-based fallback prompts above.
+- If Godot 4.x is installed, `python3 tools/validate_godot_example.py` attempts to load `examples/spark-sprint/scenes/main.tscn`; otherwise it reports `SKIP`.

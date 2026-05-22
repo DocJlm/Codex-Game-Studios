@@ -80,8 +80,9 @@ def main() -> int:
         "Verdict: PRODUCTION",
         "Files updated: none",
         "python tools\\validate_examples.py",
-        "Manual checks remaining",
-        "No Godot runtime test was executed",
+        "python tools\\validate_godot_example.py",
+        "scenes/main.tscn",
+        "optional Godot runtime testing",
         "Final State",
     ]:
         if token not in spark_sprint:

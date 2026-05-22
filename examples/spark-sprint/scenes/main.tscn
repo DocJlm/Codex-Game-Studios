@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/gameplay/main_scene.gd" id="1_main"]
+[ext_resource type="Script" path="res://src/gameplay/game_controller.gd" id="2_game"]
+[ext_resource type="Script" path="res://src/gameplay/player_controller.gd" id="3_player"]
+[ext_resource type="Script" path="res://src/gameplay/collectible.gd" id="4_spark"]
+[ext_resource type="Script" path="res://src/ui/hud.gd" id="5_hud"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_spark"]
+radius = 12.0
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="GameController" type="Node" parent="."]
+script = ExtResource("2_game")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(320, 240)
+script = ExtResource("3_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Body" type="Polygon2D" parent="Player"]
+color = Color(0.15, 0.65, 1, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="Spark" type="Area2D" parent="."]
+position = Vector2(480, 220)
+script = ExtResource("4_spark")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Spark"]
+shape = SubResource("CircleShape2D_spark")
+
+[node name="Body" type="Polygon2D" parent="Spark"]
+color = Color(1, 0.82, 0.2, 1)
+polygon = PackedVector2Array(0, -18, 5, -5, 18, 0, 5, 5, 0, 18, -5, 5, -18, 0, -5, -5)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Hud" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("5_hud")
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 220.0
+offset_bottom = 38.0
+text = "Score: 0"
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 42.0
+offset_right = 220.0
+offset_bottom = 68.0
+text = "Time: 30.0"
+
+[node name="StateLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 72.0
+offset_right = 360.0
+offset_bottom = 98.0
+text = "Playing"
+
+[node name="HelpLabel" type="Label" parent="CanvasLayer/Hud"]
+offset_left = 16.0
+offset_top = 410.0
+offset_right = 620.0
+offset_bottom = 450.0
+text = "Move with WASD or arrows. Collect 5 sparks. Press R to reset."

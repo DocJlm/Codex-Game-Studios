@@ -25,6 +25,8 @@ REQUIRED_FILES = [
     "docs/architecture/control-manifest.md",
     "production/epics/core-loop/EPIC.md",
     "production/epics/core-loop/STORY-001-player-loop.md",
+    "scenes/main.tscn",
+    "src/gameplay/main_scene.gd",
     "src/gameplay/game_controller.gd",
     "src/gameplay/player_controller.gd",
     "src/gameplay/collectible.gd",
@@ -45,15 +47,16 @@ REQUIRED_SKILLS = [
 ]
 
 SOURCE_TOKENS = {
+    "src/gameplay/main_scene.gd": ["reset_round", "game_controller.tick_timer", "spark.reset_spark"],
     "src/gameplay/game_controller.gd": [
         "class_name GameController",
         "func collect_spark()",
         "func tick_timer(delta: float)",
         "func reset_round()",
     ],
-    "src/gameplay/player_controller.gd": ["class_name PlayerController", "move_and_slide()"],
-    "src/gameplay/collectible.gd": ["class_name Collectible", "collect_spark"],
-    "src/ui/hud.gd": ["class_name Hud", "update_score", "update_timer", "update_state"],
+    "src/gameplay/player_controller.gd": ["class_name PlayerController", "move_and_slide()", "KEY_A", "KEY_LEFT"],
+    "src/gameplay/collectible.gd": ["class_name Collectible", "collect_spark", "reset_spark", "randomize_position"],
+    "src/ui/hud.gd": ["class_name Hud", "update_score", "update_timer", "update_state", "ScoreLabel"],
 }
 
 TEST_TOKENS = [
@@ -94,7 +97,7 @@ def main() -> int:
         doc_text = DOC.read_text(encoding="utf-8")
 
     technical = read("docs/architecture/technical-preferences.md", errors)
-    for token in ["Godot 4.3", "GDScript", "validate_examples.py"]:
+    for token in ["Godot 4.3", "GDScript", "validate_examples.py", "validate_godot_example.py"]:
         if token not in technical:
             errors.append(f"technical preferences missing token: {token}")
 
@@ -113,6 +116,25 @@ def main() -> int:
     if "docs/transcripts/spark-sprint-codex-run.md" not in doc_text:
         errors.append("docs example missing Spark Sprint transcript link")
 
+    for token in ["optional runnable", "validate_godot_example.py", "scenes/main.tscn"]:
+        if token not in doc_text:
+            errors.append(f"docs example missing token: {token}")
+
+    project = read("project.godot", errors)
+    if 'run/main_scene="res://scenes/main.tscn"' not in project:
+        errors.append("project.godot must point to scenes/main.tscn")
+
+    scene = read("scenes/main.tscn", errors)
+    for token in [
+        "res://src/gameplay/main_scene.gd",
+        "res://src/gameplay/game_controller.gd",
+        "res://src/gameplay/player_controller.gd",
+        "res://src/gameplay/collectible.gd",
+        "res://src/ui/hud.gd",
+    ]:
+        if token not in scene:
+            errors.append(f"scenes/main.tscn missing token: {token}")
+
     for relative, tokens in SOURCE_TOKENS.items():
         text = read(relative, errors)
         for token in tokens:
@@ -130,7 +152,7 @@ def main() -> int:
             errors.append(f"smoke checklist missing token: {token}")
 
     for path in [*EXAMPLE.rglob("*"), DOC]:
-        if not path.is_file() or path.suffix.lower() not in {".md", ".gd", ".godot", ".txt"}:
+        if not path.is_file() or path.suffix.lower() not in {".md", ".gd", ".godot", ".tscn", ".txt"}:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         for token in LEGACY_TOKENS:

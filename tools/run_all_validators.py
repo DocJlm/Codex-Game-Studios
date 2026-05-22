@@ -19,6 +19,7 @@ VALIDATORS = [
     "validate_plugin_install_docs.py",
     "validate_hook_policy.py",
     "validate_examples.py",
+    "validate_godot_example.py",
     "validate_workflow_polish.py",
     "validate_v1_readiness.py",
     "validate_cross_platform.py",

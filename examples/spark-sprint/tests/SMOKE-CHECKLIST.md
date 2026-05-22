@@ -1,9 +1,9 @@
 # Spark Sprint Smoke Checklist
 
-This is a manual checklist for a future runnable Godot version. CI only validates the static example shape.
+This is a manual checklist for the optional runnable Godot version. CI validates the static example shape and skips runtime loading when Godot is not installed.
 
 - Launch: main scene opens without script errors.
 - Movement: arrow/WASD bindings move the player in four directions.
 - Success path: collecting 5 sparks sets state to `won`.
 - Timeout path: timer reaching zero sets state to `lost`.
-- Reset path: reset returns score to 0, timer to 30, and state to `playing`.
+- Reset path: pressing R returns score to 0, timer to 30, and state to `playing`.

@@ -2,6 +2,14 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.2.0 - 2026-05-22
+
+- Upgraded `examples/spark-sprint/` from a static fixture to an optional runnable Godot 4.x example.
+- Added `scenes/main.tscn` and `src/gameplay/main_scene.gd` to demonstrate movement, spark pickup, HUD updates, timer, win, timeout, and reset.
+- Added `tools/validate_godot_example.py`, which statically checks the scene and optionally loads it when Godot is installed.
+- Added Godot example validation to `tools/run_all_validators.py`.
+- Bumped regenerated plugin metadata to `1.2.0`.
+
 ## v1.1.0 - 2026-05-22
 
 - Added `tools/run_all_validators.py` as the single cross-platform validation entrypoint.

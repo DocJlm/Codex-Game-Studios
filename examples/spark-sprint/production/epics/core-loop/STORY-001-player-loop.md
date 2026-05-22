@@ -25,10 +25,12 @@ Implement the smallest Spark Sprint loop: movement, spark pickup, timer, win/tim
 
 - Review `tests/test_game_controller.gd` for score, win, timeout, and reset coverage.
 - Run static repository validation from the root with `python tools\validate_examples.py`.
-- Manual runtime smoke test is intentionally documented but not required for CI.
+- Run optional scene validation with `python tools\validate_godot_example.py`; it skips when Godot is not installed.
+- Manual runtime smoke test is documented but not required for CI.
 
 ## Evidence
 
 - Source draft: `src/gameplay/game_controller.gd`
+- Playable scene: `scenes/main.tscn`
 - Test draft: `tests/test_game_controller.gd`
 - Smoke checklist: `tests/SMOKE-CHECKLIST.md`

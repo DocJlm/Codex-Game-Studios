@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 14 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, plus the structural validators under `tools/` |
+| Validation scripts | 15 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
 
 ## Quick Start
 
@@ -151,7 +151,7 @@ For a realistic Spark Sprint Codex pass, see `docs/transcripts/spark-sprint-code
 
 ## Examples
 
-`examples/spark-sprint/` is a static Godot 4.3 / GDScript-style example project for the full workflow loop. It includes design docs, architecture, an epic, a story, source drafts, test drafts, and a walkthrough. It is validated without requiring Godot to be installed.
+`examples/spark-sprint/` is an optional runnable Godot 4.3 / GDScript-style example project for the full workflow loop. It includes design docs, architecture, an epic, a story, source drafts, a playable scene, test drafts, and a walkthrough. It is validated without requiring Godot to be installed; if Godot is available, `python tools/validate_godot_example.py` attempts to load `scenes/main.tscn`.
 
 See `docs/examples/spark-sprint.md` for the prompt sequence.
 
@@ -173,6 +173,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.2.0`: optional runnable Spark Sprint Godot example. See `docs/releases/v1.2.0.md`.
 - `v1.1.0`: Windows and macOS cross-platform validation and usage docs. See `docs/releases/v1.1.0.md`.
 - `v1.0.0`: v1 readiness freeze checklist and compatibility gate. See `docs/releases/v1.0.0.md`.
 - `v0.9.0`: local plugin discovery field test notes. See `docs/releases/v0.9.0.md`.
