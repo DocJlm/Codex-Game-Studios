@@ -24,6 +24,7 @@ VALIDATORS = [
     "validate_codex_native_skills.py",
     "validate_testing_framework_paths.py",
     "validate_user_docs.py",
+    "validate_complete_port.py",
     "validate_workflow_polish.py",
     "validate_v1_readiness.py",
     "validate_cross_platform.py",

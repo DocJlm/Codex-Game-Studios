@@ -4,7 +4,7 @@
 
 把一个 Codex 工作区变成结构化的游戏开发工作室：73 个 `cgs-*` skills、49 个工作室角色卡、阶段门、规则、设计模板、引擎参考和校验脚本。Windows and macOS are both supported for clone, validation, documentation, and fallback skill usage.
 
-This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios). It keeps the studio workflow idea, but packages it as a repo-local Codex plugin plus a game project template.
+This is a Codex-native complete port of [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) at upstream commit `984023ddac0d5e27624f2baacde6105e45de375f`. It keeps the studio workflow idea, but packages it as a repo-local Codex plugin plus a game project template with explicit validators instead of runtime hooks.
 
 ## What's Included
 
@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40 | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 19 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_user_docs.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
+| Validation scripts | 20 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_user_docs.py`, `tools/validate_complete_port.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
 
 ## Quick Start
 
@@ -180,12 +180,15 @@ Claude hooks are not installed as Codex runtime hooks. Legacy hook scripts are p
 
 The current upstream parity snapshot is documented in `docs/upstream-parity.md`. It records the checked upstream commit, surface counts, template-count evidence, and the Codex-native replacement for each upstream hook intent.
 
+The v2 complete-port gate is enforced by `tools/validate_complete_port.py`.
+
 ## License
 
 MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v2.0.0`: final parity gate and Codex-native complete-port claim. See `docs/releases/v2.0.0.md`.
 - `v1.7.0`: expanded Spark Sprint and empty-game smoke evidence through `$cgs-gate-check`. See `docs/releases/v1.7.0.md`.
 - `v1.6.0`: Codex Desktop, upgrade, CI, quick-start, and contribution docs with user-doc validation. See `docs/releases/v1.6.0.md`.
 - `v1.5.0`: repo-local testing framework path cleanup and validator. See `docs/releases/v1.5.0.md`.

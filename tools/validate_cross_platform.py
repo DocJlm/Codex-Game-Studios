@@ -19,7 +19,7 @@ GETTING_STARTED = ROOT / "docs" / "getting-started" / "first-run.md"
 QUICK_START = ROOT / "docs" / "getting-started" / "quick-start.md"
 CI = ROOT / "docs" / "platforms" / "ci.md"
 WORKFLOW = ROOT / ".github" / "workflows" / "validate.yml"
-RELEASE = ROOT / "docs" / "releases" / "v1.7.0.md"
+RELEASE = ROOT / "docs" / "releases" / "v2.0.0.md"
 
 DOCS_TO_SCAN_FOR_ABSOLUTE_WINDOWS_PATHS = [
     README,
@@ -103,13 +103,12 @@ REQUIRED_TOKENS = {
         "python tools/run_all_validators.py",
     ],
     RELEASE: [
-        "# Codex Game Studios v1.7.0",
+        "# Codex Game Studios v2.0.0",
         "Windows",
         "macOS",
         "tools/run_all_validators.py",
-        "tools/validate_smoke_fixture.py",
-        "tools/validate_transcripts.py",
-        "tools/validate_examples.py",
+        "tools/validate_complete_port.py",
+        "Final parity gate",
     ],
 }
 

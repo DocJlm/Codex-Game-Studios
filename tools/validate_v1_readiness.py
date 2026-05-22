@@ -32,6 +32,7 @@ REQUIRED_DOC_TOKENS = [
     "python tools\\validate_v1_readiness.py",
     "python tools\\validate_cross_platform.py",
     "python tools\\validate_user_docs.py",
+    "python tools\\validate_complete_port.py",
     "python tools/run_all_validators.py",
     "docs/getting-started/quick-start.md",
     "docs/install/codex-desktop.md",
@@ -47,6 +48,7 @@ REQUIRED_README_TOKENS = [
     "tools/run_all_validators.py",
     "tools/validate_cross_platform.py",
     "tools/validate_user_docs.py",
+    "tools/validate_complete_port.py",
 ]
 
 REQUIRED_AGENTS_TOKENS = [
@@ -54,6 +56,7 @@ REQUIRED_AGENTS_TOKENS = [
     "tools\\validate_v1_readiness.py",
     "tools\\validate_cross_platform.py",
     "tools\\validate_user_docs.py",
+    "tools\\validate_complete_port.py",
 ]
 
 LEGACY_RUNTIME_TOKENS = [
@@ -98,6 +101,8 @@ def main() -> int:
         errors.append("GitHub Actions workflow missing v1 readiness validator")
     if "python tools/validate_user_docs.py" not in workflow and "python tools/run_all_validators.py" not in workflow:
         errors.append("GitHub Actions workflow missing user docs validator")
+    if "python tools/validate_complete_port.py" not in workflow and "python tools/run_all_validators.py" not in workflow:
+        errors.append("GitHub Actions workflow missing complete-port validator")
 
     for token in LEGACY_RUNTIME_TOKENS:
         if token in doc:
@@ -109,8 +114,9 @@ def main() -> int:
         errors.append(f"plugin.json is not valid JSON: {exc}")
         plugin = {}
 
-    if not str(plugin.get("version", "")).startswith("1."):
-        errors.append("plugin.json version must stay in the v1.x line for v1 readiness")
+    major = str(plugin.get("version", "")).split(".", 1)[0]
+    if major not in {"1", "2"}:
+        errors.append("plugin.json version must stay in the v1/v2 compatibility line for v1 readiness")
     if plugin.get("name") != "codex-game-studios":
         errors.append("plugin.json name must remain codex-game-studios")
     if plugin.get("skills") != "./skills/":

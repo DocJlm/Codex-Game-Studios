@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v2.0.0 - 2026-05-22
+
+- Completed the final parity gate against upstream commit `984023ddac0d5e27624f2baacde6105e45de375f`.
+- Declared the project a Codex-native complete port with the no-runtime-hooks policy documented as an intentional Codex adaptation.
+- Added `tools/validate_complete_port.py` and wired it into `tools/run_all_validators.py`.
+- Updated README, parity report, release notes, validators, and metadata for `2.0.0`.
+
 ## v1.7.0 - 2026-05-22
 
 - Added a no-write empty-game smoke transcript covering `$cgs-start`, `$cgs-project-stage-detect`, `$cgs-dev-story`, `$cgs-story-done`, and `$cgs-gate-check`.

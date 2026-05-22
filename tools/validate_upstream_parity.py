@@ -46,6 +46,7 @@ REQUIRED_DOC_TOKENS = [
     "Surface Matrix",
     "Template Count Evidence",
     "Hook Intent Mapping",
+    "Final Parity Gate",
     "Parity Roadmap",
     "73",
     "49",
@@ -54,8 +55,14 @@ REQUIRED_DOC_TOKENS = [
     "12",
     "no-runtime-hooks",
     "tools/validate_upstream_parity.py",
+    "tools/validate_complete_port.py",
     "v1.4.0",
     "v1.5.0",
+    "v1.6.0",
+    "v1.7.0",
+    "v2.0.0 completed the final parity gate",
+    "No unexplained parity gaps remain",
+    "Codex-native complete port",
 ]
 
 

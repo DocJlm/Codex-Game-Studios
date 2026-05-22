@@ -85,6 +85,7 @@ python tools\validate_upstream_parity.py
 python tools\validate_codex_native_skills.py
 python tools\validate_testing_framework_paths.py
 python tools\validate_user_docs.py
+python tools\validate_complete_port.py
 python tools\validate_workflow_polish.py
 python tools\validate_v1_readiness.py
 python tools\validate_cross_platform.py
@@ -93,7 +94,7 @@ python -m json.tool plugins\codex-game-studios\.codex-plugin\plugin.json
 python -m json.tool .agents\plugins\marketplace.json
 ```
 
-GitHub Actions must run the same structural validators on Windows, macOS, and Linux, including `tools/validate_v1_readiness.py`, `tools/validate_cross_platform.py`, and `tools/validate_user_docs.py`.
+GitHub Actions must run the same structural validators on Windows, macOS, and Linux, including `tools/validate_v1_readiness.py`, `tools/validate_cross_platform.py`, `tools/validate_user_docs.py`, and `tools/validate_complete_port.py`.
 
 ## Fresh Clone Gate
 
