@@ -40,6 +40,7 @@ Before a v1.x release, check these user-facing surfaces:
 - `docs/hooks/runtime-hook-evaluation.md`: no-runtime-hooks decision and future adoption gate.
 - `docs/transcripts/concept-to-story.md`: concept-to-story demonstration.
 - `docs/transcripts/spark-sprint-codex-run.md`: realistic Spark Sprint Codex run.
+- `docs/transcripts/empty-game-smoke-run.md`: no-write smoke fixture run through `$cgs-gate-check`.
 - `docs/examples/spark-sprint.md`: example prompt sequence.
 - `docs/getting-started/first-run.md`: Windows and macOS first-run guide.
 - `docs/getting-started/quick-start.md`: copy-paste Codex Desktop and fallback start path.
@@ -48,6 +49,7 @@ Before a v1.x release, check these user-facing surfaces:
 - `docs/platforms/ci.md`: GitHub Actions matrix and local CI reproduction.
 - `docs/community/contributing.md`: contribution and issue-reporting expectations.
 - `docs/releases/`: release notes from `v0.1.0` through the current release.
+- `tests/fixtures/empty-game/production/gates/production-readiness.md`: stable gate-check fixture with expected `BLOCKED` verdict.
 
 ## Validation Gate
 

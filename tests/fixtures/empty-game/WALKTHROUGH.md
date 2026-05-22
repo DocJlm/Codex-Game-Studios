@@ -33,3 +33,11 @@ Expected result:
 - Checks all four acceptance criteria.
 - Names missing evidence: source changes, automated score/timer tests, and manual smoke result.
 - Recommends `$cgs-dev-story` as the next action.
+
+## `$cgs-gate-check`
+
+Expected result:
+- Reads `production/gates/production-readiness.md`, the story, architecture, and smoke checklist.
+- Returns `BLOCKED`, not `PROCEED`, because implementation and test evidence are intentionally absent.
+- Names missing evidence: source files, automated tests, manual smoke result, and story closure.
+- Recommends `$cgs-dev-story` before another gate review.

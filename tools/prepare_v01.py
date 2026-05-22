@@ -12,7 +12,7 @@ PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 EXAMPLE = ROOT / "examples" / "spark-sprint"
-RELEASE_VERSION = "1.6.0"
+RELEASE_VERSION = "1.7.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -558,6 +558,7 @@ Expected smoke path:
 2. `$cgs-project-stage-detect` reports `PRODUCTION` because concept, engine preferences, architecture, epic, and ready story exist.
 3. `$cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md` has a small ready story to inspect.
 4. `$cgs-story-done production/epics/core-loop/STORY-001-player-loop.md` can report missing implementation evidence.
+5. `$cgs-gate-check` reports `BLOCKED` for production closure until implementation and test evidence exist.
 
 See `WALKTHROUGH.md` for the expected transcript shape.
 """,
@@ -596,6 +597,14 @@ Expected result:
 - Checks all four acceptance criteria.
 - Names missing evidence: source changes, automated score/timer tests, and manual smoke result.
 - Recommends `$cgs-dev-story` as the next action.
+
+## `$cgs-gate-check`
+
+Expected result:
+- Reads `production/gates/production-readiness.md`, the story, architecture, and smoke checklist.
+- Returns `BLOCKED`, not `PROCEED`, because implementation and test evidence are intentionally absent.
+- Names missing evidence: source files, automated tests, manual smoke result, and story closure.
+- Recommends `$cgs-dev-story` before another gate review.
 """,
         "AGENTS.md": """# Fixture Agent Guide
 
@@ -665,12 +674,49 @@ Create the smallest playable loop skeleton for the empty game fixture.
 - Add or update unit tests for score and timer logic.
 - Manually smoke test movement, pickup, timeout, and reset.
 """,
+        "production/gates/production-readiness.md": """# Production Gate Fixture
+
+This file gives `$cgs-gate-check` a stable gate-review target for the empty-game smoke fixture.
+
+## Requested Gate
+
+Production story closure for:
+
+```text
+production/epics/core-loop/STORY-001-player-loop.md
+```
+
+## Expected Verdict
+
+Verdict: BLOCKED
+
+## Evidence Present
+
+- Concept: `design/gdd/game-concept.md`
+- Systems index: `design/gdd/systems-index.md`
+- Architecture: `docs/architecture/architecture.md`
+- Control manifest: `docs/architecture/control-manifest.md`
+- Ready story: `production/epics/core-loop/STORY-001-player-loop.md`
+- Smoke checklist: `tests/SMOKE-CHECKLIST.md`
+
+## Missing Implementation Evidence
+
+- Source files under `src/`
+- Automated score and timer tests under `tests/`
+- Manual smoke result for movement, pickup, timeout, and reset
+- Story closure evidence from `$cgs-story-done`
+
+## Expected Next Step
+
+Run `$cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md` before another `$cgs-gate-check`.
+""",
         "tests/SMOKE-CHECKLIST.md": """# Fixture Smoke Checklist
 
 - `$cgs-start`: detects project state and does not recreate existing files unnecessarily.
 - `$cgs-project-stage-detect`: reports production-ready planning artifacts.
 - `$cgs-dev-story`: reads the ready story and proposes scoped files/tests.
 - `$cgs-story-done`: notices implementation evidence is absent until code exists.
+- `$cgs-gate-check`: blocks production closure until implementation, tests, and smoke evidence exist.
 """,
     }
     for relative, content in files.items():
@@ -964,7 +1010,7 @@ Evidence paths:
 Next 3 actions:
 1. $cgs-dev-story for the player loop story.
 2. $cgs-smoke-check to verify static evidence and optional Godot scene loading.
-3. $cgs-story-done to decide whether the story can close.
+3. $cgs-story-done and $cgs-gate-check to decide whether the story and production gate can close.
 ```
 
 ## 3. Pick Up The Story
@@ -1062,10 +1108,44 @@ Evidence:
 - examples/spark-sprint/tests/SMOKE-CHECKLIST.md
 
 No story status edit was needed; the story already says Status: Review.
+Next skill: $cgs-gate-check
+```
+
+## 6. Run A Gate Check
+
+User:
+
+```text
+Use $cgs-gate-check for examples/spark-sprint.
+```
+
+Codex:
+
+```text
+Verdict: PROCEED WITH RISKS
+
+Gate evidence reviewed:
+- examples/spark-sprint/production/epics/core-loop/EPIC.md
+- examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md
+- examples/spark-sprint/docs/architecture/architecture.md
+- examples/spark-sprint/scenes/main.tscn
+- examples/spark-sprint/tests/SMOKE-CHECKLIST.md
+- python tools\\validate_examples.py
+- python tools\\validate_godot_example.py
+
+Why:
+- Static example validation passes.
+- Story acceptance criteria are represented by scene, source, and test drafts.
+- Optional Godot runtime validation either loaded the scene or reported SKIP because Godot was unavailable.
+
+Advisory risk:
+- Manual runtime playtest evidence is still recommended before treating this as production gameplay.
+
+Files updated: none.
 Next skill: $cgs-code-review
 ```
 
-## 6. Review The Example Code
+## 7. Review The Example Code
 
 User:
 
@@ -1091,7 +1171,7 @@ Change summary:
 - No source changes were made during review.
 ```
 
-## 7. Create A QA Plan
+## 8. Create A QA Plan
 
 User:
 
@@ -1129,10 +1209,109 @@ Exit criteria:
 The current run demonstrates the full Spark Sprint loop:
 
 ```text
-$cgs-start -> $cgs-project-stage-detect -> $cgs-dev-story -> $cgs-smoke-check -> $cgs-story-done -> $cgs-code-review -> $cgs-qa-plan
+$cgs-start -> $cgs-project-stage-detect -> $cgs-dev-story -> $cgs-smoke-check -> $cgs-story-done -> $cgs-gate-check -> $cgs-code-review -> $cgs-qa-plan
 ```
 
 The transcript keeps Codex behavior read-first, evidence-based, and explicit about the boundary between required static validation and optional Godot runtime testing.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "transcripts" / "empty-game-smoke-run.md",
+        """# Empty Game Smoke Run Transcript
+
+This transcript is a reproducible no-write smoke pass for `tests/fixtures/empty-game/`.
+
+Project path:
+
+```text
+tests/fixtures/empty-game/
+```
+
+Gate path:
+
+```text
+tests/fixtures/empty-game/production/gates/production-readiness.md
+```
+
+## 1. Start
+
+```text
+Use $cgs-start on tests/fixtures/empty-game. Do not edit files.
+```
+
+Expected:
+
+```text
+Files updated: none.
+Next skill: $cgs-project-stage-detect
+```
+
+## 2. Detect Stage
+
+```text
+Use $cgs-project-stage-detect on tests/fixtures/empty-game. Report stage, evidence, and blockers only.
+```
+
+Expected:
+
+```text
+Verdict: PRODUCTION
+Files updated: none.
+Next skill: $cgs-dev-story
+```
+
+## 3. Pick Up Story
+
+```text
+Use $cgs-dev-story tests/fixtures/empty-game/production/epics/core-loop/STORY-001-player-loop.md. Inspect only.
+```
+
+Expected:
+
+```text
+Readiness: READY
+Files updated: none.
+Next skill: $cgs-story-done after implementation evidence exists.
+```
+
+## 4. Review Story Closure
+
+```text
+Use $cgs-story-done tests/fixtures/empty-game/production/epics/core-loop/STORY-001-player-loop.md.
+```
+
+Expected:
+
+```text
+Verdict: BLOCKED
+Missing evidence: source changes, automated tests, and manual smoke result.
+Files updated: none.
+Next skill: $cgs-dev-story
+```
+
+## 5. Run Gate Check
+
+```text
+Use $cgs-gate-check tests/fixtures/empty-game/production/gates/production-readiness.md.
+```
+
+Expected:
+
+```text
+Verdict: BLOCKED
+Gate evidence reviewed: production/gates/production-readiness.md, story, architecture, and smoke checklist.
+Files updated: none.
+Next skill: $cgs-dev-story
+```
+
+## Final State
+
+```text
+$cgs-start -> $cgs-project-stage-detect -> $cgs-dev-story -> $cgs-story-done -> $cgs-gate-check
+```
+
+Expected final verdict: BLOCKED
 """,
     )
 
@@ -1579,8 +1758,9 @@ Use it to exercise:
 3. `$cgs-dev-story`
 4. `$cgs-smoke-check`
 5. `$cgs-story-done`
-6. `$cgs-code-review`
-7. `$cgs-qa-plan`
+6. `$cgs-gate-check`
+7. `$cgs-code-review`
+8. `$cgs-qa-plan`
 
 The source, scene, and tests are intentionally small and static-validation friendly. If Godot is available, open `project.godot` and run `scenes/main.tscn` to try the playable loop.
 """,
@@ -2067,6 +2247,14 @@ Expected result:
 - Returns `DONE` for static evidence if source, scene, tests, and smoke checklist satisfy the story.
 - Calls out runtime playtest evidence as optional when Godot is unavailable.
 
+## `$cgs-gate-check`
+
+Expected result:
+- Reads the story, epic, architecture, smoke checklist, and optional Godot validation result.
+- Returns `PROCEED WITH RISKS` for static example evidence when validators pass.
+- Calls out runtime playtest evidence as the remaining advisory risk when Godot is unavailable.
+- Recommends `$cgs-code-review` or `$cgs-qa-plan` as the next confidence step.
+
 ## `$cgs-code-review`
 
 Expected result:
@@ -2110,6 +2298,7 @@ Use $cgs-project-stage-detect on examples/spark-sprint.
 Use $cgs-dev-story examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md.
 Use $cgs-smoke-check for examples/spark-sprint.
 Use $cgs-story-done examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md.
+Use $cgs-gate-check for examples/spark-sprint.
 Use $cgs-code-review on the Spark Sprint source draft.
 Use $cgs-qa-plan for the Spark Sprint Core Loop epic.
 ```
@@ -2121,6 +2310,7 @@ Expected behavior:
 - `python tools\\validate_godot_example.py` should report `SKIP` when Godot is unavailable and try to load `scenes/main.tscn` when Godot is available.
 - Codex should cite evidence paths before proposing edits.
 - Runtime playtest evidence should be listed as optional manual follow-up.
+- `$cgs-gate-check` should return `PROCEED WITH RISKS` when static validation passes but manual runtime playtest evidence is still optional.
 """,
     )
 
@@ -2170,6 +2360,7 @@ Before a v1.x release, check these user-facing surfaces:
 - `docs/hooks/runtime-hook-evaluation.md`: no-runtime-hooks decision and future adoption gate.
 - `docs/transcripts/concept-to-story.md`: concept-to-story demonstration.
 - `docs/transcripts/spark-sprint-codex-run.md`: realistic Spark Sprint Codex run.
+- `docs/transcripts/empty-game-smoke-run.md`: no-write smoke fixture run through `$cgs-gate-check`.
 - `docs/examples/spark-sprint.md`: example prompt sequence.
 - `docs/getting-started/first-run.md`: Windows and macOS first-run guide.
 - `docs/getting-started/quick-start.md`: copy-paste Codex Desktop and fallback start path.
@@ -2178,6 +2369,7 @@ Before a v1.x release, check these user-facing surfaces:
 - `docs/platforms/ci.md`: GitHub Actions matrix and local CI reproduction.
 - `docs/community/contributing.md`: contribution and issue-reporting expectations.
 - `docs/releases/`: release notes from `v0.1.0` through the current release.
+- `tests/fixtures/empty-game/production/gates/production-readiness.md`: stable gate-check fixture with expected `BLOCKED` verdict.
 
 ## Validation Gate
 

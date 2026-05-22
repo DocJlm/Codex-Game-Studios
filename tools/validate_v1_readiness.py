@@ -38,6 +38,8 @@ REQUIRED_DOC_TOKENS = [
     "docs/install/upgrade.md",
     "docs/platforms/ci.md",
     "docs/community/contributing.md",
+    "docs/transcripts/empty-game-smoke-run.md",
+    "tests/fixtures/empty-game/production/gates/production-readiness.md",
 ]
 
 REQUIRED_README_TOKENS = [

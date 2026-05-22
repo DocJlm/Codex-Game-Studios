@@ -35,6 +35,14 @@ Expected result:
 - Returns `DONE` for static evidence if source, scene, tests, and smoke checklist satisfy the story.
 - Calls out runtime playtest evidence as optional when Godot is unavailable.
 
+## `$cgs-gate-check`
+
+Expected result:
+- Reads the story, epic, architecture, smoke checklist, and optional Godot validation result.
+- Returns `PROCEED WITH RISKS` for static example evidence when validators pass.
+- Calls out runtime playtest evidence as the remaining advisory risk when Godot is unavailable.
+- Recommends `$cgs-code-review` or `$cgs-qa-plan` as the next confidence step.
+
 ## `$cgs-code-review`
 
 Expected result:

@@ -70,7 +70,7 @@ Evidence paths:
 Next 3 actions:
 1. $cgs-dev-story for the player loop story.
 2. $cgs-smoke-check to verify static evidence and optional Godot scene loading.
-3. $cgs-story-done to decide whether the story can close.
+3. $cgs-story-done and $cgs-gate-check to decide whether the story and production gate can close.
 ```
 
 ## 3. Pick Up The Story
@@ -168,10 +168,44 @@ Evidence:
 - examples/spark-sprint/tests/SMOKE-CHECKLIST.md
 
 No story status edit was needed; the story already says Status: Review.
+Next skill: $cgs-gate-check
+```
+
+## 6. Run A Gate Check
+
+User:
+
+```text
+Use $cgs-gate-check for examples/spark-sprint.
+```
+
+Codex:
+
+```text
+Verdict: PROCEED WITH RISKS
+
+Gate evidence reviewed:
+- examples/spark-sprint/production/epics/core-loop/EPIC.md
+- examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md
+- examples/spark-sprint/docs/architecture/architecture.md
+- examples/spark-sprint/scenes/main.tscn
+- examples/spark-sprint/tests/SMOKE-CHECKLIST.md
+- python tools\validate_examples.py
+- python tools\validate_godot_example.py
+
+Why:
+- Static example validation passes.
+- Story acceptance criteria are represented by scene, source, and test drafts.
+- Optional Godot runtime validation either loaded the scene or reported SKIP because Godot was unavailable.
+
+Advisory risk:
+- Manual runtime playtest evidence is still recommended before treating this as production gameplay.
+
+Files updated: none.
 Next skill: $cgs-code-review
 ```
 
-## 6. Review The Example Code
+## 7. Review The Example Code
 
 User:
 
@@ -197,7 +231,7 @@ Change summary:
 - No source changes were made during review.
 ```
 
-## 7. Create A QA Plan
+## 8. Create A QA Plan
 
 User:
 
@@ -235,7 +269,7 @@ Exit criteria:
 The current run demonstrates the full Spark Sprint loop:
 
 ```text
-$cgs-start -> $cgs-project-stage-detect -> $cgs-dev-story -> $cgs-smoke-check -> $cgs-story-done -> $cgs-code-review -> $cgs-qa-plan
+$cgs-start -> $cgs-project-stage-detect -> $cgs-dev-story -> $cgs-smoke-check -> $cgs-story-done -> $cgs-gate-check -> $cgs-code-review -> $cgs-qa-plan
 ```
 
 The transcript keeps Codex behavior read-first, evidence-based, and explicit about the boundary between required static validation and optional Godot runtime testing.

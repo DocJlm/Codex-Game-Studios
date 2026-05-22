@@ -46,5 +46,6 @@ Codex Game Studios intentionally does not install Claude runtime hooks. The 12 u
 - v1.4.0 completed the first Codex-native operating pass for the remaining 50 full-migration skills.
 - v1.5.0 completed testing framework path cleanup and added regression validation for repo-local spec paths.
 - v1.6.0 completed user-facing Codex Desktop setup, upgrade, CI, quick-start, and contribution documentation with regression validation.
-- v1.7.0 should expand examples and smoke fixtures across `$cgs-start`, `$cgs-dev-story`, `$cgs-story-done`, and `$cgs-gate-check`.
+- v1.7.0 expanded examples and smoke fixtures across `$cgs-start`, `$cgs-dev-story`, `$cgs-story-done`, and `$cgs-gate-check`.
+- v2.0.0 should run the final parity gate and verify the Codex-native complete-port claim.
 - v1.7.0 should deepen executable examples and smoke evidence across the main workflow loop.

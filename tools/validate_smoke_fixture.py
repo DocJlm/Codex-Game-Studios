@@ -23,10 +23,17 @@ REQUIRED_FILES = [
     "docs/architecture/control-manifest.md",
     "production/epics/core-loop/EPIC.md",
     "production/epics/core-loop/STORY-001-player-loop.md",
+    "production/gates/production-readiness.md",
     "tests/SMOKE-CHECKLIST.md",
 ]
 
-EXPECTED_SKILLS = ["$cgs-start", "$cgs-project-stage-detect", "$cgs-dev-story", "$cgs-story-done"]
+EXPECTED_SKILLS = [
+    "$cgs-start",
+    "$cgs-project-stage-detect",
+    "$cgs-dev-story",
+    "$cgs-story-done",
+    "$cgs-gate-check",
+]
 
 
 def main() -> int:
@@ -50,13 +57,25 @@ def main() -> int:
             if skill not in text:
                 errors.append(f"smoke checklist missing {skill}")
 
+    gate = FIXTURE / "production/gates/production-readiness.md"
+    if gate.exists():
+        text = gate.read_text(encoding="utf-8")
+        for token in [
+            "Verdict: BLOCKED",
+            "Missing Implementation Evidence",
+            "production/epics/core-loop/STORY-001-player-loop.md",
+            "$cgs-gate-check",
+        ]:
+            if token not in text:
+                errors.append(f"gate fixture missing token: {token}")
+
     walkthrough = FIXTURE / "WALKTHROUGH.md"
     if walkthrough.exists():
         text = walkthrough.read_text(encoding="utf-8")
         for skill in EXPECTED_SKILLS:
             if skill not in text:
                 errors.append(f"walkthrough missing {skill}")
-        for token in ["Expected result", "PRODUCTION", "NEEDS FIXES"]:
+        for token in ["Expected result", "PRODUCTION", "NEEDS FIXES", "BLOCKED"]:
             if token not in text:
                 errors.append(f"walkthrough missing token: {token}")
 

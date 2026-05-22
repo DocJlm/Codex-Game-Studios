@@ -22,6 +22,7 @@ Use $cgs-project-stage-detect on examples/spark-sprint.
 Use $cgs-dev-story examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md.
 Use $cgs-smoke-check for examples/spark-sprint.
 Use $cgs-story-done examples/spark-sprint/production/epics/core-loop/STORY-001-player-loop.md.
+Use $cgs-gate-check for examples/spark-sprint.
 Use $cgs-code-review on the Spark Sprint source draft.
 Use $cgs-qa-plan for the Spark Sprint Core Loop epic.
 ```
@@ -33,3 +34,4 @@ Expected behavior:
 - `python tools\validate_godot_example.py` should report `SKIP` when Godot is unavailable and try to load `scenes/main.tscn` when Godot is available.
 - Codex should cite evidence paths before proposing edits.
 - Runtime playtest evidence should be listed as optional manual follow-up.
+- `$cgs-gate-check` should return `PROCEED WITH RISKS` when static validation passes but manual runtime playtest evidence is still optional.

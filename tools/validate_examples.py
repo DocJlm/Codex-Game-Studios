@@ -42,6 +42,7 @@ REQUIRED_SKILLS = [
     "$cgs-dev-story",
     "$cgs-smoke-check",
     "$cgs-story-done",
+    "$cgs-gate-check",
     "$cgs-code-review",
     "$cgs-qa-plan",
 ]

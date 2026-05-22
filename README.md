@@ -152,6 +152,7 @@ It is intentionally small and does not contain a real game implementation. See `
 
 For a fuller concept-to-story demonstration, see `docs/transcripts/concept-to-story.md`.
 For a realistic Spark Sprint Codex pass, see `docs/transcripts/spark-sprint-codex-run.md`.
+For the no-write smoke fixture pass through `$cgs-gate-check`, see `docs/transcripts/empty-game-smoke-run.md`.
 
 ## Examples
 
@@ -185,6 +186,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.7.0`: expanded Spark Sprint and empty-game smoke evidence through `$cgs-gate-check`. See `docs/releases/v1.7.0.md`.
 - `v1.6.0`: Codex Desktop, upgrade, CI, quick-start, and contribution docs with user-doc validation. See `docs/releases/v1.6.0.md`.
 - `v1.5.0`: repo-local testing framework path cleanup and validator. See `docs/releases/v1.5.0.md`.
 - `v1.4.0`: Codex-native migration pass for the remaining full-migration skills. See `docs/releases/v1.4.0.md`.

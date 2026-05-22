@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 TRANSCRIPT = ROOT / "docs" / "transcripts" / "concept-to-story.md"
 SPARK_SPRINT_TRANSCRIPT = ROOT / "docs" / "transcripts" / "spark-sprint-codex-run.md"
+EMPTY_GAME_TRANSCRIPT = ROOT / "docs" / "transcripts" / "empty-game-smoke-run.md"
 WORKFLOW_NOTES = ROOT / "docs" / "workflows" / "high-frequency-workflows.md"
 
 REQUIRED_SKILLS = [
@@ -53,6 +54,7 @@ def main() -> int:
     errors: list[str] = []
     transcript = check_file(TRANSCRIPT, errors)
     spark_sprint = check_file(SPARK_SPRINT_TRANSCRIPT, errors)
+    empty_game = check_file(EMPTY_GAME_TRANSCRIPT, errors)
     notes = check_file(WORKFLOW_NOTES, errors)
 
     for skill in REQUIRED_SKILLS:
@@ -69,6 +71,7 @@ def main() -> int:
         "$cgs-dev-story",
         "$cgs-smoke-check",
         "$cgs-story-done",
+        "$cgs-gate-check",
         "$cgs-code-review",
         "$cgs-qa-plan",
     ]:
@@ -84,9 +87,30 @@ def main() -> int:
         "scenes/main.tscn",
         "optional Godot runtime testing",
         "Final State",
+        "PROCEED WITH RISKS",
     ]:
         if token not in spark_sprint:
             errors.append(f"spark sprint transcript missing token: {token}")
+
+    for skill in [
+        "$cgs-start",
+        "$cgs-project-stage-detect",
+        "$cgs-dev-story",
+        "$cgs-story-done",
+        "$cgs-gate-check",
+    ]:
+        if skill not in empty_game:
+            errors.append(f"empty game transcript missing {skill}")
+
+    for token in [
+        "tests/fixtures/empty-game/",
+        "production/gates/production-readiness.md",
+        "Verdict: BLOCKED",
+        "Files updated: none",
+        "Expected final verdict: BLOCKED",
+    ]:
+        if token not in empty_game:
+            errors.append(f"empty game transcript missing token: {token}")
 
     for skill in ["$cgs-code-review", "$cgs-qa-plan", "$cgs-smoke-check"]:
         if skill not in notes:
@@ -101,6 +125,7 @@ def main() -> int:
     print("Transcript validation passed")
     print(f"- transcript: {TRANSCRIPT.relative_to(ROOT).as_posix()}")
     print(f"- spark sprint transcript: {SPARK_SPRINT_TRANSCRIPT.relative_to(ROOT).as_posix()}")
+    print(f"- empty game transcript: {EMPTY_GAME_TRANSCRIPT.relative_to(ROOT).as_posix()}")
     print(f"- workflow notes: {WORKFLOW_NOTES.relative_to(ROOT).as_posix()}")
     return 0
 

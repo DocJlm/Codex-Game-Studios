@@ -9,7 +9,8 @@ Use it to exercise:
 3. `$cgs-dev-story`
 4. `$cgs-smoke-check`
 5. `$cgs-story-done`
-6. `$cgs-code-review`
-7. `$cgs-qa-plan`
+6. `$cgs-gate-check`
+7. `$cgs-code-review`
+8. `$cgs-qa-plan`
 
 The source, scene, and tests are intentionally small and static-validation friendly. If Godot is available, open `project.godot` and run `scenes/main.tscn` to try the playable loop.

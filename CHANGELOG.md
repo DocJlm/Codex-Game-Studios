@@ -2,6 +2,14 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.7.0 - 2026-05-22
+
+- Added a no-write empty-game smoke transcript covering `$cgs-start`, `$cgs-project-stage-detect`, `$cgs-dev-story`, `$cgs-story-done`, and `$cgs-gate-check`.
+- Added an empty-game production gate fixture with an expected `BLOCKED` verdict.
+- Expanded Spark Sprint docs, walkthrough, and transcript to include `$cgs-gate-check` and `PROCEED WITH RISKS` evidence.
+- Extended smoke fixture, transcript, and example validators for the new gate-check coverage.
+- Bumped plugin metadata to `1.7.0`.
+
 ## v1.6.0 - 2026-05-22
 
 - Added Codex Desktop, upgrade, CI, quick-start, and contribution documentation.
