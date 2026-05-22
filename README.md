@@ -173,6 +173,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.2.1`: Godot runtime validation hardening for Spark Sprint. See `docs/releases/v1.2.1.md`.
 - `v1.2.0`: optional runnable Spark Sprint Godot example. See `docs/releases/v1.2.0.md`.
 - `v1.1.0`: Windows and macOS cross-platform validation and usage docs. See `docs/releases/v1.1.0.md`.
 - `v1.0.0`: v1 readiness freeze checklist and compatibility gate. See `docs/releases/v1.0.0.md`.

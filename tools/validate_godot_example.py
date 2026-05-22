@@ -119,6 +119,10 @@ def validate_runtime(godot: str) -> int:
     if result.returncode != 0:
         print(f"Godot example validation failed with exit code {result.returncode}")
         return result.returncode
+    runtime_error_tokens = ["SCRIPT ERROR:", "ERROR:"]
+    if any(token in output for token in runtime_error_tokens):
+        print("Godot example validation failed: runtime output contains Godot errors")
+        return 1
 
     print("Godot example runtime validation passed")
     return 0

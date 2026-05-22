@@ -2,6 +2,12 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.2.1 - 2026-05-22
+
+- Fixed the runnable Spark Sprint Godot scene load by avoiding typed node references that are unavailable without `class_name` registration.
+- Hardened `tools/validate_godot_example.py` so Godot runtime `SCRIPT ERROR:` or `ERROR:` output fails validation even when Godot exits with code 0.
+- Bumped plugin metadata to `1.2.1`.
+
 ## v1.2.0 - 2026-05-22
 
 - Upgraded `examples/spark-sprint/` from a static fixture to an optional runnable Godot 4.x example.

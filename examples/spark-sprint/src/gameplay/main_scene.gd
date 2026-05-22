@@ -1,9 +1,9 @@
 extends Node2D
 
-@onready var game_controller: GameController = $GameController
-@onready var player: PlayerController = $Player
-@onready var spark: Collectible = $Spark
-@onready var hud: Hud = $CanvasLayer/Hud
+@onready var game_controller = $GameController
+@onready var player = $Player
+@onready var spark = $Spark
+@onready var hud = $CanvasLayer/Hud
 
 var _reset_key_down := false
 
