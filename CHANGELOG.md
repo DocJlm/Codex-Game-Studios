@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.0.0 - 2026-05-22
+
+- Added `docs/v1-readiness/freeze-checklist.md` to define frozen public interfaces, validation gates, fresh clone requirements, and compatibility policy.
+- Added `tools/validate_v1_readiness.py` and wired it into GitHub Actions.
+- Updated README and AGENTS validation checklists for the v1 readiness gate.
+- Bumped regenerated plugin metadata to `1.0.0`.
+
 ## v0.9.0 - 2026-05-22
 
 - Added `docs/install/field-test-2026-05-22.md` with current local plugin discovery behavior, success signs, fallback signs, and reporting guidance.

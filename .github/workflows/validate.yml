@@ -45,6 +45,9 @@ jobs:
       - name: Validate workflow polish
         run: python tools/validate_workflow_polish.py
 
+      - name: Validate v1 readiness
+        run: python tools/validate_v1_readiness.py
+
       - name: Validate JSON manifests
         run: |
           python -m json.tool plugins/codex-game-studios/.codex-plugin/plugin.json > /dev/null

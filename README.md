@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 11 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/validate_plugin_install_docs.py`, `tools/validate_hook_policy.py`, `tools/validate_examples.py`, `tools/validate_workflow_polish.py`, `tools/scan_legacy_tokens.py` |
+| Validation scripts | 12 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/validate_plugin_install_docs.py`, `tools/validate_hook_policy.py`, `tools/validate_examples.py`, `tools/validate_workflow_polish.py`, `tools/validate_v1_readiness.py`, `tools/scan_legacy_tokens.py` |
 
 ## Quick Start
 
@@ -93,6 +93,7 @@ python tools\validate_plugin_install_docs.py
 python tools\validate_hook_policy.py
 python tools\validate_examples.py
 python tools\validate_workflow_polish.py
+python tools\validate_v1_readiness.py
 python tools\scan_legacy_tokens.py
 ```
 
@@ -109,6 +110,7 @@ python tools\validate_plugin_install_docs.py
 python tools\validate_hook_policy.py
 python tools\validate_examples.py
 python tools\validate_workflow_polish.py
+python tools\validate_v1_readiness.py
 python tools\scan_legacy_tokens.py
 ```
 
@@ -138,6 +140,10 @@ See `docs/examples/spark-sprint.md` for the prompt sequence.
 
 Local plugin installation depends on the Codex build you are using. The supported discovery files and fallback prompts are documented in `docs/install/local-plugin.md`. The current dated field note is `docs/install/field-test-2026-05-22.md`.
 
+## v1 Readiness
+
+The frozen public interfaces and release gates are documented in `docs/v1-readiness/freeze-checklist.md`. CI runs `tools\validate_v1_readiness.py` to keep the checklist aligned with README, AGENTS, plugin metadata, and marketplace config.
+
 ## Hook Policy
 
 Claude hooks are not installed as Codex runtime hooks. Legacy hook scripts are preserved under `plugins/codex-game-studios/scripts/checks/legacy-claude-hooks/` for reference only. Safety behavior is handled by explicit validation scripts and skill instructions. See `docs/hooks/runtime-hook-evaluation.md` for the current decision and future adoption gate.
@@ -148,6 +154,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.0.0`: v1 readiness freeze checklist and compatibility gate. See `docs/releases/v1.0.0.md`.
 - `v0.9.0`: local plugin discovery field test notes. See `docs/releases/v0.9.0.md`.
 - `v0.8.0`: realistic Spark Sprint Codex run transcript. See `docs/releases/v0.8.0.md`.
 - `v0.7.0`: second-batch production workflow polish. See `docs/releases/v0.7.0.md`.
