@@ -20,6 +20,7 @@ VALIDATORS = [
     "validate_hook_policy.py",
     "validate_examples.py",
     "validate_godot_example.py",
+    "validate_moonlight_godot.py",
     "validate_upstream_parity.py",
     "validate_codex_native_skills.py",
     "validate_testing_framework_paths.py",

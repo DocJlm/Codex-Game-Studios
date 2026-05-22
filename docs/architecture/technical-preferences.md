@@ -31,9 +31,10 @@ Review mode: lean, with full review for phase gates
 ```bash
 python3 tools/run_all_validators.py
 python3 tools/validate_moonlight_dispatch.py
+python3 tools/validate_moonlight_godot.py
 ```
 
-Godot runtime checks will be added once `project.godot` and the first playable scene exist.
+Godot runtime checks load `scenes/main.tscn` when Godot 4.x is available.
 
 ## Performance Budget
 
