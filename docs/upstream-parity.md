@@ -14,7 +14,7 @@ This report tracks capability parity, not byte-for-byte runtime parity. Codex Ga
 | `.claude/docs/templates/*.md` | 40 | `plugins/codex-game-studios/assets/templates/*.md` | 40 | Complete, exact relative path set |
 | `.claude/hooks/*.sh` | 12 | Reference scripts plus explicit validators and skill instructions | 12 reference scripts | Complete as non-runtime parity |
 | `.claude/docs/*.md` and `workflow-catalog.yaml` | 22 docs plus templates | `plugins/codex-game-studios/references/studio-docs/` | Mirrored reference set | Complete as reference material |
-| `CCGS Skill Testing Framework/` | 126 Markdown specs/docs | `plugins/codex-game-studios/references/testing-framework/` | Mirrored reference set | Present, path cleanup planned for v1.5.0 |
+| Upstream skill testing framework | 126 Markdown specs/docs | `plugins/codex-game-studios/references/testing-framework/` | Mirrored reference set | Complete with repo-local paths |
 
 ## Template Count Evidence
 
@@ -44,6 +44,6 @@ Codex Game Studios intentionally does not install Claude runtime hooks. The 12 u
 ## Parity Roadmap
 
 - v1.4.0 completed the first Codex-native operating pass for the remaining 50 full-migration skills.
-- v1.5.0 should rewrite stale `CCGS Skill Testing Framework/...` references to repo-local paths and validate that they do not regress.
+- v1.5.0 completed testing framework path cleanup and added regression validation for repo-local spec paths.
 - v1.6.0 should round out user-facing install, upgrade, community, and contribution documentation for Codex Desktop users.
 - v1.7.0 should deepen executable examples and smoke evidence across the main workflow loop.

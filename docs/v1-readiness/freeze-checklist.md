@@ -74,6 +74,7 @@ python tools\validate_examples.py
 python tools\validate_godot_example.py
 python tools\validate_upstream_parity.py
 python tools\validate_codex_native_skills.py
+python tools\validate_testing_framework_paths.py
 python tools\validate_workflow_polish.py
 python tools\validate_v1_readiness.py
 python tools\validate_cross_platform.py

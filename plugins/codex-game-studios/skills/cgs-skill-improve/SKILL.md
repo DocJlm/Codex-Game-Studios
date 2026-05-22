@@ -29,7 +29,7 @@ Usage: $cgs-skill-improve [skill-name]
 Example: $cgs-skill-improve tech-debt
 ```
 
-Verify `plugins/codex-game-studios/skills/[name]/SKILL.md` exists. If not, stop with:
+Verify `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md` exists. If not, stop with:
 "Skill '[name]' not found."
 
 ---
@@ -51,7 +51,7 @@ If baseline is 0 FAILs and 0 WARNs, note it and proceed to Phase 2b.
 
 ### Phase 2b: Category Baseline
 
-Look up the skill's `category:` field in `CCGS Skill Testing Framework/catalog.yaml`.
+Look up the skill's `category:` field in `plugins/codex-game-studios/references/testing-framework/catalog.yaml`.
 
 If no `category:` field is found, display:
 "Category: not yet assigned -- skipping category checks."
@@ -74,7 +74,7 @@ If BOTH static and category baselines are 0 FAILs and 0 WARNs, stop:
 
 ## Phase 3: Diagnose
 
-Read the full skill file at `plugins/codex-game-studios/skills/[name]/SKILL.md`.
+Read the full skill file at `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md`.
 
 For each failing or warning **static** check, identify the exact gap:
 
@@ -104,7 +104,7 @@ Write a targeted fix for each failure and warning. Show the proposed changes
 as clearly marked before/after blocks. Only change what is failing -- do not
 rewrite sections that are passing.
 
-Ask: "May I write this improved version to `plugins/codex-game-studios/skills/[name]/SKILL.md`?"
+Ask: "May I write this improved version to `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md`?"
 
 If the user says no, stop here.
 
@@ -114,7 +114,7 @@ If the user says no, stop here.
 
 Record the current content of the skill file (for revert if needed).
 
-Write the improved skill to `plugins/codex-game-studios/skills/[name]/SKILL.md`.
+Write the improved skill to `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md`.
 
 Re-run `$cgs-skill-test static [name]` and record the new static score.
 If a category was assigned, also re-run `$cgs-skill-test category [name]` and record the new category score.
@@ -139,8 +139,8 @@ Show a summary of what was fixed in each dimension.
 **If combined score is the same or worse:**
 Report: "Combined score did not improve."
 Show what changed and why it may not have helped.
-Ask: "May I revert `plugins/codex-game-studios/skills/[name]/SKILL.md` using git checkout?"
-If yes: run `git checkout -- plugins/codex-game-studios/skills/[name]/SKILL.md`
+Ask: "May I restore `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md` from the recorded baseline content?"
+If yes: write back the recorded baseline content and re-run the relevant validators.
 
 ---
 

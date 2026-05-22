@@ -15,7 +15,7 @@ description: "Codex Game Studios skill adapted from original /skill-test. Use wh
 
 # Skill Test
 
-Validates `plugins/codex-game-studios/skills/*/SKILL.md` files for structural compliance and
+Validates `plugins/codex-game-studios/skills/cgs-*/SKILL.md` files for structural compliance and
 behavioral correctness. No external dependencies -- runs entirely within the
 existing skill/hook/template architecture.
 
@@ -35,9 +35,9 @@ existing skill/hook/template architecture.
 Determine mode from the first argument:
 
 - `static [name]` -> run 7 structural checks on one skill
-- `static all` -> run 7 structural checks on all skills (Glob `plugins/codex-game-studios/skills/*/SKILL.md`)
+- `static all` -> run 7 structural checks on all skills (Glob `plugins/codex-game-studios/skills/cgs-*/SKILL.md`)
 - `spec [name]` -> read skill + test spec, evaluate assertions
-- `category [name]` -> run category-specific rubric from `CCGS Skill Testing Framework/quality-rubric.md`
+- `category [name]` -> run category-specific rubric from `plugins/codex-game-studios/references/testing-framework/quality-rubric.md`
 - `category all` -> run category rubric for every skill that has a `category:` in catalog
 - `audit` (or no argument) -> read catalog, list all skills and agents, show coverage
 
@@ -126,7 +126,7 @@ Recommended: Add a "Follow-Up Actions" section at the end of the skill.
 
 For `static all`, produce a summary table then list any non-compliant skills:
 ```
-=== Skill Static Check: All 52 Skills ===
+=== Skill Static Check: All 73 Skills ===
 
 Skill                  | Result       | Issues
 -----------------------|--------------|-------
@@ -145,8 +145,8 @@ Aggregate Verdict: N WARNINGS / N FAILURES
 
 ### Step 1 -- Locate Files
 
-Find skill at `plugins/codex-game-studios/skills/[name]/SKILL.md`.
-Look up the spec path from `CCGS Skill Testing Framework/catalog.yaml` -- use the
+Find skill at `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md`.
+Look up the spec path from `plugins/codex-game-studios/references/testing-framework/catalog.yaml` -- use the
 `spec:` field for the matching skill entry.
 
 If either is missing:
@@ -187,7 +187,7 @@ For **Protocol Compliance** assertions (always present):
 ```
 === Skill Spec Test: /[name] ===
 Date: [date]
-Spec: CCGS Skill Testing Framework/skills/[category]/[name].md
+Spec: plugins/codex-game-studios/references/testing-framework/skills/[category]/[name].md
 
 Case 1: [Happy Path -- name]
   Fixture: [summary]
@@ -211,12 +211,12 @@ Overall Verdict: FAIL (1 case failed, 1 warning)
 
 ### Step 5 -- Offer to Write Results
 
-"May I write these results to `CCGS Skill Testing Framework/results/skill-test-spec-[name]-[date].md`
-and update `CCGS Skill Testing Framework/catalog.yaml`?"
+"May I write these results to `plugins/codex-game-studios/references/testing-framework/results/skill-test-spec-[name]-[date].md`
+and update `plugins/codex-game-studios/references/testing-framework/catalog.yaml`?"
 
 If yes:
-- Write results file to `CCGS Skill Testing Framework/results/`
-- Update the skill's entry in `CCGS Skill Testing Framework/catalog.yaml`:
+- Write results file to `plugins/codex-game-studios/references/testing-framework/results/`
+- Update the skill's entry in `plugins/codex-game-studios/references/testing-framework/catalog.yaml`:
   - `last_spec: [date]`
   - `last_spec_result: PASS|PARTIAL|FAIL`
 
@@ -226,8 +226,8 @@ If yes:
 
 ### Step 1 -- Locate Skill and Category
 
-Find skill at `plugins/codex-game-studios/skills/[name]/SKILL.md`.
-Look up `category:` field in `CCGS Skill Testing Framework/catalog.yaml`.
+Find skill at `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md`.
+Look up `category:` field in `plugins/codex-game-studios/references/testing-framework/catalog.yaml`.
 
 If skill not found: "Skill '[name]' not found."
 If no `category:` field: "No category assigned for '[name]' in catalog.yaml.
@@ -239,7 +239,7 @@ For `category all`: collect all skills with a `category:` field and process each
 
 ### Step 2 -- Read Rubric Section
 
-Read `CCGS Skill Testing Framework/quality-rubric.md`.
+Read `plugins/codex-game-studios/references/testing-framework/quality-rubric.md`.
 Extract the section matching the skill's category (e.g., `### gate`, `### team`).
 
 ### Step 3 -- Read Skill
@@ -273,7 +273,7 @@ Fix: Add TD-PHASE-GATE, PR-PHASE-GATE, and AD-PHASE-GATE to the full-mode direct
 
 ### Step 6 -- Offer to Update Catalog
 
-"May I update `CCGS Skill Testing Framework/catalog.yaml` to record this category check
+"May I update `plugins/codex-game-studios/references/testing-framework/catalog.yaml` to record this category check
 (`last_category`, `last_category_result`) for [name]?"
 
 ---
@@ -282,21 +282,21 @@ Fix: Add TD-PHASE-GATE, PR-PHASE-GATE, and AD-PHASE-GATE to the full-mode direct
 
 ### Step 1 -- Read Catalog
 
-Read `CCGS Skill Testing Framework/catalog.yaml`. If missing, note that catalog doesn't exist
+Read `plugins/codex-game-studios/references/testing-framework/catalog.yaml`. If missing, note that catalog doesn't exist
 yet (first-run state).
 
 ### Step 2 -- Enumerate All Skills and Agents
 
-Glob `plugins/codex-game-studios/skills/*/SKILL.md` to get the complete list of skills.
+Glob `plugins/codex-game-studios/skills/cgs-*/SKILL.md` to get the complete list of skills.
 Extract skill name from each path (directory name).
 
-Also read the `role cards:` section from `CCGS Skill Testing Framework/catalog.yaml` to get the
+Also read the `agents:` section from `plugins/codex-game-studios/references/testing-framework/catalog.yaml` to get the
 complete list of agents.
 
 ### Step 3 -- Build Skill Coverage Table
 
 For each skill:
-- Check if a spec file exists (use the `spec:` path from catalog, or glob `CCGS Skill Testing Framework/skills/*/[name].md`)
+- Check if a spec file exists (use the `spec:` path from catalog, or glob `plugins/codex-game-studios/references/testing-framework/skills/*/[name].md`)
 - Look up `last_static`, `last_static_result`, `last_spec`, `last_spec_result`,
   `last_category`, `last_category_result`, `category` from catalog (or mark as
   "never" / "--" if not in catalog)
@@ -305,7 +305,7 @@ For each skill:
 ### Step 3b -- Build Agent Coverage Table
 
 For each agent in catalog's `role cards:` section:
-- Check if a spec file exists (use the `spec:` path from catalog, or glob `CCGS Skill Testing Framework/agents/*/[name].md`)
+- Check if a spec file exists (use the `spec:` path from catalog, or glob `plugins/codex-game-studios/references/testing-framework/agents/*/[name].md`)
 - Look up `last_spec`, `last_spec_result`, `category` from catalog
 
 ### Step 4 -- Output Report
@@ -314,7 +314,7 @@ For each agent in catalog's `role cards:` section:
 === Skill Test Coverage Audit ===
 Date: [date]
 
-SKILLS (72 total)
+SKILLS (73 total)
 Specs written: 72 (100%) | Never static tested: 72 | Never category tested: 72
 
 Skill                  | Cat      | Has Spec | Last Static | S.Result | Last Cat | C.Result | Priority
@@ -335,7 +335,7 @@ technical-director     | director   | YES      | never       | --
 Top 5 Priority Gaps (skills with no spec, critical/high priority):
 (none if all specs are written)
 
-Skill coverage:  72/72 specs (100%)
+Skill coverage:  73/73 specs (100%)
 Agent coverage:  49/49 specs (100%)
 ```
 
@@ -355,9 +355,9 @@ After any mode completes, offer contextual follow-up:
   correctness if a test spec exists."
 - After `static all` with failures: "Address NON-COMPLIANT skills first. Run
   `$cgs-skill-test static [name]` individually for detailed remediation guidance."
-- After `spec [name]` PASS: "Update `CCGS Skill Testing Framework/catalog.yaml` to record this
+- After `spec [name]` PASS: "Update `plugins/codex-game-studios/references/testing-framework/catalog.yaml` to record this
   pass date. Consider running `$cgs-skill-test audit` to find the next spec gap."
 - After `spec [name]` FAIL: "Review the failing assertions and update the skill
   or the test spec to resolve the mismatch."
 - After `audit`: "Start with the critical-priority gaps. Use the spec template
-  at `CCGS Skill Testing Framework/templates/skill-test-spec.md` to create new specs."
+  at `plugins/codex-game-studios/references/testing-framework/templates/skill-test-spec.md` to create new specs."

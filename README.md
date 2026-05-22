@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40 | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 17 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
+| Validation scripts | 18 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, `tools/validate_godot_example.py`, plus the structural validators under `tools/` |
 
 ## Quick Start
 
@@ -177,6 +177,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.5.0`: repo-local testing framework path cleanup and validator. See `docs/releases/v1.5.0.md`.
 - `v1.4.0`: Codex-native migration pass for the remaining full-migration skills. See `docs/releases/v1.4.0.md`.
 - `v1.3.0`: upstream parity report and validator. See `docs/releases/v1.3.0.md`.
 - `v1.2.1`: Godot runtime validation hardening for Spark Sprint. See `docs/releases/v1.2.1.md`.

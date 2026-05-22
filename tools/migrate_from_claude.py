@@ -129,6 +129,7 @@ def replace_legacy_runtime_paths(text: str) -> str:
         ".claude/hooks/": "plugins/codex-game-studios/scripts/checks/",
         ".claude/agent-memory/": "production/agent-memory/",
         ".claude/": "plugins/codex-game-studios/",
+        "CCGS Skill Testing Framework/": "plugins/codex-game-studios/references/testing-framework/",
     }
     for old, new in replacements.items():
         text = text.replace(old, new)
@@ -223,7 +224,7 @@ def transform_text_tree(root: Path) -> None:
 def write_manifest_files() -> None:
     plugin_json = {
         "name": "codex-game-studios",
-        "version": "1.4.0",
+        "version": "1.5.0",
         "description": "Codex plugin and project template for structured solo and small-team game development workflows.",
         "author": {
             "name": "DocJlm",
@@ -391,6 +392,9 @@ def main() -> None:
     transform_text_tree(REFERENCE_TARGET / "rules")
     transform_text_tree(REFERENCE_TARGET / "testing-framework")
     transform_text_tree(ASSET_TARGET / "templates")
+    testing_claude = REFERENCE_TARGET / "testing-framework" / "CLAUDE.md"
+    if testing_claude.exists():
+        testing_claude.rename(REFERENCE_TARGET / "testing-framework" / "AGENTS.md")
 
     write_manifest_files()
     write_reference_indexes()

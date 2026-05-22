@@ -17,10 +17,10 @@ framework. It is self-contained and separate from any game project.
 
 ## Path conventions
 
-- Skill specs: `CCGS Skill Testing Framework/skills/[category]/[name].md`
-- Agent specs: `CCGS Skill Testing Framework/agents/[tier]/[name].md`
-- Catalog: `CCGS Skill Testing Framework/catalog.yaml`
-- Rubric: `CCGS Skill Testing Framework/quality-rubric.md`
+- Skill specs: `plugins/codex-game-studios/references/testing-framework/skills/[category]/[name].md`
+- Agent specs: `plugins/codex-game-studios/references/testing-framework/agents/[tier]/[name].md`
+- Catalog: `plugins/codex-game-studios/references/testing-framework/catalog.yaml`
+- Rubric: `plugins/codex-game-studios/references/testing-framework/quality-rubric.md`
 
 The `spec:` field in `catalog.yaml` is the authoritative path for each skill/agent spec.
 Always read it rather than guessing the path.
@@ -69,7 +69,7 @@ creative    → writer, world-builder, game-designer, economy-designer,
 ## Workflow for testing a skill
 
 1. Read `catalog.yaml` to get the skill's `spec:` path and `category:`
-2. Read the skill at `plugins/codex-game-studios/skills/[name]/SKILL.md`
+2. Read the skill at `plugins/codex-game-studios/skills/cgs-[name]/SKILL.md`
 3. Read the spec at the `spec:` path
 4. Evaluate assertions case by case
 5. Offer to write results to `results/` and update `catalog.yaml`

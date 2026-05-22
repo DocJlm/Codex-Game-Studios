@@ -5,14 +5,14 @@ Tests the skills and agents themselves — not any game built with them.
 
 > **This folder is self-contained and optional.**
 > Game developers using CCGS don't need it. To remove it entirely:
-> `rm -rf "CCGS Skill Testing Framework"` — nothing in `plugins/codex-game-studios/` depends on it.
+> `rm -rf plugins/codex-game-studios/references/testing-framework` — nothing in `plugins/codex-game-studios/` depends on it.
 
 ---
 
 ## What's in here
 
 ```
-CCGS Skill Testing Framework/
+plugins/codex-game-studios/references/testing-framework/
 ├── README.md              ← you are here
 ├── AGENTS.md              ← tells Codex how to use this framework
 ├── catalog.yaml           ← master registry: all 73 skills + 49 agents, coverage tracking
@@ -142,7 +142,7 @@ $cgs-skill-improve gate-check           # Test → diagnose → propose fix → 
 This folder has no hooks into the main project. To remove:
 
 ```bash
-rm -rf "CCGS Skill Testing Framework"
+rm -rf plugins/codex-game-studios/references/testing-framework
 ```
 
 The skills `$cgs-skill-test` and `$cgs-skill-improve` will still function — they'll simply

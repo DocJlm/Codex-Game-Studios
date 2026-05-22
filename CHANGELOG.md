@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.5.0 - 2026-05-22
+
+- Replaced stale testing framework root path references with repo-local `plugins/codex-game-studios/references/testing-framework/...` paths.
+- Renamed the testing framework instruction file from `CLAUDE.md` to `AGENTS.md`.
+- Added `tools/validate_testing_framework_paths.py` and wired it into `tools/run_all_validators.py`.
+- Bumped plugin metadata to `1.5.0`.
+
 ## v1.4.0 - 2026-05-22
 
 - Converted the remaining 50 full-migration skills to Codex-native operating notes.
