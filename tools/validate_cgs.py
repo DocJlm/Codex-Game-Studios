@@ -20,7 +20,7 @@ MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 EXPECTED_SKILLS = 73
 EXPECTED_ROLE_CARDS = 49
 EXPECTED_RULES = 11
-EXPECTED_VERSION = "0.4.0"
+EXPECTED_VERSION = "0.5.0"
 EXPECTED_REPOSITORY = "https://github.com/DocJlm/Codex-Game-Studios"
 
 
@@ -75,7 +75,7 @@ def validate_plugin_json(errors: list[str]) -> None:
     if data.get("skills") != "./skills/":
         fail(errors, "plugin.json skills path must be ./skills/")
     if "hooks" in data:
-        fail(errors, "plugin.json must not declare hooks until Codex hook schema is pinned")
+        fail(errors, "plugin.json must not declare hooks under the current hook policy")
     developer_name = data.get("interface", {}).get("developerName")
     if developer_name != "DocJlm":
         fail(errors, "plugin.json interface.developerName must be DocJlm")

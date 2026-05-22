@@ -78,6 +78,7 @@ python tools\validate_skills.py
 python tools\validate_smoke_fixture.py
 python tools\validate_transcripts.py
 python tools\validate_plugin_install_docs.py
+python tools\validate_hook_policy.py
 python tools\scan_legacy_tokens.py
 python -m json.tool plugins\codex-game-studios\.codex-plugin\plugin.json
 python -m json.tool .agents\plugins\marketplace.json
@@ -116,4 +117,4 @@ and:
 
 ## Hook Boundary
 
-Legacy hook scripts are preserved for reference under `plugins/codex-game-studios/scripts/checks/legacy-claude-hooks/`, but Codex Game Studios does not declare plugin runtime hooks yet. Until the Codex hook schema is stable, safety checks stay explicit through scripts and skill instructions.
+Legacy hook scripts are preserved for reference under `plugins/codex-game-studios/scripts/checks/legacy-claude-hooks/`, but Codex Game Studios does not declare plugin runtime hooks. Until the hook policy changes, safety checks stay explicit through scripts and skill instructions.

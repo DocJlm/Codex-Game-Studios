@@ -21,6 +21,7 @@ REQUIRED_TOKENS = [
     "plugins/codex-game-studios/skills/cgs-start/SKILL.md",
     "python tools\\validate_cgs.py",
     "python tools\\validate_plugin_install_docs.py",
+    "python tools\\validate_hook_policy.py",
     "python -m json.tool .agents\\plugins\\marketplace.json",
     "runtime hooks",
 ]

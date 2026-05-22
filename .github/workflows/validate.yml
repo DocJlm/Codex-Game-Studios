@@ -36,6 +36,9 @@ jobs:
       - name: Validate plugin install docs
         run: python tools/validate_plugin_install_docs.py
 
+      - name: Validate hook policy
+        run: python tools/validate_hook_policy.py
+
       - name: Validate JSON manifests
         run: |
           python -m json.tool plugins/codex-game-studios/.codex-plugin/plugin.json > /dev/null

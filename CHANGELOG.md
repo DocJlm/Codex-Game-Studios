@@ -2,6 +2,14 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v0.5.0 - 2026-05-22
+
+- Added runtime hook evaluation documentation in `docs/hooks/runtime-hook-evaluation.md`.
+- Documented the v0.5 decision not to bundle plugin runtime hooks.
+- Added `tools/validate_hook_policy.py` and wired it into CI.
+- Extended legacy-token scanning to hook policy documentation.
+- Bumped regenerated plugin metadata to `0.5.0`.
+
 ## v0.4.0 - 2026-05-22
 
 - Added local plugin install UX documentation in `docs/install/local-plugin.md`.
