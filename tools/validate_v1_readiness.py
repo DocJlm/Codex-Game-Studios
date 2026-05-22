@@ -28,13 +28,22 @@ REQUIRED_DOC_TOKENS = [
     "Validation Gate",
     "Fresh Clone Gate",
     "Compatibility Policy",
-    "v1.0.0 Release Decision",
+    "Windows and macOS",
     "python tools\\validate_v1_readiness.py",
+    "python tools\\validate_cross_platform.py",
+    "python tools/run_all_validators.py",
 ]
 
-REQUIRED_REPO_TOKENS = [
+REQUIRED_README_TOKENS = [
+    "docs/v1-readiness/freeze-checklist.md",
+    "tools/run_all_validators.py",
+    "tools/validate_cross_platform.py",
+]
+
+REQUIRED_AGENTS_TOKENS = [
     "docs/v1-readiness/freeze-checklist.md",
     "tools\\validate_v1_readiness.py",
+    "tools\\validate_cross_platform.py",
 ]
 
 LEGACY_RUNTIME_TOKENS = [
@@ -66,13 +75,16 @@ def main() -> int:
         if token not in doc:
             errors.append(f"v1 checklist missing token: {token}")
 
-    for token in REQUIRED_REPO_TOKENS:
+    for token in REQUIRED_README_TOKENS:
         if token not in readme:
             errors.append(f"README missing v1 token: {token}")
+    for token in REQUIRED_AGENTS_TOKENS:
         if token not in agents:
             errors.append(f"AGENTS.md missing v1 token: {token}")
 
-    if "python tools/validate_v1_readiness.py" not in workflow:
+    if "python tools/run_all_validators.py" not in workflow:
+        errors.append("GitHub Actions workflow missing cross-platform validator runner")
+    if "python tools/validate_v1_readiness.py" not in workflow and "python tools/run_all_validators.py" not in workflow:
         errors.append("GitHub Actions workflow missing v1 readiness validator")
 
     for token in LEGACY_RUNTIME_TOKENS:
@@ -85,8 +97,8 @@ def main() -> int:
         errors.append(f"plugin.json is not valid JSON: {exc}")
         plugin = {}
 
-    if plugin.get("version") != "1.0.0":
-        errors.append("plugin.json version must be 1.0.0 for v1 readiness")
+    if not str(plugin.get("version", "")).startswith("1."):
+        errors.append("plugin.json version must stay in the v1.x line for v1 readiness")
     if plugin.get("name") != "codex-game-studios":
         errors.append("plugin.json name must remain codex-game-studios")
     if plugin.get("skills") != "./skills/":
@@ -112,7 +124,7 @@ def main() -> int:
 
     print("v1 readiness validation passed")
     print(f"- checklist: {DOC.relative_to(ROOT).as_posix()}")
-    print("- frozen version: 1.0.0")
+    print(f"- frozen major: {plugin.get('version')}")
     return 0
 
 

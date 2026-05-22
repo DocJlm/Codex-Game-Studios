@@ -26,17 +26,16 @@ This repository is both a Codex plugin package and a game project template.
 
 Before declaring a migration or structural change complete:
 
+Windows PowerShell:
+
 ```powershell
-python tools\validate_cgs.py
-python tools\validate_skills.py
-python tools\validate_smoke_fixture.py
-python tools\validate_transcripts.py
-python tools\validate_plugin_install_docs.py
-python tools\validate_hook_policy.py
-python tools\validate_examples.py
-python tools\validate_workflow_polish.py
-python tools\validate_v1_readiness.py
-python tools\scan_legacy_tokens.py
+python tools\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python tools/run_all_validators.py
 ```
 
 For plugin and skill edits, verify:
@@ -48,7 +47,8 @@ For plugin and skill edits, verify:
 - Counts remain at 73 skills, 49 role cards, and 11 path rules unless the change explicitly updates those numbers.
 - Curated workflows remain concise and Codex-native: `cgs-start`, `cgs-help`, `cgs-project-stage-detect`, `cgs-brainstorm`, `cgs-setup-engine`, `cgs-map-systems`, `cgs-design-system`, `cgs-create-architecture`, `cgs-create-epics`, `cgs-create-stories`, `cgs-story-readiness`, `cgs-dev-story`, `cgs-story-done`, `cgs-gate-check`, `cgs-code-review`, `cgs-qa-plan`, `cgs-smoke-check`, `cgs-architecture-review`, and `cgs-ux-design`.
 - `tests/fixtures/empty-game/` stays usable for smoke checks of onboarding, stage detection, story pickup, and story closure review.
-- `docs/v1-readiness/freeze-checklist.md` stays aligned with README, release notes, plugin metadata, marketplace config, and `tools\validate_v1_readiness.py`.
+- `docs/v1-readiness/freeze-checklist.md` stays aligned with README, release notes, plugin metadata, marketplace config, `tools\validate_v1_readiness.py`, and `tools\validate_cross_platform.py`.
+- Windows and macOS user paths stay documented in `docs/platforms/windows.md`, `docs/platforms/macos.md`, and `docs/getting-started/first-run.md`.
 
 ## Collaboration Defaults
 

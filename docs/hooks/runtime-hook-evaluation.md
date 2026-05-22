@@ -66,7 +66,7 @@ Runtime hooks can be reconsidered when all of these are true:
 
 1. Codex plugin hook support is stable enough to document without caveats for normal users.
 2. A fresh clone can verify hook behavior without requiring hidden local user config.
-3. Hook behavior is tested on Windows and Linux.
+3. Hook behavior is tested on Windows, macOS, and Linux.
 4. Hook commands use `PLUGIN_ROOT` and `PLUGIN_DATA` only, not absolute developer-machine paths.
 5. Hook failures produce clear user-facing messages and do not block unrelated workflows.
 6. CI validates hook schema, hook command paths, and explicit non-hook fallback scripts.

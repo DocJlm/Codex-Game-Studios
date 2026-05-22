@@ -3,6 +3,7 @@
 This guide describes how to use Codex Game Studios as a repo-local Codex plugin, and what to do when the current Codex build does not expose local plugin installation in the UI.
 
 For a dated local field test, see `docs/install/field-test-2026-05-22.md`.
+For platform-specific setup, see `docs/platforms/windows.md` and `docs/platforms/macos.md`.
 
 ## Files Codex Should Discover
 
@@ -74,16 +75,17 @@ This is the same workflow content. It only bypasses plugin discovery.
 
 Run these checks before reporting an install or discovery problem:
 
+Windows PowerShell:
+
 ```powershell
-python tools\validate_cgs.py
-python tools\validate_skills.py
-python tools\validate_smoke_fixture.py
-python tools\validate_transcripts.py
-python tools\validate_plugin_install_docs.py
-python tools\validate_hook_policy.py
-python tools\scan_legacy_tokens.py
-python -m json.tool plugins\codex-game-studios\.codex-plugin\plugin.json
-python -m json.tool .agents\plugins\marketplace.json
+python tools\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+python tools/run_all_validators.py
 ```
 
 The important install fields are:
@@ -111,7 +113,7 @@ and:
 
 | Symptom | Check | Fix |
 | --- | --- | --- |
-| Plugin does not appear | Opened folder is not repo root | Open `D:\Git\Codex-Game-Studios` or the cloned repo root |
+| Plugin does not appear | Opened folder is not repo root | Open the cloned repository root |
 | Plugin appears but skills do not trigger | Manifest `skills` path is wrong | Run `python tools\validate_cgs.py` |
 | Marketplace entry fails to parse | Invalid JSON | Run `python -m json.tool .agents\plugins\marketplace.json` |
 | Skill trigger is unreliable | Local plugin UI is unavailable or stale | Use the path-based fallback prompts |

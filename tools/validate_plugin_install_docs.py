@@ -17,14 +17,14 @@ REQUIRED_TOKENS = [
     "plugins/codex-game-studios/.codex-plugin/plugin.json",
     "plugins/codex-game-studios/skills/",
     "docs/install/field-test-2026-05-22.md",
+    "docs/platforms/windows.md",
+    "docs/platforms/macos.md",
     "$cgs-start",
     "$cgs-project-stage-detect",
     "$cgs-dev-story",
     "plugins/codex-game-studios/skills/cgs-start/SKILL.md",
-    "python tools\\validate_cgs.py",
-    "python tools\\validate_plugin_install_docs.py",
-    "python tools\\validate_hook_policy.py",
-    "python -m json.tool .agents\\plugins\\marketplace.json",
+    "python tools\\run_all_validators.py",
+    "python3 tools/run_all_validators.py",
     "runtime hooks",
 ]
 

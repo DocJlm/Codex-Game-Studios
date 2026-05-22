@@ -12,7 +12,7 @@ PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 EXAMPLE = ROOT / "examples" / "spark-sprint"
-RELEASE_VERSION = "1.0.0"
+RELEASE_VERSION = "1.1.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {
@@ -1242,6 +1242,7 @@ def write_install_docs() -> None:
 This guide describes how to use Codex Game Studios as a repo-local Codex plugin, and what to do when the current Codex build does not expose local plugin installation in the UI.
 
 For a dated local field test, see `docs/install/field-test-2026-05-22.md`.
+For platform-specific setup, see `docs/platforms/windows.md` and `docs/platforms/macos.md`.
 
 ## Files Codex Should Discover
 
@@ -1313,16 +1314,17 @@ This is the same workflow content. It only bypasses plugin discovery.
 
 Run these checks before reporting an install or discovery problem:
 
+Windows PowerShell:
+
 ```powershell
-python tools\\validate_cgs.py
-python tools\\validate_skills.py
-python tools\\validate_smoke_fixture.py
-python tools\\validate_transcripts.py
-python tools\\validate_plugin_install_docs.py
-python tools\\validate_hook_policy.py
-python tools\\scan_legacy_tokens.py
-python -m json.tool plugins\\codex-game-studios\\.codex-plugin\\plugin.json
-python -m json.tool .agents\\plugins\\marketplace.json
+python tools\\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+python tools/run_all_validators.py
 ```
 
 The important install fields are:
@@ -1350,7 +1352,7 @@ and:
 
 | Symptom | Check | Fix |
 | --- | --- | --- |
-| Plugin does not appear | Opened folder is not repo root | Open `D:\\Git\\Codex-Game-Studios` or the cloned repo root |
+| Plugin does not appear | Opened folder is not repo root | Open the cloned repository root |
 | Plugin appears but skills do not trigger | Manifest `skills` path is wrong | Run `python tools\\validate_cgs.py` |
 | Marketplace entry fails to parse | Invalid JSON | Run `python -m json.tool .agents\\plugins\\marketplace.json` |
 | Skill trigger is unreliable | Local plugin UI is unavailable or stale | Use the path-based fallback prompts |
@@ -1538,7 +1540,7 @@ Runtime hooks can be reconsidered when all of these are true:
 
 1. Codex plugin hook support is stable enough to document without caveats for normal users.
 2. A fresh clone can verify hook behavior without requiring hidden local user config.
-3. Hook behavior is tested on Windows and Linux.
+3. Hook behavior is tested on Windows, macOS, and Linux.
 4. Hook commands use `PLUGIN_ROOT` and `PLUGIN_DATA` only, not absolute developer-machine paths.
 5. Hook failures produce clear user-facing messages and do not block unrelated workflows.
 6. CI validates hook schema, hook command paths, and explicit non-hook fallback scripts.
@@ -1958,7 +1960,7 @@ def write_v1_readiness_docs() -> None:
         ROOT / "docs" / "v1-readiness" / "freeze-checklist.md",
         """# v1 Readiness Freeze Checklist
 
-This checklist defines the Codex Game Studios v1.0.0 compatibility boundary. It is a release gate, not a roadmap wish list.
+This checklist defines the Codex Game Studios v1.x compatibility boundary. It is a release gate, not a roadmap wish list, and v1.1 adds Windows and macOS usability checks.
 
 ## Frozen Public Interfaces
 
@@ -1980,6 +1982,7 @@ This checklist defines the Codex Game Studios v1.0.0 compatibility boundary. It 
 - Path rules: 11
 - Static example project: `examples/spark-sprint/`
 - Smoke fixture: `tests/fixtures/empty-game/`
+- Windows and macOS platform docs: `docs/platforms/windows.md`, `docs/platforms/macos.md`
 
 ## Documentation Audit
 
@@ -1994,13 +1997,31 @@ Before a v1.x release, check these user-facing surfaces:
 - `docs/transcripts/concept-to-story.md`: concept-to-story demonstration.
 - `docs/transcripts/spark-sprint-codex-run.md`: realistic Spark Sprint Codex run.
 - `docs/examples/spark-sprint.md`: example prompt sequence.
-- `docs/releases/`: release notes from `v0.1.0` through `v1.0.0`.
+- `docs/getting-started/first-run.md`: Windows and macOS first-run guide.
+- `docs/platforms/windows.md`: Windows setup and troubleshooting.
+- `docs/platforms/macos.md`: macOS setup and troubleshooting.
+- `docs/releases/`: release notes from `v0.1.0` through the current release.
 
 ## Validation Gate
 
 Run from the repository root:
 
+Windows PowerShell:
+
 ```powershell
+python tools\\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+python tools/run_all_validators.py
+```
+
+Release maintainers can also run the expanded sequence:
+
+```text
 python tools\\migrate_from_claude.py
 python tools\\prepare_v01.py
 python tools\\validate_cgs.py
@@ -2012,19 +2033,20 @@ python tools\\validate_hook_policy.py
 python tools\\validate_examples.py
 python tools\\validate_workflow_polish.py
 python tools\\validate_v1_readiness.py
+python tools\\validate_cross_platform.py
 python tools\\scan_legacy_tokens.py
 python -m json.tool plugins\\codex-game-studios\\.codex-plugin\\plugin.json
 python -m json.tool .agents\\plugins\\marketplace.json
 ```
 
-GitHub Actions must run the same structural validators, including `tools/validate_v1_readiness.py`.
+GitHub Actions must run the same structural validators on Windows, macOS, and Linux, including `tools/validate_v1_readiness.py` and `tools/validate_cross_platform.py`.
 
 ## Fresh Clone Gate
 
 Before publishing a v1.x release:
 
 1. Clone `https://github.com/DocJlm/Codex-Game-Studios.git` into a temporary directory.
-2. Run the full validation gate from that fresh clone.
+2. Run `python tools\\run_all_validators.py` on Windows or `python3 tools/run_all_validators.py` on macOS.
 3. Confirm `git status --short --branch` is clean and tracking `origin/main`.
 4. Confirm the latest tag and GitHub Release point to the same commit.
 
@@ -2036,15 +2058,203 @@ Before publishing a v1.x release:
 - Runtime hooks can only be introduced after `docs/hooks/runtime-hook-evaluation.md` is updated and a hook validator is added.
 - If plugin discovery behavior changes, update `docs/install/local-plugin.md` and add a new dated field note instead of overwriting the old observation.
 
-## v1.0.0 Release Decision
+## v1.x Release Decision
 
-v1.0.0 is ready when:
+Any v1.x release is ready when:
 
 - The validation gate passes locally.
 - The validation gate passes in GitHub Actions.
 - The fresh clone gate passes.
 - Open GitHub issues for `v1-readiness` are closed or explicitly deferred.
 - README, install docs, migration guide, release notes, validators, manifest, marketplace entry, and examples agree on the same public interfaces.
+""",
+    )
+
+
+def write_platform_docs() -> None:
+    write_text(
+        ROOT / "docs" / "platforms" / "windows.md",
+        """# Windows Usage
+
+Codex Game Studios supports Windows as a first-class local development platform.
+
+## Requirements
+
+- Python 3.11 or newer on `PATH`.
+- Git for cloning and status checks.
+- Codex desktop or another Codex environment opened at the cloned repository root.
+- Godot, Unity, or Unreal are optional. The included validators do not require a game engine.
+
+## Validate The Repository
+
+From PowerShell in the repository root:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+For release-maintainer checks that regenerate curated docs and metadata:
+
+```powershell
+python tools\\migrate_from_claude.py
+python tools\\prepare_v01.py
+python tools\\run_all_validators.py
+```
+
+## Use The Plugin
+
+Preferred path:
+
+```text
+Use $cgs-start to set up a new game project.
+Use $cgs-project-stage-detect on this existing game.
+Use $cgs-dev-story to implement the next story.
+```
+
+Fallback path when repo-local plugin discovery is unavailable:
+
+```text
+Use the skill at plugins/codex-game-studios/skills/cgs-start/SKILL.md to set up this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKILL.md to audit this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for production/epics/core-loop/STORY-001-player-loop.md.
+```
+
+## Notes
+
+- If PowerShell renders Chinese text incorrectly, the Markdown files are still UTF-8. View them in Codex, VS Code, GitHub, or another UTF-8-aware editor.
+- Use the cloned repository root as the workspace. Do not depend on a machine-specific absolute path.
+- Backslash examples are for PowerShell. Forward-slash paths in prompts also work because Codex reads repository files, not shell paths.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "platforms" / "macos.md",
+        """# macOS Usage
+
+Codex Game Studios supports macOS through zsh or bash plus the same repo-local plugin and path fallback model.
+
+## Requirements
+
+- Python 3.11 or newer, usually available as `python3`.
+- Git for cloning and status checks.
+- Codex desktop or another Codex environment opened at the cloned repository root.
+- Godot, Unity, or Unreal are optional. The included validators do not require a game engine.
+
+## Validate The Repository
+
+From zsh or bash in the repository root:
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+If your Python command is named `python`, this is also fine:
+
+```bash
+python tools/run_all_validators.py
+```
+
+For release-maintainer checks that regenerate curated docs and metadata:
+
+```bash
+python3 tools/migrate_from_claude.py
+python3 tools/prepare_v01.py
+python3 tools/run_all_validators.py
+```
+
+## Use The Plugin
+
+Preferred path:
+
+```text
+Use $cgs-start to set up a new game project.
+Use $cgs-project-stage-detect on this existing game.
+Use $cgs-dev-story to implement the next story.
+```
+
+Fallback path when repo-local plugin discovery is unavailable:
+
+```text
+Use the skill at plugins/codex-game-studios/skills/cgs-start/SKILL.md to set up this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKILL.md to audit this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for production/epics/core-loop/STORY-001-player-loop.md.
+```
+
+## Notes
+
+- Use forward-slash repository paths in shell commands and prompts.
+- The repo-local marketplace entry is `.agents/plugins/marketplace.json`.
+- If the Codex build does not expose repo-local plugin installation, use the path-based fallback prompts above.
+""",
+    )
+
+    write_text(
+        ROOT / "docs" / "getting-started" / "first-run.md",
+        """# First Run Guide
+
+This guide is the shortest path from a fresh clone to a useful Codex Game Studios session on Windows or macOS.
+
+## 1. Open The Repository
+
+Clone the repository and open the cloned root in Codex.
+
+Windows PowerShell validation:
+
+```powershell
+python tools\\run_all_validators.py
+```
+
+macOS zsh or bash validation:
+
+```bash
+python3 tools/run_all_validators.py
+```
+
+## 2. Try The Plugin Name
+
+If repo-local plugin discovery is available in your Codex build, start with:
+
+```text
+Use $cgs-start to set up a new game project.
+Use $cgs-project-stage-detect on this existing game.
+Use $cgs-dev-story to implement the next story.
+```
+
+## 3. Use The Fallback Path
+
+If `$cgs-start` is not recognized as an installed skill, use the same workflow by path:
+
+```text
+Use the skill at plugins/codex-game-studios/skills/cgs-start/SKILL.md to set up this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKILL.md to audit this project.
+Use the skill at plugins/codex-game-studios/skills/cgs-dev-story/SKILL.md for production/epics/core-loop/STORY-001-player-loop.md.
+```
+
+## 4. Pick A Starting Scenario
+
+New game:
+
+```text
+Use $cgs-start. I want to create a small game from scratch.
+```
+
+Existing project:
+
+```text
+Use $cgs-project-stage-detect and tell me the current phase, evidence paths, and next 3 actions.
+```
+
+Story implementation:
+
+```text
+Use $cgs-dev-story production/epics/core-loop/STORY-001-player-loop.md. Inspect first, then implement only the story scope.
+```
+
+## 5. Platform References
+
+- Windows: `docs/platforms/windows.md`
+- macOS: `docs/platforms/macos.md`
+- Plugin install and fallback behavior: `docs/install/local-plugin.md`
 """,
     )
 
@@ -2059,6 +2269,7 @@ def main() -> None:
     write_hook_policy_docs()
     write_example_project()
     write_v1_readiness_docs()
+    write_platform_docs()
     print(f"Prepared v{RELEASE_VERSION} curated skills, plugin metadata, and empty-game fixture")
 
 

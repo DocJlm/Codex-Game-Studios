@@ -2,6 +2,14 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.1.0 - 2026-05-22
+
+- Added `tools/run_all_validators.py` as the single cross-platform validation entrypoint.
+- Added `tools/validate_cross_platform.py` for Windows and macOS documentation and CI checks.
+- Updated GitHub Actions to validate on Windows, macOS, and Linux.
+- Added platform docs and a first-run guide for Windows and macOS users.
+- Bumped regenerated plugin metadata to `1.1.0`.
+
 ## v1.0.0 - 2026-05-22
 
 - Added `docs/v1-readiness/freeze-checklist.md` to define frozen public interfaces, validation gates, fresh clone requirements, and compatibility policy.

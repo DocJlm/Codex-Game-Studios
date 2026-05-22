@@ -2,7 +2,7 @@
 
 [![Validate](https://github.com/DocJlm/Codex-Game-Studios/actions/workflows/validate.yml/badge.svg)](https://github.com/DocJlm/Codex-Game-Studios/actions/workflows/validate.yml)
 
-把一个 Codex 工作区变成结构化的游戏开发工作室：73 个 `cgs-*` skills、49 个工作室角色卡、阶段门、规则、设计模板、引擎参考和校验脚本。
+把一个 Codex 工作区变成结构化的游戏开发工作室：73 个 `cgs-*` skills、49 个工作室角色卡、阶段门、规则、设计模板、引擎参考和校验脚本。Windows and macOS are both supported for clone, validation, documentation, and fallback skill usage.
 
 This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios). It keeps the studio workflow idea, but packages it as a repo-local Codex plugin plus a game project template.
 
@@ -15,7 +15,7 @@ This is a Codex-adapted version of [Donchitos/Claude-Code-Game-Studios](https://
 | Path rules | 11 | `plugins/codex-game-studios/references/rules/` |
 | Templates | 40+ | `plugins/codex-game-studios/assets/templates/` |
 | Engine references | Godot / Unity / Unreal | `plugins/codex-game-studios/references/engine-reference/` |
-| Validation scripts | 12 | `tools/migrate_from_claude.py`, `tools/prepare_v01.py`, `tools/validate_cgs.py`, `tools/validate_skills.py`, `tools/validate_smoke_fixture.py`, `tools/validate_transcripts.py`, `tools/validate_plugin_install_docs.py`, `tools/validate_hook_policy.py`, `tools/validate_examples.py`, `tools/validate_workflow_polish.py`, `tools/validate_v1_readiness.py`, `tools/scan_legacy_tokens.py` |
+| Validation scripts | 14 | `tools/run_all_validators.py`, `tools/validate_cross_platform.py`, plus the structural validators under `tools/` |
 
 ## Quick Start
 
@@ -47,6 +47,29 @@ Use the skill at plugins/codex-game-studios/skills/cgs-project-stage-detect/SKIL
 ```
 
 这不是另一套流程，只是本地插件无法直接安装时的调用方式；skill 内容和验证脚本仍然相同。
+
+## Windows And macOS
+
+Use the same validator entrypoint on both platforms.
+
+Windows PowerShell:
+
+```powershell
+python tools\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+# If your Python command is named python:
+python tools/run_all_validators.py
+```
+
+Platform notes:
+- Windows: `docs/platforms/windows.md`
+- macOS: `docs/platforms/macos.md`
+- First run guide: `docs/getting-started/first-run.md`
 
 ## Command Mapping
 
@@ -85,16 +108,13 @@ prototypes/   src/          tests/       tools/
 运行结构校验：
 
 ```powershell
-python tools\validate_cgs.py
-python tools\validate_skills.py
-python tools\validate_smoke_fixture.py
-python tools\validate_transcripts.py
-python tools\validate_plugin_install_docs.py
-python tools\validate_hook_policy.py
-python tools\validate_examples.py
-python tools\validate_workflow_polish.py
-python tools\validate_v1_readiness.py
-python tools\scan_legacy_tokens.py
+python tools\run_all_validators.py
+```
+
+macOS:
+
+```bash
+python3 tools/run_all_validators.py
 ```
 
 从本地上游副本重新同步：
@@ -102,19 +122,18 @@ python tools\scan_legacy_tokens.py
 ```powershell
 python tools\migrate_from_claude.py
 python tools\prepare_v01.py
-python tools\validate_cgs.py
-python tools\validate_skills.py
-python tools\validate_smoke_fixture.py
-python tools\validate_transcripts.py
-python tools\validate_plugin_install_docs.py
-python tools\validate_hook_policy.py
-python tools\validate_examples.py
-python tools\validate_workflow_polish.py
-python tools\validate_v1_readiness.py
-python tools\scan_legacy_tokens.py
+python tools\run_all_validators.py
 ```
 
-The migration script expects the upstream checkout at `D:\Git\Claude-Code-Game-Studios`.
+macOS release-maintainer equivalent:
+
+```bash
+python3 tools/migrate_from_claude.py
+python3 tools/prepare_v01.py
+python3 tools/run_all_validators.py
+```
+
+The migration script uses the upstream checkout configured in `tools/migrate_from_claude.py`; keep that path local to your machine.
 
 ## Smoke Fixture
 
@@ -154,6 +173,7 @@ MIT. See `LICENSE` and `NOTICE`.
 
 ## Releases
 
+- `v1.1.0`: Windows and macOS cross-platform validation and usage docs. See `docs/releases/v1.1.0.md`.
 - `v1.0.0`: v1 readiness freeze checklist and compatibility gate. See `docs/releases/v1.0.0.md`.
 - `v0.9.0`: local plugin discovery field test notes. See `docs/releases/v0.9.0.md`.
 - `v0.8.0`: realistic Spark Sprint Codex run transcript. See `docs/releases/v0.8.0.md`.

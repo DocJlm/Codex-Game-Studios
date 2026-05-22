@@ -1,6 +1,6 @@
 # v1 Readiness Freeze Checklist
 
-This checklist defines the Codex Game Studios v1.0.0 compatibility boundary. It is a release gate, not a roadmap wish list.
+This checklist defines the Codex Game Studios v1.x compatibility boundary. It is a release gate, not a roadmap wish list, and v1.1 adds Windows and macOS usability checks.
 
 ## Frozen Public Interfaces
 
@@ -22,6 +22,7 @@ This checklist defines the Codex Game Studios v1.0.0 compatibility boundary. It 
 - Path rules: 11
 - Static example project: `examples/spark-sprint/`
 - Smoke fixture: `tests/fixtures/empty-game/`
+- Windows and macOS platform docs: `docs/platforms/windows.md`, `docs/platforms/macos.md`
 
 ## Documentation Audit
 
@@ -36,13 +37,31 @@ Before a v1.x release, check these user-facing surfaces:
 - `docs/transcripts/concept-to-story.md`: concept-to-story demonstration.
 - `docs/transcripts/spark-sprint-codex-run.md`: realistic Spark Sprint Codex run.
 - `docs/examples/spark-sprint.md`: example prompt sequence.
-- `docs/releases/`: release notes from `v0.1.0` through `v1.0.0`.
+- `docs/getting-started/first-run.md`: Windows and macOS first-run guide.
+- `docs/platforms/windows.md`: Windows setup and troubleshooting.
+- `docs/platforms/macos.md`: macOS setup and troubleshooting.
+- `docs/releases/`: release notes from `v0.1.0` through the current release.
 
 ## Validation Gate
 
 Run from the repository root:
 
+Windows PowerShell:
+
 ```powershell
+python tools\run_all_validators.py
+```
+
+macOS zsh or bash:
+
+```bash
+python3 tools/run_all_validators.py
+python tools/run_all_validators.py
+```
+
+Release maintainers can also run the expanded sequence:
+
+```text
 python tools\migrate_from_claude.py
 python tools\prepare_v01.py
 python tools\validate_cgs.py
@@ -54,19 +73,20 @@ python tools\validate_hook_policy.py
 python tools\validate_examples.py
 python tools\validate_workflow_polish.py
 python tools\validate_v1_readiness.py
+python tools\validate_cross_platform.py
 python tools\scan_legacy_tokens.py
 python -m json.tool plugins\codex-game-studios\.codex-plugin\plugin.json
 python -m json.tool .agents\plugins\marketplace.json
 ```
 
-GitHub Actions must run the same structural validators, including `tools/validate_v1_readiness.py`.
+GitHub Actions must run the same structural validators on Windows, macOS, and Linux, including `tools/validate_v1_readiness.py` and `tools/validate_cross_platform.py`.
 
 ## Fresh Clone Gate
 
 Before publishing a v1.x release:
 
 1. Clone `https://github.com/DocJlm/Codex-Game-Studios.git` into a temporary directory.
-2. Run the full validation gate from that fresh clone.
+2. Run `python tools\run_all_validators.py` on Windows or `python3 tools/run_all_validators.py` on macOS.
 3. Confirm `git status --short --branch` is clean and tracking `origin/main`.
 4. Confirm the latest tag and GitHub Release point to the same commit.
 
@@ -78,9 +98,9 @@ Before publishing a v1.x release:
 - Runtime hooks can only be introduced after `docs/hooks/runtime-hook-evaluation.md` is updated and a hook validator is added.
 - If plugin discovery behavior changes, update `docs/install/local-plugin.md` and add a new dated field note instead of overwriting the old observation.
 
-## v1.0.0 Release Decision
+## v1.x Release Decision
 
-v1.0.0 is ready when:
+Any v1.x release is ready when:
 
 - The validation gate passes locally.
 - The validation gate passes in GitHub Actions.
