@@ -5,17 +5,21 @@ description: "Codex Game Studios skill adapted from original /team-audio. Use wh
 
 # CGS: team-audio
 
-> Codex adaptation: this skill is migrated from the upstream `/team-audio` workflow. Invoke it as `$cgs-team-audio`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-audio` workflow; invoke it as `$cgs-team-audio`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
-If no argument is provided, output usage guidance and exit without spawning any agents:
-> Usage: `$cgs-team-audio [feature or area]` -- specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use `ask the user directly or use available Codex UI question tools` here; output the guidance directly.
+If no argument is provided, output usage guidance and exit without running any role-card reviews:
+> Usage: `$cgs-team-audio [feature or area]` -- specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use `ask one concise question` here; output the guidance directly.
 
 When this skill is invoked with an argument, orchestrate the audio team through a structured pipeline.
 
-**Decision Points:** At each step transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each step transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next step.
 
@@ -26,9 +30,9 @@ The user must approve before moving to the next step.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
@@ -43,19 +47,19 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: audio-director` -- Sonic identity, emotional tone, audio palette
-- `subagent_type: sound-designer` -- SFX specifications, audio events, mixing groups
-- `subagent_type: technical-artist` -- Audio middleware, bus structure, memory budgets
-- `subagent_type: [primary engine specialist]` -- Validate audio integration patterns for the engine
-- `subagent_type: gameplay-programmer` -- Audio manager, gameplay triggers, adaptive music
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `audio-director` -- Sonic identity, emotional tone, audio palette
+- Role card `sound-designer` -- SFX specifications, audio events, mixing groups
+- Role card `technical-artist` -- Audio middleware, bus structure, memory budgets
+- Role card `[primary engine specialist]` -- Validate audio integration patterns for the engine
+- Role card `gameplay-programmer` -- Audio manager, gameplay triggers, adaptive music
 
-Always provide full context in each agent's prompt (feature description, existing audio assets, design doc references).
+Always provide full context in each role review brief (feature description, existing audio assets, design doc references).
 
 3. **Orchestrate the audio team** in sequence:
 
 ### Step 1: Audio Direction (audio-director)
-Spawn the `audio-director` agent to:
+Apply role card `audio-director` to:
 - Define the sonic identity for this feature/area
 - Specify the emotional tone and audio palette
 - Set music direction (adaptive layers, stems, transitions)
@@ -63,14 +67,14 @@ Spawn the `audio-director` agent to:
 - Establish any adaptive audio rules (combat intensity, exploration, tension)
 
 ### Step 2: Sound Design and Audio Accessibility (parallel)
-Spawn the `sound-designer` agent to:
+Apply role card `sound-designer` to:
 - Create detailed SFX specifications for every audio event
 - Define sound categories (ambient, UI, gameplay, music, dialogue)
 - Specify per-sound parameters (volume range, pitch variation, attenuation)
 - Plan audio event list with trigger conditions
 - Define mixing groups and ducking rules
 
-Spawn the `accessibility-specialist` agent in parallel to:
+Run the `accessibility-specialist` role-card review as part of the same review set to:
 - Identify which audio events carry critical gameplay information (damage received, enemy nearby, objective complete) and require visual alternatives for hearing-impaired players
 - Specify subtitle requirements: which audio events need captions, what text format, on-screen duration
 - Check that no gameplay state is communicated by audio alone (all must have a visual fallback)
@@ -78,23 +82,23 @@ Spawn the `accessibility-specialist` agent in parallel to:
 - Output: audio accessibility requirements list integrated into the audio event spec
 
 ### Step 3: Technical Implementation (parallel)
-Spawn the `technical-artist` agent to:
+Apply role card `technical-artist` to:
 - Design the audio middleware integration (Wwise/FMOD/native)
 - Define audio bus structure and routing
 - Specify memory budgets for audio assets per platform
 - Plan streaming vs preloaded asset strategy
 - Design any audio-reactive visual effects
 
-Spawn the **primary engine specialist** in parallel (from `plugins/codex-game-studios/references/studio-docs/technical-preferences.md` Engine Specialists) to validate the integration approach:
+Run the **primary engine specialist** in parallel (from `plugins/codex-game-studios/references/studio-docs/technical-preferences.md` Engine Specialists) to validate the integration approach:
 - Is the proposed audio middleware integration idiomatic for the engine? (e.g., Godot's built-in AudioStreamPlayer vs FMOD, Unity's Audio Mixer vs Wwise, Unreal's MetaSounds vs FMOD)
 - Any engine-specific audio node/component patterns that should be used?
 - Known audio system changes in the pinned engine version that affect the integration plan?
 - Output: engine audio integration notes to merge with the technical-artist's plan
 
-If no engine is configured, skip the specialist spawn.
+If no engine is configured, skip the specialist role-card review.
 
 ### Step 4: Code Integration (gameplay-programmer)
-Spawn the `gameplay-programmer` agent to:
+Apply role card `gameplay-programmer` to:
 - Implement audio manager system or review existing
 - Wire up audio events to gameplay triggers
 - Implement adaptive music system (if specified)
@@ -105,7 +109,7 @@ Spawn the `gameplay-programmer` agent to:
 
 5. **Save to** `design/audio/audio-[feature].md`.
 
-   Note: If `design/audio/` does not exist, the sub-agent writing the document should create it (the directory will be created automatically when the file is written).
+   Note: If `design/audio/` does not exist, the role-card review writing the document should create it (the directory will be created automatically when the file is written).
 
 6. **Output a summary** with: audio event count, estimated asset count,
    implementation tasks, and any open questions between team members.
@@ -119,7 +123,7 @@ Verdict: **BLOCKED** -- [reason]
 ## File Write Protocol
 
 All file writes (audio design docs, SFX specs, implementation files) are delegated
-to sub-agents spawned via Task. Each sub-agent enforces the "May I write to [path]?"
+to role-card reviews run as role-card reviews. Each role-card review enforces the "May I write to [path]?"
 protocol. This orchestrator does not write files directly.
 
 ## Next Steps
@@ -130,15 +134,15 @@ protocol. This orchestrator does not write files directly.
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) -> redirect to the skill that creates it

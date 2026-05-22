@@ -21,6 +21,7 @@ VALIDATORS = [
     "validate_examples.py",
     "validate_godot_example.py",
     "validate_upstream_parity.py",
+    "validate_codex_native_skills.py",
     "validate_workflow_polish.py",
     "validate_v1_readiness.py",
     "validate_cross_platform.py",

@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /create-control-man
 
 # CGS: create-control-manifest
 
-> Codex adaptation: this skill is migrated from the upstream `/create-control-manifest` workflow. Invoke it as `$cgs-create-control-manifest`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/create-control-manifest` workflow; invoke it as `$cgs-create-control-manifest`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Create Control Manifest
 
@@ -114,7 +118,7 @@ Total rules extracted:
   - Global: [N] naming conventions, [M] forbidden APIs, [P] approved libraries
 ```
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Does this rule summary look complete?"
 - Options:
   - `[A] Yes -- looks good, run the director review and write the manifest`
@@ -126,12 +130,12 @@ Use `ask the user directly or use available Codex UI question tools`:
 
 ## 4b. Director Gate -- Technical Review
 
-**Review mode check** -- apply before spawning TD-MANIFEST:
+**Review mode check** -- apply before running TD-MANIFEST:
 - `solo` -> skip. Note: "TD-MANIFEST skipped -- Solo mode." Proceed to Phase 5.
 - `lean` -> skip. Note: "TD-MANIFEST skipped -- Lean mode." Proceed to Phase 5.
-- `full` -> spawn as normal.
+- `full` -> run as normal.
 
-Spawn `technical-director` via Task using gate **TD-MANIFEST** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
+Run `technical-director` through role-card review using gate **TD-MANIFEST** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
 
 Pass: the Control Manifest Preview from Phase 4 (rule counts per layer, full extracted rule list), the list of ADRs covered, engine version, and any rules sourced from technical-preferences.md or engine reference docs.
 
@@ -143,14 +147,14 @@ The technical-director reviews whether:
 
 Apply the verdict:
 - **APPROVE** -> proceed to Phase 5
-- **CONCERNS** -> surface via `ask the user directly or use available Codex UI question tools` with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
+- **CONCERNS** -> surface via `ask one concise question` with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
 - **REJECT** -> do not write the manifest; fix the flagged rules and re-present the summary
 
 ---
 
 ## 5. Write the Control Manifest
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "May I write the Control Manifest?"
 - Options:
   - `[A] Yes -- write to docs/architecture/control-manifest.md`

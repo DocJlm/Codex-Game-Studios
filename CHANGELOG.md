@@ -2,6 +2,13 @@
 
 All notable changes to Codex Game Studios are tracked here.
 
+## v1.4.0 - 2026-05-22
+
+- Converted the remaining 50 full-migration skills to Codex-native operating notes.
+- Replaced Claude-specific subagent and Task-tool assumptions with role-card review language that matches `AGENTS.md`.
+- Added `tools/validate_codex_native_skills.py` and wired it into `tools/run_all_validators.py`.
+- Bumped plugin metadata to `1.4.0`.
+
 ## v1.3.0 - 2026-05-22
 
 - Added `docs/upstream-parity.md` with a checked upstream commit, surface-count matrix, template-count evidence, and hook-intent mapping.

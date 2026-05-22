@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /adopt. Use when th
 
 # CGS: adopt
 
-> Codex adaptation: this skill is migrated from the upstream `/adopt` workflow. Invoke it as `$cgs-adopt`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/adopt` workflow; invoke it as `$cgs-adopt`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Adopt -- Brownfield Template Adoption
 
@@ -26,7 +30,7 @@ wrong internal format.
 
 **Argument modes:**
 
-**Audit mode:** `$ARGUMENTS[0]` (blank = `full`)
+**Audit mode:** the first argument (blank = `full`)
 
 - **No argument / `full`**: Complete audit -- all artifact types
 - **`gdds`**: GDD format compliance only
@@ -63,7 +67,7 @@ Use the same heuristic as `$cgs-project-stage-detect`:
 - game-concept.md exists -> Concept
 - Nothing -> Fresh (not a brownfield project -- suggest `$cgs-start`)
 
-If the project appears fresh (no artifacts at all), use `ask the user directly or use available Codex UI question tools`:
+If the project appears fresh (no artifacts at all), use `ask one concise question`:
 - "This looks like a fresh project -- no existing artifacts found. `$cgs-adopt` is for
   projects with work to migrate. What would you like to do?"
   - "Run `$cgs-start` -- begin guided first-time onboarding"
@@ -270,7 +274,7 @@ If a prior adoption plan was detected in Phase 1, add a note:
 > "A previous plan exists at `docs/adoption-plan-[prior-date].md`. The new plan will
 > reflect current project state -- it does not diff against the prior run."
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - "Ready to write the migration plan?"
   - "Yes -- write `docs/adoption-plan-[date].md`"
   - "Show me the full plan preview first (don't write yet)"
@@ -371,7 +375,7 @@ After writing the adoption plan (or if the user cancels writing), check whether
 
 **If it exists**: Read it and note the current mode -- "Review mode is already set to `[current]`." -- skip the prompt.
 
-**If it does not exist**: Use `ask the user directly or use available Codex UI question tools`:
+**If it does not exist**: Use `ask one concise question`:
 
 - **Prompt**: "One more setup step: how much design review would you like as you work through the workflow?"
 - **Options**:
@@ -391,11 +395,11 @@ Create the `production/` directory if it does not exist.
 ## Phase 7: Offer First Action
 
 After writing the plan, don't stop there. Pick the single highest-priority gap
-and offer to handle it immediately using `ask the user directly or use available Codex UI question tools`. Choose the first
+and offer to handle it immediately using `ask one concise question`. Choose the first
 branch that applies:
 
 **If there are parenthetical status values in systems-index.md:**
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - "The most urgent fix is `systems-index.md` -- [N] rows have parenthetical status
   values (e.g. `Needs Revision (see notes)`) that break $cgs-gate-check,
   $cgs-create-stories, and $cgs-architecture-review right now. I can fix these in-place."
@@ -404,7 +408,7 @@ Use `ask the user directly or use available Codex UI question tools`:
   - "Done -- leave me with the plan"
 
 **If ADRs are missing `## Status` (and no parenthetical issue):**
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - "The most urgent fix is adding `## Status` to [N] ADR(s): [list filenames].
   Without it, $cgs-story-readiness silently passes all ADR checks. Start with
   [first affected filename]?"
@@ -413,7 +417,7 @@ Use `ask the user directly or use available Codex UI question tools`:
   - "I'll handle ADRs myself"
 
 **If GDDs are missing Acceptance Criteria (and no blocking issues above):**
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - "The most urgent gap is missing Acceptance Criteria in [N] GDD(s):
   [list filenames]. Without them, $cgs-create-stories can't generate stories.
   Start with [highest-priority GDD filename]?"
@@ -422,7 +426,7 @@ Use `ask the user directly or use available Codex UI question tools`:
   - "I'll handle GDDs myself"
 
 **If no BLOCKING or HIGH gaps exist:**
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - "No blocking gaps -- this project is template-compatible. What next?"
   - "Walk me through the medium-priority improvements"
   - "Run $cgs-project-stage-detect for a broader health check"

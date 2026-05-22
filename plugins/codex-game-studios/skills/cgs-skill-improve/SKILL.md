@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /skill-improve. Use
 
 # CGS: skill-improve
 
-> Codex adaptation: this skill is migrated from the upstream `/skill-improve` workflow. Invoke it as `$cgs-skill-improve`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/skill-improve` workflow; invoke it as `$cgs-skill-improve`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Skill Improve
 
@@ -84,11 +88,11 @@ For each failing or warning **static** check, identify the exact gap:
 
 For each failing or warning **category** check (if category was assigned in Phase 2b),
 identify the exact gap in the skill's text. For example:
-- If G2 fails (gate mode, full directors not spawned): skill body never references all 4
+- If G2 fails (gate mode, full directors not reviewed): skill body never references all 4
   PHASE-GATE director prompts
 - If A2 fails (authoring, no per-section May-I-write): skill asks once at the end, not
   before each section write
-- If T3 fails (team, BLOCKED not surfaced): skill doesn't halt dependent work on blocked agent
+- If T3 fails (team, BLOCKED not surfaced): skill doesn't halt dependent work on blocked role-card review
 
 Show the full combined diagnosis to the user before proposing any changes.
 

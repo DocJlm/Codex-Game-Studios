@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /consistency-check.
 
 # CGS: consistency-check
 
-> Codex adaptation: this skill is migrated from the upstream `/consistency-check` workflow. Invoke it as `$cgs-consistency-check`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/consistency-check` workflow; invoke it as `$cgs-consistency-check`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Consistency Check
 
@@ -286,7 +290,7 @@ Silently append to `production/session-state/active.md` (create the file if it d
 <!-- CONSISTENCY-CHECK: [date] | GDDs checked: [N] | Conflicts found: [N] | Report: docs/consistency-report-[date].md -->
 ```
 
-Then close with an `ask the user directly or use available Codex UI question tools` widget:
+Then close with an `ask one concise question` widget:
 
 - **Prompt**: "Consistency check complete -- [N] conflicts found. What next?"
 - **Options**:

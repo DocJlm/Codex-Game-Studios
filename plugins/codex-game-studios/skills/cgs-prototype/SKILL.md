@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /prototype. Use whe
 
 # CGS: prototype
 
-> Codex adaptation: this skill is migrated from the upstream `/prototype` workflow. Invoke it as `$cgs-prototype`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/prototype` workflow; invoke it as `$cgs-prototype`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Purpose
 
@@ -29,7 +33,7 @@ before committing to Production, run `$cgs-vertical-slice` instead.
 
 ## Phase 1: Define the Question
 
-Resolve the review mode (once, store for all gate spawns this run):
+Resolve the review mode (once, store for all gate reviews this run):
 1. If `--review [full|lean|solo]` was passed -> use that
 2. Else read `production/review-mode.txt` -> use that value
 3. Else -> default to `lean`
@@ -37,7 +41,7 @@ Resolve the review mode (once, store for all gate spawns this run):
 **Check for spike mode:** If `--spike` was passed, skip to the **Spike Mode** section
 at the bottom of this skill.
 
-Otherwise, use `ask the user directly or use available Codex UI question tools` to confirm intent before proceeding:
+Otherwise, use `ask one concise question` to confirm intent before proceeding:
 
 - **Prompt**: "How would you like to use this prototype session?"
 - **Options**:
@@ -126,7 +130,7 @@ Otherwise, use this quick-reference first, then read the full path details below
 **Best for:** Puzzle games, card games, turn-based strategy, word games, idle games,
 top-down logic games. Anything where timing precision doesn't matter.
 
-**Reliability:** ~85-90% one-shot. The agent writes a single self-contained HTML
+**Reliability:** ~85-90% one-shot. The skill writes a single self-contained HTML
 file the user opens in a browser -- no install required.
 
 **Limitation -- browser latency lies about game feel.** Browsers introduce
@@ -225,7 +229,7 @@ the player feels something? If it takes more than 3-4 exchanges, the opening is 
 
 ---
 
-Assess which path best fits the hypothesis, then use `ask the user directly or use available Codex UI question tools` with your
+Assess which path best fits the hypothesis, then use `ask one concise question` with your
 recommendation pre-stated:
 
 - **Prompt**: "Which prototype path would you like to use? (Based on your concept, I'd recommend [path] -- [one sentence reason].)"
@@ -415,7 +419,7 @@ is the project's complete history of what was tried and what was learned.
 **Review mode check:**
 - `solo` -> skip. Note: "CD-PLAYTEST skipped -- Solo mode."
 - `lean` -> skip. Note: "CD-PLAYTEST skipped -- Lean mode."
-- `full` -> spawn `creative-director` via Task using gate **CD-PLAYTEST** if
+- `full` -> run `creative-director` through role-card review using gate **CD-PLAYTEST** if
   `design/gdd/game-concept.md` exists with game pillars defined. If pillars are
   not yet defined, note: "CD-PLAYTEST skipped -- game pillars not yet defined at
   concept prototype stage."
@@ -519,7 +523,7 @@ gate implications. Hard cap: ~4 hours.
 
 1. **Define the spike question** (plain text, not a widget): "What specific question does this spike answer? Give me one sentence: 'Can we [do X] using [approach Y]?'"
 
-2. **Choose path** -- same ask the user directly or use available Codex UI question tools widget as Phase 3 (HTML / Engine / Paper).
+2. **Choose path** -- same ask one concise question widget as Phase 3 (HTML / Engine / Paper).
 
 3. **Scope** -- maximum 2-3 bullet points. One mechanic, one technical question, nothing else.
 

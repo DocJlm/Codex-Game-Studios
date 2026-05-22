@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /hotfix. Use when t
 
 # CGS: hotfix
 
-> Codex adaptation: this skill is migrated from the upstream `/hotfix` workflow. Invoke it as `$cgs-hotfix`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/hotfix` workflow; invoke it as `$cgs-hotfix`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 > **Explicit invocation only**: This skill should only run when the user explicitly requests it with `$cgs-hotfix`. Do not auto-invoke based on context matching.
 
@@ -19,7 +23,7 @@ Read the bug description or ID. Assess severity using these criteria:
 - **S2 (Major)**: Significant feature broken, workaround exists
 - **S3 or lower**: Minor issue -- normal bug fix workflow applies
 
-Confirm with `ask the user directly or use available Codex UI question tools`:
+Confirm with `ask one concise question`:
 - Prompt: "I've assessed this as **[assessed severity]** -- [brief rationale]. Confirm severity to proceed:"
 - Options:
   - `[A] S1 (Critical) -- game unplayable, data loss, or security issue`
@@ -76,7 +80,7 @@ Check whether this is a git repository:
 
 If this command fails or returns empty: note "Not a git repository -- create the branch manually." and skip branch creation.
 
-If the check passes, use `ask the user directly or use available Codex UI question tools` before creating the branch:
+If the check passes, use `ask one concise question` before creating the branch:
 - Prompt: "Ready to create hotfix branch 'hotfix/[short-name]' from [base-ref]?"
 - Options:
   - `[A] Yes -- create branch`
@@ -99,11 +103,11 @@ Update the hotfix record with root cause, fix details, and test results.
 
 ## Phase 5: Collect Approvals
 
-Use the Task tool to request sign-off in parallel:
+Run these sign-off role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
 
-- `subagent_type: lead-programmer` -- Review the fix for correctness and side effects
-- `subagent_type: qa-tester` -- Run targeted regression tests on the affected system
-- `subagent_type: producer` -- Approve deployment timing and communication plan
+- Role card `lead-programmer` -- Review the fix for correctness and side effects
+- Role card `qa-tester` -- Run targeted regression tests on the affected system
+- Role card `producer` -- Approve deployment timing and communication plan
 
 All three must return APPROVE before proceeding. If any returns CONCERNS or REJECT, do not deploy -- surface the issue and resolve it first.
 
@@ -111,7 +115,7 @@ All three must return APPROVE before proceeding. If any returns CONCERNS or REJE
 
 ## Phase 5b: QA Re-Entry Gate
 
-After approvals, determine the QA scope required before deploying the hotfix. Spawn `qa-lead` via Task with:
+After approvals, determine the QA scope required before deploying the hotfix. Run `qa-lead` through role-card review with:
 - The hotfix description and affected system
 - The regression test results from Phase 5
 - A list of all systems that touch the changed files (use Grep to find callers)
@@ -174,7 +178,7 @@ If STILL PRESENT: the hotfix failed -- immediately re-open, assess rollback, and
 
 Schedule a post-incident review within 48 hours using `$cgs-retrospective hotfix`.
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Hotfix complete. What's the next step?"
 - Options:
   - `[A] Run $cgs-smoke-check to verify the fix`

@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /quick-design. Use 
 
 # CGS: quick-design
 
-> Codex adaptation: this skill is migrated from the upstream `/quick-design` workflow. Invoke it as `$cgs-quick-design`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/quick-design` workflow; invoke it as `$cgs-quick-design`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Quick Design
 
@@ -48,7 +52,7 @@ and redirect to `$cgs-design-system` instead.
 
 If there is no argument, ask the user to describe the change (plain text prompt), then classify it using the criteria above.
 
-Present the inferred classification using `ask the user directly or use available Codex UI question tools`:
+Present the inferred classification using `ask one concise question`:
 - Prompt: "I've classified this as **[inferred type]** -- [brief reason]. Is that correct?"
 - Options:
   - `[A] Yes -- [inferred type] is correct`
@@ -224,7 +228,7 @@ tracking threshold -- quick spec is sufficient."]
 
 ## 4. Approval and Filing
 
-Present the draft to the user in full. Then use `ask the user directly or use available Codex UI question tools`:
+Present the draft to the user in full. Then use `ask one concise question`:
 - Prompt: "Here's the Quick Design Spec draft. How do you want to proceed?"
 - Options:
   - `[A] Approve -- write it as shown`

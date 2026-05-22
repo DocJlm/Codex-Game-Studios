@@ -5,12 +5,16 @@ description: "Codex Game Studios skill adapted from original /asset-spec. Use wh
 
 # CGS: asset-spec
 
-> Codex adaptation: this skill is migrated from the upstream `/asset-spec` workflow. Invoke it as `$cgs-asset-spec`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/asset-spec` workflow; invoke it as `$cgs-asset-spec`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 If no argument is provided, check whether `design/assets/entity-inventory.md` exists:
-- If it exists: read it, find the first entity or screen with status "Needed" but no spec file yet, and use `ask the user directly or use available Codex UI question tools`:
+- If it exists: read it, find the first entity or screen with status "Needed" but no spec file yet, and use `ask one concise question`:
   - Prompt: "The next unspecced item is **[name]**. Generate specs for it?"
   - Options: `[A] Yes -- spec [name]` / `[B] Pick a different item` / `[C] Stop here`
 - If no entity inventory: check `design/assets/asset-manifest.md`. If manifest exists, same flow above but reading from manifest.
@@ -49,7 +53,7 @@ Other
 For each item, note the source doc it was found in.
 
 ### Step 3 -- Present and collaborate
-Present the full proposed inventory to the user in conversation. Then use `ask the user directly or use available Codex UI question tools`:
+Present the full proposed inventory to the user in conversation. Then use `ask one concise question`:
 - Prompt: "I found **[N] visual entities and [N] UI screens** across your GDDs and art bible. Review the list -- what's missing, what's not needed?"
 - Options:
   - `[A] Looks good -- save this inventory`
@@ -111,9 +115,9 @@ Extract:
 - **Review mode**: `--review [full|lean|solo]` if present
 
 **Mode behavior:**
-- `full` (default): spawn both `art-director` and `technical-artist` in parallel
-- `lean`: spawn `art-director` only -- faster, skips technical constraint pass
-- `solo`: no agent spawning -- main session writes specs from art bible rules alone. Use for simple asset categories or when speed matters more than depth.
+- `full` (default): run both `art-director` and `technical-artist` in parallel
+- `lean`: run `art-director` only -- faster, skips technical constraint pass
+- `solo`: no role-card reviews -- main session writes specs from art bible rules alone. Use for simple asset categories or when speed matters more than depth.
 
 ---
 
@@ -131,10 +135,10 @@ Read all source material **before** asking the user anything.
 ### Source doc reads (by target type):
 - **system**: Read `design/gdd/[target-name].md`. Extract the **Visual/Audio Requirements** section. If it doesn't exist or reads `[To be designed]`:
   > "The Visual/Audio section of `design/gdd/[target-name].md` is empty. Either run `$cgs-design-system [target-name]` to complete the GDD, or describe the visual needs manually."
-  Use `ask the user directly or use available Codex UI question tools`: `[A] Describe needs manually` / `[B] Stop -- complete the GDD first`
+  Use `ask one concise question`: `[A] Describe needs manually` / `[B] Stop -- complete the GDD first`
 - **level**: Read `design/levels/[target-name].md`. Extract art requirements, asset list, VFX needs, and the art-director's production concept specs from Step 4.
 - **character** or **entity**: Read `design/narrative/characters/[target-name].md` or search `design/narrative/` and `design/assets/entity-inventory.md` for a matching entry. Extract visual description, role, and any specified distinguishing features.
-  - **If no source doc exists**: do not fail. Instead, use `ask the user directly or use available Codex UI question tools`:
+  - **If no source doc exists**: do not fail. Instead, use `ask one concise question`:
     - Prompt: "No profile found for **[name]**. Describe it briefly -- a sentence or two is enough."
     - Options: `[A] Describe it now` / `[B] Skip this entity` / `[C] Stop here`
     - If [A]: the user's description becomes the source. Brief answers produce concise specs; detailed answers produce detailed specs. Accept whatever level of detail the user provides and work from it.
@@ -170,7 +174,7 @@ Group assets into categories:
 - **Audio** -- SFX, music tracks, ambient loops *(note: audio specs are descriptions only -- no generation prompts)*
 - **3D Assets** -- meshes, materials (if applicable per engine)
 
-Present the full identified list to the user. Use `ask the user directly or use available Codex UI question tools`:
+Present the full identified list to the user. Use `ask one concise question`:
 - Prompt: "I identified [N] assets across [N] categories for **[target]**. Review before speccing:"
 - Show the grouped list in conversation text first
 - Options: `[A] Proceed -- spec all of these` / `[B] Remove some assets` / `[C] Add assets I didn't catch` / `[D] Adjust categories`
@@ -181,19 +185,19 @@ Do NOT proceed to Phase 3 without user confirmation of the asset list.
 
 ## Phase 3: Spec Generation
 
-Spawn specialist agents based on review mode. **Issue all Task calls simultaneously -- do not wait for one before starting the next.**
+Run specialist role-card reviews based on review mode. **Issue all role-card review passes simultaneously -- do not wait for one before starting the next.**
 
-### Full mode -- spawn in parallel:
+### Full mode -- run in parallel:
 
-**`art-director`** via Task:
+**`art-director`** through role-card review:
 - Provide: full asset list from Phase 2, art bible Visual Identity Statement, Color System, Shape Language, the source doc's visual requirements, and any reference games/art mentioned in the art bible Section 9
 - Ask: "For each asset in this list, produce: (1) a 2-3 sentence visual description anchored to the art bible's shape language and color system -- be specific enough that two different artists would produce consistent results; (2) a generation prompt ready for use with AI image tools (Midjourney/Stable Diffusion style -- include style keywords, composition, color palette anchors, negative prompts); (3) which art bible rules directly govern this asset (cite by section). For audio assets, describe the sonic character instead of a generation prompt."
 
-**`technical-artist`** via Task:
+**`technical-artist`** through role-card review:
 - Provide: full asset list, art bible Asset Standards (Section 8), technical-preferences.md performance budgets, engine name and version
 - Ask: "For each asset in this list, specify: (1) exact dimensions or polycount (match the art bible Asset Standards tiers -- do not invent new sizes); (2) file format and export settings; (3) naming convention (from technical-preferences.md); (4) any engine-specific constraints this asset type must respect; (5) LOD requirements if applicable. Flag any asset type where the art bible's preferred standard conflicts with the engine's constraints."
 
-### Lean mode -- spawn art-director only (skip technical-artist).
+### Lean mode -- run art-director only (skip technical-artist).
 
 ### Solo mode -- skip both. Derive specs from art bible rules alone, noting that technical constraints were not validated.
 
@@ -203,7 +207,7 @@ Spawn specialist agents based on review mode. **Issue all Task calls simultaneou
 
 ## Phase 4: Compile and Review
 
-Combine the agent outputs into a draft spec per asset. Present all specs in conversation text using this format:
+Combine the role-review outputs into a draft spec per asset. Present all specs in conversation text using this format:
 
 ```
 ## ASSET-[NNN] -- [Asset Name]
@@ -230,13 +234,13 @@ Combine the agent outputs into a draft spec per asset. Present all specs in conv
 **Status:** Needed
 ```
 
-After presenting all specs, use `ask the user directly or use available Codex UI question tools`:
+After presenting all specs, use `ask one concise question`:
 - Prompt: "Asset specs for **[target]** -- [N] assets. Review complete?"
 - Options: `[A] Approve all -- write to file` / `[B] Revise a specific asset` / `[C] Regenerate with different direction`
 
-If [B]: ask which asset and what to change. Revise inline and re-present. Do NOT re-spawn agents for minor text revisions -- only re-spawn if the visual direction itself needs to change.
+If [B]: ask which asset and what to change. Revise inline and re-present. Do NOT re-run role-card reviews for minor text revisions -- only re-run if the visual direction itself needs to change.
 
-If [C]: ask what direction to change. Re-spawn the relevant agent with the updated brief.
+If [C]: ask what direction to change. Re-run the relevant role-card review with the updated brief.
 
 ---
 
@@ -286,7 +290,7 @@ Ask: "May I update `design/assets/asset-manifest.md`?"
 
 ## Phase 6: Close
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Asset specs complete for **[target]**. What's next?"
 - Options:
   - `[A] Spec another system -- $cgs-asset-spec system:[next-system]`
@@ -327,12 +331,12 @@ If a match is found: reference the existing ASSET-ID rather than creating a dupl
 
 ## Error Recovery Protocol
 
-If any spawned agent returns BLOCKED or cannot complete:
+If any role-card review returns BLOCKED or cannot complete:
 
 1. Surface immediately: "[AgentName]: BLOCKED -- [reason]"
 2. In `lean` mode or if `technical-artist` blocks: proceed with art-director output only -- note that technical constraints were not validated
 3. In `solo` mode or if `art-director` blocks: derive descriptions from art bible rules -- flag as "Art director not consulted -- verify against art bible before production"
-4. Always produce a partial spec -- never discard work because one agent blocked
+4. Always produce a partial spec -- never discard work because one role-card review blocked
 
 ---
 
@@ -342,7 +346,7 @@ Every phase follows: **Identify -> Confirm -> Generate -> Review -> Approve -> W
 
 - Never spec assets without first confirming the asset list with the user
 - Always anchor specs to the art bible -- a spec that contradicts the art bible is wrong
-- Surface all agent disagreements -- do not silently pick one
+- Surface all role-card review disagreements -- do not silently pick one
 - Write the spec file only after explicit approval
 - Update the manifest immediately after writing the spec
 

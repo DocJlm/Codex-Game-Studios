@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /review-all-gdds. U
 
 # CGS: review-all-gdds
 
-> Codex adaptation: this skill is migrated from the upstream `/review-all-gdds` workflow. Invoke it as `$cgs-review-all-gdds`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/review-all-gdds` workflow; invoke it as `$cgs-review-all-gdds`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Review All GDDs
 
@@ -31,7 +35,7 @@ completeness. This skill reviews the *relationships* between all GDDs.
 
 **Argument modes:**
 
-**Focus:** `$ARGUMENTS[0]` (blank = `full`)
+**Focus:** the first argument (blank = `full`)
 
 - **No argument / `full`**: Both consistency and design theory passes
 - **`consistency`**: Cross-GDD consistency checks only (faster)
@@ -103,17 +107,17 @@ If fewer than 2 system GDDs exist, stop:
 ### Parallel Execution
 
 Phase 2 (Consistency) and Phase 3 (Design Theory) are independent -- they read
-the same GDD inputs but produce separate reports. Spawn both as parallel Task
-agents simultaneously rather than waiting for Phase 2 to complete before
+the same GDD inputs but produce separate reports. Run both as separate
+role-card review passes in one review set rather than waiting for Phase 2 to complete before
 starting Phase 3. Collect both results before writing the combined report.
 
-**When spawning parallel Task agents for Phase 2 and Phase 3, always pass:**
+**When running Phase 2 and Phase 3 role-card reviews, always pass:**
 - The complete list of GDD file paths loaded in Phase 1 (explicit paths, not just counts)
 - The full TR registry contents if loaded in Phase 1b (paste the registry text, not just a file path)
-- The specific checklist items assigned to that agent's phase (Phase 2 gets 2a-2f; Phase 3 gets 3a-3g)
+- The specific checklist items assigned to that role-card review's phase (Phase 2 gets 2a-2f; Phase 3 gets 3a-3g)
 - The engine name and version from `plugins/codex-game-studios/references/studio-docs/technical-preferences.md` and `docs/engine-reference/[engine]/VERSION.md`
 
-Do not rely on the subagent to re-read these files -- it has its own context window and cannot access Phase 1 results unless they are explicitly passed in the Task prompt.
+Do not rely on a later role-card review to rediscover Phase 1 context; pass the exact source paths, summaries, and checklist items into the review brief.
 
 ---
 
@@ -406,7 +410,7 @@ Scan all GDDs and identify the 3-5 most important player-facing moments where
 multiple systems activate simultaneously. Look specifically for:
 
 - **Combat + Economy overlap**: killing enemies that drop resources, spending
-  resources during combat, death/respawn interacting with economy state
+  resources during combat, death/rerun interacting with economy state
 - **Progression + Difficulty overlap**: level-up triggering mid-fight, ability
   unlocks changing combat viability, difficulty scaling at progression milestones
 - **Narrative + Gameplay overlap**: dialogue choices locking/unlocking mechanics,
@@ -554,11 +558,11 @@ FAIL: One or more blocking issues must be resolved before architecture begins.
 
 ## Phase 6: Write Report and Flag GDDs
 
-Use `ask the user directly or use available Codex UI question tools` for write permission:
+Use `ask one concise question` for write permission:
 - Prompt: "May I write this review to `design/gdd/gdd-cross-review-[date].md`?"
 - Options: `[A] Yes -- write the report` / `[B] No -- skip`
 
-If any GDDs are flagged for revision, use a second `ask the user directly or use available Codex UI question tools`:
+If any GDDs are flagged for revision, use a second `ask one concise question`:
 - Prompt: "Should I update the systems index to mark these GDDs as needing revision? ([list of flagged GDDs])"
 - Options: `[A] Yes -- update systems index` / `[B] No -- leave as-is`
 - If yes: update each flagged GDD's Status field in systems-index.md to "Needs Revision".
@@ -588,7 +592,7 @@ Confirm in conversation: "Session state updated."
 
 ## Phase 7: Handoff
 
-After all file writes are complete, use `ask the user directly or use available Codex UI question tools` for a closing widget.
+After all file writes are complete, use `ask one concise question` for a closing widget.
 
 Before building options, check project state:
 - Are there any Warning-level items that are simple edits (flagged with "30-second edit", "brief addition", or similar)? -> offer inline quick-fix option
@@ -614,12 +618,12 @@ Never end the skill with plain text. Always close with this widget.
 
 ## Error Recovery Protocol
 
-If any spawned agent returns BLOCKED, errors, or fails to complete:
+If any role-card review returns BLOCKED, errors, or fails to complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" before continuing
-2. **Assess dependencies**: If the blocked agent's output is required by a later phase, do not proceed past that phase without user input
-3. **Offer options** via ask the user directly or use available Codex UI question tools with three choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: If the blocked role-card review's output is required by a later phase, do not proceed past that phase without user input
+3. **Offer options** via ask one concise question with three choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope (fewer GDDs, single-system focus)
    - Stop here and resolve the blocker first
 4. **Always produce a partial report** -- output whatever was completed so work is not lost

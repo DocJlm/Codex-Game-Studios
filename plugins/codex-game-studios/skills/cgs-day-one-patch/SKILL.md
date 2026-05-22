@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /day-one-patch. Use
 
 # CGS: day-one-patch
 
-> Codex adaptation: this skill is migrated from the upstream `/day-one-patch` workflow. Invoke it as `$cgs-day-one-patch`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/day-one-patch` workflow; invoke it as `$cgs-day-one-patch`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Day-One Patch
 
@@ -65,7 +69,7 @@ For each open bug, evaluate:
 
 ### Step 2b -- Present patch scope to user
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Based on open bugs and cert feedback, here is the proposed day-one patch scope. Does this look right?"
 - Show: table of included bugs (ID, severity, description, estimated effort)
 - Show: table of deferred bugs (ID, severity, reason deferred)
@@ -78,7 +82,7 @@ If [C]: output "No day-one patch required. Proceed to `$cgs-launch-checklist`." 
 Sum estimated effort. If total exceeds 1 day of work:
 > " Patch scope is [N hours] -- this exceeds a safe day-one window. Consider deferring lower-priority items to patch 1.1. A bloated day-one patch introduces more risk than it removes."
 
-Use `ask the user directly or use available Codex UI question tools` to confirm proceeding or reduce scope.
+Use `ask one concise question` to confirm proceeding or reduce scope.
 
 ---
 
@@ -86,7 +90,7 @@ Use `ask the user directly or use available Codex UI question tools` to confirm 
 
 Before any code is written, define the rollback procedure. This is non-negotiable.
 
-Spawn `release-manager` via Task. Ask them to produce a rollback plan covering:
+Run `release-manager` through role-card review. Ask them to produce a rollback plan covering:
 - How to revert to the gold master build on each target platform
 - Platform-specific rollback constraints (some platforms cannot roll back cert builds)
 - Who is responsible for triggering the rollback
@@ -100,16 +104,16 @@ Do not proceed to Phase 4 until the rollback plan is written.
 
 ## Phase 4: Implement Fixes
 
-For each bug in the approved scope, spawn a focused implementation loop:
+For each bug in the approved scope, run a focused implementation loop:
 
-1. Spawn `lead-programmer` via Task with:
+1. Run `lead-programmer` through role-card review with:
    - The bug report (exact reproduction steps and root cause if known)
    - The constraint: minimum viable fix only, no cleanup
    - The affected files (from bug report Technical Context section)
 
 2. The lead-programmer implements and runs targeted tests.
 
-3. Spawn `qa-tester` via Task to verify: does the bug reproduce after the fix?
+3. Run `qa-tester` through role-card review to verify: does the bug reproduce after the fix?
 
 For config/data-only fixes: make the change directly (no programmer agent needed). Confirm the value changed and re-run any relevant smoke test.
 
@@ -119,7 +123,7 @@ For config/data-only fixes: make the change directly (no programmer agent needed
 
 This is a lightweight QA pass -- not a full `$cgs-team-qa`. The patch is already QA-approved from the release gate; we are only re-verifying the changed areas.
 
-Spawn `qa-lead` via Task with:
+Run `qa-lead` through role-card review with:
 - List of all changed files
 - List of bugs fixed (with verification status from Phase 4)
 - The smoke check scope for the affected systems
@@ -211,7 +215,7 @@ After the patch record is written:
 **If any S1 bugs remain open after the patch:**
 > " S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions -- if they occur at scale, rollback may be preferable to a follow-up patch."
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Day-one patch complete. What's next?"
 - Options:
   - `[A] Run $cgs-patch-notes -- generate player-facing patch notes`

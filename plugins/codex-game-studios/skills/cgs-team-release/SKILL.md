@@ -5,19 +5,23 @@ description: "Codex Game Studios skill adapted from original /team-release. Use 
 
 # CGS: team-release
 
-> Codex adaptation: this skill is migrated from the upstream `/team-release` workflow. Invoke it as `$cgs-team-release`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-release` workflow; invoke it as `$cgs-team-release`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 **Argument check:** If no version number is provided:
 1. Read `production/session-state/active.md` and the most recent file in `production/milestones/` (if they exist) to infer the target version.
-2. If a version is found: report "No version argument provided -- inferred [version] from milestone data. Proceeding." Then confirm with `ask the user directly or use available Codex UI question tools`: "Releasing [version]. Is this correct?"
-3. If no version is discoverable: use `ask the user directly or use available Codex UI question tools` to ask "What version number should be released? (e.g., v1.0.0)" and wait for user input before proceeding. Do NOT default to a hardcoded version string.
+2. If a version is found: report "No version argument provided -- inferred [version] from milestone data. Proceeding." Then confirm with `ask one concise question`: "Releasing [version]. Is this correct?"
+3. If no version is discoverable: use `ask one concise question` to ask "What version number should be released? (e.g., v1.0.0)" and wait for user input before proceeding. Do NOT default to a hardcoded version string.
 
 When this skill is invoked, orchestrate the release team through a structured pipeline.
 
-**Decision Points:** At each phase transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each phase transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
@@ -28,9 +32,9 @@ The user must approve before moving to the next phase.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
@@ -45,17 +49,17 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: release-manager` -- Release branch, versioning, changelog, deployment
-- `subagent_type: qa-lead` -- Test sign-off, regression suite, release quality gate
-- `subagent_type: devops-engineer` -- Build pipeline, artifacts, deployment automation
-- `subagent_type: security-engineer` -- Security audit for online/multiplayer/data features
-- `subagent_type: analytics-engineer` -- Telemetry event verification and dashboard readiness
-- `subagent_type: community-manager` -- Patch notes and launch communication
-- `subagent_type: producer` -- Go/no-go decision, stakeholder communication
-- `subagent_type: network-programmer` -- Netcode stability sign-off (invoke if game has multiplayer)
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `release-manager` -- Release branch, versioning, changelog, deployment
+- Role card `qa-lead` -- Test sign-off, regression suite, release quality gate
+- Role card `devops-engineer` -- Build pipeline, artifacts, deployment automation
+- Role card `security-engineer` -- Security audit for online/multiplayer/data features
+- Role card `analytics-engineer` -- Telemetry event verification and dashboard readiness
+- Role card `community-manager` -- Patch notes and launch communication
+- Role card `producer` -- Go/no-go decision, stakeholder communication
+- Role card `network-programmer` -- Netcode stability sign-off (invoke if game has multiplayer)
 
-Always provide full context in each agent's prompt (version number, milestone status, known issues). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).
+Always provide full context in each role review brief (version number, milestone status, known issues). Run independent role-card reviews sequentially by default; use parallel agent work only when the user explicitly requests it and tools are available (e.g., Phase 3 role-card reviews can be grouped when the user explicitly asks for parallel agent work).
 
 ## Pipeline
 
@@ -90,18 +94,18 @@ Delegate (can run in parallel with Phase 3 if resources available):
 
 ### Phase 5: Go/No-Go
 Delegate to **producer**:
-- Collect sign-off from: qa-lead, release-manager, devops-engineer, security-engineer (if spawned in Phase 3), network-programmer (if spawned in Phase 3), and technical-director
+- Collect sign-off from: qa-lead, release-manager, devops-engineer, security-engineer (if consulted in Phase 3), network-programmer (if consulted in Phase 3), and technical-director
 - Evaluate any open issues -- are they blocking or can they ship?
 - Make the go/no-go call
 - Output: release decision with rationale
 
 **If producer declares NO-GO:**
 - Surface the decision immediately: "PRODUCER: NO-GO -- [rationale, e.g., S1 bug found in Phase 3]."
-- Use `ask the user directly or use available Codex UI question tools` with options:
+- Use `ask one concise question` with options:
   - Fix the blocker and re-run the affected phase
   - Defer the release to a later date
   - Override NO-GO with documented rationale (user must provide written justification)
-- **Skip Phase 6 entirely** -- do not tag, deploy to staging, deploy to production, or spawn community-manager.
+- **Skip Phase 6 entirely** -- do not tag, deploy to staging, deploy to production, or run community-manager.
 - Produce a partial report summarizing Phases 1-5 and what was skipped (Phase 6) and why.
 - Verdict: **BLOCKED** -- release not deployed.
 
@@ -135,15 +139,15 @@ Delegate to **community-manager** (in parallel with deployment):
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) -> redirect to the skill that creates it
@@ -154,7 +158,7 @@ Common blockers:
 ## File Write Protocol
 
 All file writes (release checklists, changelogs, patch notes, deployment scripts) are
-delegated to sub-agents and sub-skills. Each enforces the "May I write to [path]?"
+delegated to role-card reviews and sub-skills. Each enforces the "May I write to [path]?"
 protocol. This orchestrator does not write files directly.
 
 ## Output

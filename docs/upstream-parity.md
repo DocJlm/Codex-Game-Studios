@@ -41,9 +41,9 @@ Codex Game Studios intentionally does not install Claude runtime hooks. The 12 u
 | `log-agent.sh` | Role-card review notes in the assistant response or project docs when a workflow asks for role reviews |
 | `log-agent-stop.sh` | Same as `log-agent.sh`; no automatic subagent audit trail is assumed |
 
-## Remaining Parity Work
+## Parity Roadmap
 
-- v1.4.0 should turn the remaining 50 full-migration skills into concise Codex-native workflows.
+- v1.4.0 completed the first Codex-native operating pass for the remaining 50 full-migration skills.
 - v1.5.0 should rewrite stale `CCGS Skill Testing Framework/...` references to repo-local paths and validate that they do not regress.
 - v1.6.0 should round out user-facing install, upgrade, community, and contribution documentation for Codex Desktop users.
 - v1.7.0 should deepen executable examples and smoke evidence across the main workflow loop.

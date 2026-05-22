@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /localize. Use when
 
 # CGS: localize
 
-> Codex adaptation: this skill is migrated from the upstream `/localize` workflow. Invoke it as `$cgs-localize`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/localize` workflow; invoke it as `$cgs-localize`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Localization Pipeline
 
@@ -181,7 +185,7 @@ Ask: "May I write this translator brief to `production/localization/translator-b
 
 ## Phase 2F: Cultural Review Mode
 
-Spawn `localization-lead` via Task. Ask them to audit the following for cultural sensitivity across the target locales (read from `assets/data/strings/` and `assets/`):
+Run `localization-lead` through role-card review. Ask them to audit the following for cultural sensitivity across the target locales (read from `assets/data/strings/` and `assets/`):
 
 ### Content Areas to Review
 
@@ -333,7 +337,7 @@ Pre-Freeze Checklist
 [ ] Marketing strings (store description, achievements) are final
 ```
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Are all items above confirmed? Calling string freeze locks the source table."
 - Options: `[A] Yes -- call string freeze now` / `[B] No -- I still have strings to add`
 
@@ -368,7 +372,7 @@ Localization QA is a dedicated pass that runs after translations are delivered b
 before any locale ships. This is not the same as `/validate` (which checks completeness)
 -- this is a structured playthrough-based quality check.
 
-Spawn `localization-lead` via Task with:
+Run `localization-lead` through role-card review with:
 - The target locale(s) to QA
 - The list of all screens/flows in the game (from `design/gdd/` or `$cgs-content-audit` output)
 - The current `$cgs-localize validate` report

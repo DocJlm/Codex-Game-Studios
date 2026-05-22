@@ -5,15 +5,19 @@ description: "Codex Game Studios skill adapted from original /architecture-decis
 
 # CGS: architecture-decision
 
-> Codex adaptation: this skill is migrated from the upstream `/architecture-decision` workflow. Invoke it as `$cgs-architecture-decision`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/architecture-decision` workflow; invoke it as `$cgs-architecture-decision`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 When this skill is invoked:
 
 ## 0. Parse Arguments -- Detect Retrofit Mode
 
-Resolve the review mode (once, store for all gate spawns this run):
+Resolve the review mode (once, store for all gate reviews this run):
 1. If `--review [full|lean|solo]` was passed -> use that
 2. Else read `production/review-mode.txt` -> use that value
 3. Else -> default to `lean`
@@ -172,7 +176,7 @@ or explicitly accepted as an intentional exception.
 
 Before asking anything, derive the skill's best guesses from the context already
 gathered (GDDs read, engine reference loaded, existing ADRs scanned). Then present
-a **confirm/adjust** prompt using `ask the user directly or use available Codex UI question tools` -- not open-ended questions.
+a **confirm/adjust** prompt using `ask one concise question` -- not open-ended questions.
 
 **Derive assumptions first:**
 - **Problem**: Infer from the title + GDD context what decision needs to be made
@@ -181,11 +185,11 @@ a **confirm/adjust** prompt using `ask the user directly or use available Codex 
 - **GDD linkage**: Extract which GDD systems the title directly relates to
 - **Status**: Always `Proposed` for new ADRs -- never ask the user what the status is
 
-**Scope of assumptions tab**: Assumptions cover only: problem framing, alternative approaches, upstream dependencies, GDD linkage, and status. Schema design questions (e.g., "How should spawn timing work?", "Should data be inline or external?") are NOT assumptions -- they are design decisions belonging to a separate step after the assumptions are confirmed. Do not include schema design questions in the assumptions ask the user directly or use available Codex UI question tools widget.
+**Scope of assumptions tab**: Assumptions cover only: problem framing, alternative approaches, upstream dependencies, GDD linkage, and status. Schema design questions (e.g., "How should run timing work?", "Should data be inline or external?") are NOT assumptions -- they are design decisions belonging to a separate step after the assumptions are confirmed. Do not include schema design questions in the assumptions ask one concise question widget.
 
-**After assumptions are confirmed**, if the ADR involves schema or data design choices, use a separate multi-tab `ask the user directly or use available Codex UI question tools` to ask each design question independently before drafting.
+**After assumptions are confirmed**, if the ADR involves schema or data design choices, use a separate multi-tab `ask one concise question` to ask each design question independently before drafting.
 
-**Present assumptions with `ask the user directly or use available Codex UI question tools`:**
+**Present assumptions with `ask one concise question`:**
 
 ```
 Here's what I'm assuming before drafting:
@@ -209,7 +213,7 @@ Status: Proposed
 Do not generate the ADR until the user confirms assumptions or provides corrections.
 
 **After engine specialist and TD reviews return** (Step 5.5/5.6), if unresolved
-decisions remain, present each one as a separate `ask the user directly or use available Codex UI question tools` with the proposed
+decisions remain, present each one as a separate `ask one concise question` with the proposed
 options as choices plus a free-text escape:
 
 ```
@@ -337,22 +341,22 @@ to implement it.]
 - [Links to related design documents]
 ```
 
-5.5. **Engine Specialist Validation** -- Before saving, spawn the **primary engine specialist** via Task to validate the drafted ADR:
+5.5. **Engine Specialist Validation** -- Before saving, run the **primary engine specialist** through role-card review to validate the drafted ADR:
    - Read `plugins/codex-game-studios/references/studio-docs/technical-preferences.md` `Engine Specialists` section to get the primary specialist
    - If no engine is configured (`[TO BE CONFIGURED]`), skip this step
-   - Spawn `subagent_type: [primary specialist]` with: the ADR's Engine Compatibility section, Decision section, Key Interfaces, and the engine reference docs path. Ask them to:
+   - Run role card `[primary specialist]` with: the ADR's Engine Compatibility section, Decision section, Key Interfaces, and the engine reference docs path. Ask them to:
      1. Confirm the proposed approach is idiomatic for the pinned engine version
      2. Flag any APIs or patterns that are deprecated or changed post-training-cutoff
      3. Identify engine-specific risks or gotchas not captured in the current ADR draft
    - If the specialist identifies a **blocking issue** (wrong API, deprecated approach, engine version incompatibility): revise the Decision and Engine Compatibility sections accordingly, then confirm the changes with the user before proceeding
    - If the specialist finds **minor notes** only: incorporate them into the ADR's Risks subsection
 
-**Review mode check** -- apply before spawning TD-ADR:
+**Review mode check** -- apply before running TD-ADR:
 - `solo` -> skip. Note: "TD-ADR skipped -- Solo mode." Proceed to Step 5.7 (GDD sync check).
 - `lean` -> skip (not a PHASE-GATE). Note: "TD-ADR skipped -- Lean mode." Proceed to Step 5.7 (GDD sync check).
-- `full` -> spawn as normal.
+- `full` -> run as normal.
 
-5.6. **Technical Director Strategic Review** -- After the engine specialist validation, spawn `technical-director` via Task using gate **TD-ADR** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`):
+5.6. **Technical Director Strategic Review** -- After the engine specialist validation, run `technical-director` through role-card review using gate **TD-ADR** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`):
    - Pass: the ADR file path (or draft content), engine version, domain, any existing ADRs in the same domain
    - The TD validates architectural coherence (is this decision consistent with the whole system?) -- distinct from the engine specialist's API-level check
    - If CONCERNS or REJECT: revise the Decision or Alternatives sections accordingly before proceeding
@@ -374,7 +378,7 @@ developers reading the GDD from implementing the wrong interface.
 
 If no inconsistencies: skip this block silently.
 
-5. **Write approval** -- Use `ask the user directly or use available Codex UI question tools`:
+5. **Write approval** -- Use `ask one concise question`:
 
 If GDD sync issues were found:
 - "ADR draft is complete. How would you like to proceed?"
@@ -417,7 +421,7 @@ Registry candidates from this ADR:
 
 **BLOCKING -- do not write to `docs/registry/architecture.yaml` without explicit user approval.**
 
-Ask using `ask the user directly or use available Codex UI question tools`:
+Ask using `ask one concise question`:
 - "May I update `docs/registry/architecture.yaml` with these [N] new stances?"
   - Options: "Yes -- update the registry", "Not yet -- I want to review the candidates", "Skip registry update"
 
@@ -428,7 +432,7 @@ changing, set the old entry to `status: superseded_by: ADR-[NNNN]` and add the n
 
 ## 6. Closing Next Steps
 
-After the ADR is written (and registry optionally updated), close with `ask the user directly or use available Codex UI question tools`.
+After the ADR is written (and registry optionally updated), close with `ask one concise question`.
 
 Before generating the widget:
 1. Read `docs/registry/architecture.yaml` -- check if any priority ADRs are still unwritten (look for ADRs flagged in technical-preferences.md or systems-index.md as prerequisites)
@@ -452,7 +456,7 @@ If there are no remaining priority ADRs and no undesigned GDD systems, offer onl
 > and run `$cgs-architecture-review`.
 >
 > **Never run `$cgs-architecture-review` in the same session as `$cgs-architecture-decision`.**
-> The reviewing agent must be independent of the authoring context to give an unbiased
+> The reviewing role perspective must stay independent of the authoring context to give an unbiased
 > assessment. Running it here would invalidate the review.
 
 Update any stories that were `Status: Blocked` pending this ADR to `Status: Ready`.

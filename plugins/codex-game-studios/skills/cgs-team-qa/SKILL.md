@@ -5,14 +5,18 @@ description: "Codex Game Studios skill adapted from original /team-qa. Use when 
 
 # CGS: team-qa
 
-> Codex adaptation: this skill is migrated from the upstream `/team-qa` workflow. Invoke it as `$cgs-team-qa`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-qa` workflow; invoke it as `$cgs-team-qa`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 When this skill is invoked, orchestrate the QA team through a structured testing cycle.
 
-**Decision Points:** At each phase transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each phase transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
@@ -23,9 +27,9 @@ The user must approve before moving to the next phase.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
@@ -36,11 +40,11 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: qa-lead` -- Strategy, planning, classification, sign-off
-- `subagent_type: qa-tester` -- Test case writing and bug report writing
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `qa-lead` -- Strategy, planning, classification, sign-off
+- Role card `qa-tester` -- Test case writing and bug report writing
 
-Always provide full context in each agent's prompt (story file paths, QA plan path, scope constraints). Launch independent qa-tester tasks in parallel where possible (e.g., multiple stories in Phase 5 can be scaffolded simultaneously).
+Always provide full context in each role review brief (story file paths, QA plan path, scope constraints). Run qa-tester role-card reviews sequentially by default; use parallel agent work only when the user explicitly requests it and tools are available (e.g., multiple stories in Phase 5 can be scaffolded simultaneously).
 
 ## Pipeline
 
@@ -60,7 +64,7 @@ Before doing anything else, gather the full scope:
 
 ### Phase 2: QA Strategy (qa-lead)
 
-Spawn `qa-lead` via Task to review all in-scope stories and produce a QA strategy.
+Run `qa-lead` through role-card review to review all in-scope stories and produce a QA strategy.
 
 Prompt the qa-lead to:
 - Read each story file
@@ -78,7 +82,7 @@ Prompt the qa-lead to:
 
 If the smoke check result is **FAIL**, the qa-lead must list the failures prominently. QA cannot proceed past the strategy phase with a failed smoke check.
 
-Present the qa-lead's full strategy to the user, then use `ask the user directly or use available Codex UI question tools`:
+Present the qa-lead's full strategy to the user, then use `ask one concise question`:
 
 ```
 question: "QA Strategy Review"
@@ -118,7 +122,7 @@ Write only after receiving approval.
 
 For each story requiring manual QA (Visual/Feel, UI, Integration without automated tests):
 
-Spawn `qa-tester` via Task for each story (run in parallel where possible), providing:
+Run `qa-tester` through role-card review for each story (run in parallel where possible), providing:
 - The story file path
 - The relevant section of the QA plan for that story
 - The GDD acceptance criteria for the system being tested (if available)
@@ -133,7 +137,7 @@ Each test case set should include:
 
 Present the test cases to the user for review before execution. Group by story.
 
-Use `ask the user directly or use available Codex UI question tools` per story group (batched 3-4 at a time):
+Use `ask one concise question` per story group (batched 3-4 at a time):
 
 ```
 question: "Test cases ready for [Story Group]. Review before manual QA begins?"
@@ -147,7 +151,7 @@ options:
 
 Walk through each story in the approved manual QA list.
 
-Batch stories into groups of 3-4 and use `ask the user directly or use available Codex UI question tools` for each:
+Batch stories into groups of 3-4 and use `ask one concise question` for each:
 
 ```
 question: "Manual QA -- [Story Title]\n[brief description of what to test]"
@@ -158,7 +162,7 @@ options:
   - "BLOCKED -- cannot test yet (reason)"
 ```
 
-After each FAIL result: use `ask the user directly or use available Codex UI question tools` to collect the failure description, then spawn `qa-tester` via Task to write a formal bug report in `production/qa/bugs/`.
+After each FAIL result: use `ask one concise question` to collect the failure description, then run `qa-tester` through role-card review to write a formal bug report in `production/qa/bugs/`.
 
 Bug report naming: `BUG-[NNN]-[short-slug].md` (increment NNN from existing bugs in the directory).
 
@@ -170,7 +174,7 @@ After collecting all results, summarize:
 
 ### Phase 6: QA Sign-Off Report
 
-Spawn `qa-lead` via Task to produce the sign-off report using all results from Phases 4-6.
+Run `qa-lead` through role-card review to produce the sign-off report using all results from Phases 4-6.
 
 The sign-off report format:
 
@@ -213,15 +217,15 @@ Write only after receiving approval.
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) -> redirect to the skill that creates it

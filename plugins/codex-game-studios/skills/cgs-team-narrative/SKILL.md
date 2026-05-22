@@ -5,17 +5,21 @@ description: "Codex Game Studios skill adapted from original /team-narrative. Us
 
 # CGS: team-narrative
 
-> Codex adaptation: this skill is migrated from the upstream `/team-narrative` workflow. Invoke it as `$cgs-team-narrative`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-narrative` workflow; invoke it as `$cgs-team-narrative`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
-If no argument is provided, output usage guidance and exit without spawning any agents:
-> Usage: `$cgs-team-narrative [narrative content description]` -- describe the story content, scene, or narrative area to work on (e.g., `boss encounter cutscene`, `faction intro dialogue`, `tutorial narrative`). Do not use `ask the user directly or use available Codex UI question tools` here; output the guidance directly.
+If no argument is provided, output usage guidance and exit without running any role-card reviews:
+> Usage: `$cgs-team-narrative [narrative content description]` -- describe the story content, scene, or narrative area to work on (e.g., `boss encounter cutscene`, `faction intro dialogue`, `tutorial narrative`). Do not use `ask one concise question` here; output the guidance directly.
 
 When this skill is invoked with an argument, orchestrate the narrative team through a structured pipeline.
 
-**Decision Points:** At each phase transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each phase transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
@@ -26,9 +30,9 @@ The user must approve before moving to the next phase.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
@@ -42,15 +46,15 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: narrative-director` -- Story arcs, character design, narrative vision
-- `subagent_type: writer` -- Dialogue writing, lore entries, in-game text
-- `subagent_type: world-builder` -- World rules, faction design, history, geography
-- `subagent_type: art-director` -- Character visual profiles, environmental visual storytelling, cinematic tone
-- `subagent_type: level-designer` -- Level layouts that serve the narrative, pacing
-- `subagent_type: localization-lead` -- Localization readiness -- flags non-localizable strings, cultural assumptions, and i18n gaps
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `narrative-director` -- Story arcs, character design, narrative vision
+- Role card `writer` -- Dialogue writing, lore entries, in-game text
+- Role card `world-builder` -- World rules, faction design, history, geography
+- Role card `art-director` -- Character visual profiles, environmental visual storytelling, cinematic tone
+- Role card `level-designer` -- Level layouts that serve the narrative, pacing
+- Role card `localization-lead` -- Localization readiness -- flags non-localizable strings, cultural assumptions, and i18n gaps
 
-Always provide full context in each agent's prompt (narrative brief, lore dependencies, character profiles). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 2 agents can run simultaneously).
+Always provide full context in each role review brief (narrative brief, lore dependencies, character profiles). Run independent role-card reviews sequentially by default; use parallel agent work only when the user explicitly requests it and tools are available (e.g., Phase 2 role-card reviews can be grouped when the user explicitly asks for parallel agent work).
 
 ## Pipeline
 
@@ -63,7 +67,7 @@ Delegate to **narrative-director**:
 - Output: narrative brief with story requirements
 
 ### Phase 2: World Foundation (parallel)
-Delegate in parallel -- issue all three Task calls simultaneously before waiting for any result:
+Delegate in parallel -- issue all three role-card review passes simultaneously before waiting for any result:
 - **world-builder**: Create or update lore entries for factions, locations, and history relevant to this content. Cross-reference against existing lore for contradictions. Set canon level for new entries.
 - **writer**: Draft character dialogue using voice profiles. Ensure all lines are under 120 characters, use named placeholders for variables, and are localization-ready.
 - **art-director**: Define character visual design direction for key characters appearing in this content (silhouette, visual archetype, distinguishing features). Specify environmental visual storytelling elements for each key space (prop composition, lighting notes, spatial arrangement). Define tone palette and cinematic direction for any cutscenes or scripted sequences.
@@ -90,15 +94,15 @@ Delegate in parallel:
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) -> redirect to the skill that creates it
@@ -109,7 +113,7 @@ Common blockers:
 ## File Write Protocol
 
 All file writes (narrative docs, dialogue files, lore entries) are delegated to
-sub-agents spawned via Task. Each sub-agent enforces the "May I write to [path]?"
+role-card reviews run as role-card reviews. Each role-card review enforces the "May I write to [path]?"
 protocol. This orchestrator does not write files directly.
 
 ## Output

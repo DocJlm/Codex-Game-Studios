@@ -5,13 +5,17 @@ description: "Codex Game Studios skill adapted from original /playtest-report. U
 
 # CGS: playtest-report
 
-> Codex adaptation: this skill is migrated from the upstream `/playtest-report` workflow. Invoke it as `$cgs-playtest-report`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/playtest-report` workflow; invoke it as `$cgs-playtest-report`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 1: Parse Arguments
 
-Resolve the review mode (once, store for all gate spawns this run):
+Resolve the review mode (once, store for all gate reviews this run):
 1. If `--review [full|lean|solo]` was passed -> use that
 2. Else read `production/review-mode.txt` -> use that value
 3. Else -> default to `lean`
@@ -119,12 +123,12 @@ Present the categorized list, then route:
 
 ## Phase 3b: Creative Director Player Experience Review
 
-**Review mode check** -- apply before spawning CD-PLAYTEST:
+**Review mode check** -- apply before running CD-PLAYTEST:
 - `solo` -> skip. Note: "CD-PLAYTEST skipped -- Solo mode." Proceed to Phase 4 (save the report).
 - `lean` -> skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped -- Lean mode." Proceed to Phase 4 (save the report).
-- `full` -> spawn as normal.
+- `full` -> run as normal.
 
-After categorising findings, spawn `creative-director` via Task using gate **CD-PLAYTEST** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
+After categorising findings, run `creative-director` through role-card review using gate **CD-PLAYTEST** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
 
 Pass: the structured report content, game pillars and core fantasy (from `design/gdd/game-concept.md`), the specific hypothesis being tested.
 

@@ -5,15 +5,19 @@ description: "Codex Game Studios skill adapted from original /onboard. Use when 
 
 # CGS: onboard
 
-> Codex adaptation: this skill is migrated from the upstream `/onboard` workflow. Invoke it as `$cgs-onboard`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/onboard` workflow; invoke it as `$cgs-onboard`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 1: Load Project Context
 
 Read AGENTS.md for project overview and standards.
 
-Read the relevant agent definition from `plugins/codex-game-studios/references/role-cards/` if a specific role is specified.
+Read the relevant role card from `plugins/codex-game-studios/references/role-cards/` if a specific role is specified.
 
 ---
 
@@ -52,7 +56,7 @@ Read recent changes (git log if available) to understand current momentum.
 |------|---------|--------------|
 
 ## Current Standards and Conventions
-[Summary of conventions relevant to this role from AGENTS.md and agent definition]
+[Summary of conventions relevant to this role from AGENTS.md and role card]
 
 ## Current State of Your Area
 [What has been built, what is in progress, what is planned next]

@@ -12,7 +12,7 @@ PLUGIN = ROOT / "plugins" / "codex-game-studios"
 SKILLS = PLUGIN / "skills"
 FIXTURE = ROOT / "tests" / "fixtures" / "empty-game"
 EXAMPLE = ROOT / "examples" / "spark-sprint"
-RELEASE_VERSION = "1.3.0"
+RELEASE_VERSION = "1.4.0"
 
 
 CORE_SKILLS: dict[str, tuple[str, str]] = {

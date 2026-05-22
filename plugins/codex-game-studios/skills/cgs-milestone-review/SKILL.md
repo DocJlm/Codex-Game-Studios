@@ -5,13 +5,17 @@ description: "Codex Game Studios skill adapted from original /milestone-review. 
 
 # CGS: milestone-review
 
-> Codex adaptation: this skill is migrated from the upstream `/milestone-review` workflow. Invoke it as `$cgs-milestone-review`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/milestone-review` workflow; invoke it as `$cgs-milestone-review`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 0: Parse Arguments
 
-Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate spawns this run):
+Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate reviews this run):
 1. If `--review [full|lean|solo]` was passed -> use that
 2. Else read `production/review-mode.txt` -> use that value
 3. Else -> default to `lean`
@@ -111,25 +115,25 @@ Read all sprint reports for sprints within this milestone from `production/sprin
 
 ## Phase 3b: Producer Risk Assessment
 
-**Review mode check** -- apply before spawning PR-MILESTONE:
+**Review mode check** -- apply before running PR-MILESTONE:
 - `solo` -> skip. Note: "PR-MILESTONE skipped -- Solo mode." Present the Go/No-Go section without a producer verdict.
 - `lean` -> skip (not a PHASE-GATE). Note: "PR-MILESTONE skipped -- Lean mode." Present the Go/No-Go section without a producer verdict.
-- `full` -> spawn as normal.
+- `full` -> run as normal.
 
-Before generating the Go/No-Go recommendation, spawn `producer` via Task using gate **PR-MILESTONE** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
+Before generating the Go/No-Go recommendation, run `producer` through role-card review using gate **PR-MILESTONE** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
 
 Pass: milestone name and target date, current completion percentage, blocked story count, velocity data from sprint reports (if available), list of cut candidates.
 
 Present the producer's assessment inline within the Go/No-Go section. The producer's verdict (ON TRACK / AT RISK / OFF TRACK) informs the overall recommendation.
 
-If OFF TRACK, use `ask the user directly or use available Codex UI question tools` before generating the recommendation:
+If OFF TRACK, use `ask one concise question` before generating the recommendation:
 - Prompt: "Producer verdict: OFF TRACK. The milestone is in jeopardy. This review will recommend NO-GO. How do you want to proceed?"
 - Options:
   - `[A] Accept NO-GO -- generate the full review with that recommendation`
   - `[B] Override to CONDITIONAL GO -- I'll document the accepted risks myself`
   - `[C] Stop -- I want to address blockers before generating the review`
 
-If AT RISK, use `ask the user directly or use available Codex UI question tools`:
+If AT RISK, use `ask one concise question`:
 - Prompt: "Producer verdict: AT RISK. Milestone may slip. How should the Go/No-Go section be framed?"
 - Options:
   - `[A] CONDITIONAL GO -- include producer's conditions in the review`

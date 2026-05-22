@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /bug-triage. Use wh
 
 # CGS: bug-triage
 
-> Codex adaptation: this skill is migrated from the upstream `/bug-triage` workflow. Invoke it as `$cgs-bug-triage`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/bug-triage` workflow; invoke it as `$cgs-bug-triage`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Bug Triage
 

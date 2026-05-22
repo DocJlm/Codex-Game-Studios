@@ -46,7 +46,7 @@ REQUIRED_DOC_TOKENS = [
     "Surface Matrix",
     "Template Count Evidence",
     "Hook Intent Mapping",
-    "Remaining Parity Work",
+    "Parity Roadmap",
     "73",
     "49",
     "11",

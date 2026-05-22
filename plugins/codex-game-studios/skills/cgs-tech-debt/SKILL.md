@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /tech-debt. Use whe
 
 # CGS: tech-debt
 
-> Codex adaptation: this skill is migrated from the upstream `/tech-debt` workflow. Invoke it as `$cgs-tech-debt`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/tech-debt` workflow; invoke it as `$cgs-tech-debt`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 1: Parse Subcommand
 
@@ -57,7 +61,7 @@ If no, stop here. Verdict: **BLOCKED** -- user declined write.
 
 Ask the user for the description, affected files, and impact if left unfixed (plain text prompts).
 
-Then use `ask the user directly or use available Codex UI question tools` to collect the **category**:
+Then use `ask one concise question` to collect the **category**:
 - Prompt: "What category does this tech debt belong to?"
 - Options:
   - `[A] Architecture Debt -- wrong abstractions, missing patterns, coupling issues`
@@ -67,7 +71,7 @@ Then use `ask the user directly or use available Codex UI question tools` to col
   - `[E] Dependency Debt -- outdated packages, deprecated APIs, version conflicts`
   - `[F] Performance Debt -- known slow paths, memory issues, unoptimized queries`
 
-Then use `ask the user directly or use available Codex UI question tools` to collect the **estimated fix effort**:
+Then use `ask one concise question` to collect the **estimated fix effort**:
 - Prompt: "What is the estimated effort to fix this item?"
 - Options:
   - `[A] S -- Small (under 1 day)`

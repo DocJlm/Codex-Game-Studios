@@ -5,14 +5,18 @@ description: "Codex Game Studios skill adapted from original /team-ui. Use when 
 
 # CGS: team-ui
 
-> Codex adaptation: this skill is migrated from the upstream `/team-ui` workflow. Invoke it as `$cgs-team-ui`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-ui` workflow; invoke it as `$cgs-team-ui`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 When this skill is invoked, orchestrate the UI team through a structured pipeline.
 
-**Decision Points:** At each phase transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each phase transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
@@ -23,13 +27,13 @@ The user must approve before moving to the next phase.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
-**Director gate skip rule**: Before spawning creative-director, art-director, or any other Tier 1/2 director for review (outside of PHASE-GATE triggers), apply the resolved mode: skip if solo mode; skip if lean mode and this is not a PHASE-GATE.
+**Director gate skip rule**: Before running creative-director, art-director, or any other Tier 1/2 director for review (outside of PHASE-GATE triggers), apply the resolved mode: skip if solo mode; skip if lean mode and this is not a PHASE-GATE.
 
 ## Team Composition
 - **ux-designer** -- User flows, wireframes, accessibility, input handling
@@ -46,14 +50,14 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: ux-designer` -- User flows, wireframes, accessibility, input handling
-- `subagent_type: ui-programmer` -- UI framework, screens, widgets, data binding
-- `subagent_type: art-director` -- Visual style, layout polish, art bible consistency
-- `subagent_type: [UI engine specialist]` -- Engine-specific UI pattern validation (e.g., unity-ui-specialist, ue-umg-specialist, godot-specialist)
-- `subagent_type: accessibility-specialist` -- Accessibility compliance audit
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `ux-designer` -- User flows, wireframes, accessibility, input handling
+- Role card `ui-programmer` -- UI framework, screens, widgets, data binding
+- Role card `art-director` -- Visual style, layout polish, art bible consistency
+- Role card `[UI engine specialist]` -- Engine-specific UI pattern validation (e.g., unity-ui-specialist, ue-umg-specialist, godot-specialist)
+- Role card `accessibility-specialist` -- Accessibility compliance audit
 
-Always provide full context in each agent's prompt (feature requirements, existing UI patterns, platform targets). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 4 review agents can run simultaneously).
+Always provide full context in each role review brief (feature requirements, existing UI patterns, platform targets). Run independent role-card reviews sequentially by default; use parallel agent work only when the user explicitly requests it and tools are available (e.g., Phase 4 review role-card reviews can be grouped when the user explicitly asks for parallel agent work).
 
 ## Pipeline
 
@@ -69,7 +73,7 @@ Before designing anything, read and synthesize:
 **If `design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
 > "interaction-patterns.md does not exist -- no existing patterns to reuse."
 
-Then use `ask the user directly or use available Codex UI question tools` with options:
+Then use `ask one concise question` with options:
 - (a) Run `$cgs-ux-design patterns` first to establish the pattern library, then continue
 - (b) Proceed without the pattern library -- ui-programmer will treat all patterns created as new and add each to a new `design/ux/interaction-patterns.md` at completion
 
@@ -93,7 +97,7 @@ Output: `design/ux/[feature-name].md` with all required spec sections filled.
 
 After the spec is complete, invoke `$cgs-ux-review design/ux/[feature-name].md`.
 
-**Gate**: Do not proceed to Phase 2 until the verdict is APPROVED. If the verdict is NEEDS REVISION, the ux-designer must address the flagged issues and re-run the review. The user may explicitly accept a NEEDS REVISION risk and proceed, but this must be a conscious decision -- present the specific concerns via `ask the user directly or use available Codex UI question tools` before asking whether to proceed.
+**Gate**: Do not proceed to Phase 2 until the verdict is APPROVED. If the verdict is NEEDS REVISION, the ux-designer must address the flagged issues and re-run the review. The user may explicitly accept a NEEDS REVISION risk and proceed, but this must be a conscious decision -- present the specific concerns via `ask one concise question` before asking whether to proceed.
 
 ### Phase 2: Visual Design
 
@@ -107,7 +111,7 @@ Delegate to **art-director**:
 
 ### Phase 3: Implementation
 
-Before implementation begins, spawn the **engine UI specialist** (from `plugins/codex-game-studios/references/studio-docs/technical-preferences.md` Engine Specialists -> UI Specialist) to review the UX spec and visual design spec for engine-specific implementation guidance:
+Before implementation begins, run the **engine UI specialist** (from `plugins/codex-game-studios/references/studio-docs/technical-preferences.md` Engine Specialists -> UI Specialist) to review the UX spec and visual design spec for engine-specific implementation guidance:
 - Which engine UI framework should be used for this screen? (e.g., UI Toolkit vs UGUI in Unity, Control nodes vs CanvasLayer in Godot, UMG vs CommonUI in Unreal)
 - Any engine-specific gotchas for the proposed layout or interaction patterns?
 - Recommended widget/node structure for the engine?
@@ -153,15 +157,15 @@ All three review streams must report before proceeding to Phase 5.
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) -> redirect to the skill that creates it
@@ -172,7 +176,7 @@ Common blockers:
 ## File Write Protocol
 
 All file writes (UX specs, interaction pattern library updates, implementation files) are
-delegated to sub-agents and sub-skills (`$cgs-ux-design`, `ui-programmer`). Each enforces the
+delegated to role-card reviews and sub-skills (`$cgs-ux-design`, `ui-programmer`). Each enforces the
 "May I write to [path]?" protocol. This orchestrator does not write files directly.
 
 ## Output

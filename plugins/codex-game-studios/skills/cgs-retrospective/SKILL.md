@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /retrospective. Use
 
 # CGS: retrospective
 
-> Codex adaptation: this skill is migrated from the upstream `/retrospective` workflow. Invoke it as `$cgs-retrospective`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/retrospective` workflow; invoke it as `$cgs-retrospective`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 1: Parse Arguments
 
@@ -23,7 +27,7 @@ Before loading any data, glob for an existing retrospective file:
   (also check `production/sprints/sprint-[N]-retrospective.md` as an alternate location)
 - For milestone retrospectives: `production/retrospectives/retro-[milestone-name]-*.md`
 
-If a matching file is found, use `ask the user directly or use available Codex UI question tools`:
+If a matching file is found, use `ask one concise question`:
 - Prompt: "An existing retrospective was found: [filename]. How do you want to proceed?"
 - Options:
   - `[A] Update existing -- load it and add/revise sections with new data`
@@ -48,7 +52,7 @@ Read the sprint or milestone plan from the appropriate location:
 > "No sprint data found for [sprint/milestone]. Run `$cgs-sprint-status` to generate
 > sprint data first, or provide the sprint details manually."
 
-Then use `ask the user directly or use available Codex UI question tools` to present two options:
+Then use `ask one concise question` to present two options:
 
 - **[A] Provide data manually** -- ask the user to paste or describe the sprint
   tasks, dates, and outcomes; use that as the source of truth for the retrospective.
@@ -203,7 +207,7 @@ If no, stop here. Verdict: **BLOCKED** -- user declined write.
 
 ## Phase 6: Next Steps
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Retrospective complete. The action items and velocity data are ready. Would you like to start sprint planning now with this data pre-loaded?"
 - Options:
   - `[A] Yes -- open sprint planning with retro action items and velocity delta pre-populated`

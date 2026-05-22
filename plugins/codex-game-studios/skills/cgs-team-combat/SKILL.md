@@ -5,18 +5,22 @@ description: "Codex Game Studios skill adapted from original /team-combat. Use w
 
 # CGS: team-combat
 
-> Codex adaptation: this skill is migrated from the upstream `/team-combat` workflow. Invoke it as `$cgs-team-combat`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-combat` workflow; invoke it as `$cgs-team-combat`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 **Argument check:** If no combat feature description is provided, output:
 > "Usage: `$cgs-team-combat [combat feature description]` -- Provide a description of the combat feature to design and implement (e.g., `melee parry system`, `ranged weapon spread`)."
-Then stop immediately without spawning any subagents or reading any files.
+Then stop immediately without running any role-card reviews or reading any files.
 
 When this skill is invoked with a valid argument, orchestrate the combat team through a structured pipeline.
 
-**Decision Points:** At each phase transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each phase transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
@@ -27,9 +31,9 @@ The user must approve before moving to the next phase.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
@@ -44,16 +48,16 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: game-designer` -- Design the mechanic, define formulas and edge cases
-- `subagent_type: gameplay-programmer` -- Implement the core gameplay code
-- `subagent_type: ai-programmer` -- Implement NPC/enemy AI behavior
-- `subagent_type: technical-artist` -- Create VFX, shader effects, visual feedback
-- `subagent_type: sound-designer` -- Define audio events, impact sounds, ambient audio
-- `subagent_type: [primary engine specialist]` -- Engine idiom validation for architecture and implementation
-- `subagent_type: qa-tester` -- Write test cases and validate implementation
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `game-designer` -- Design the mechanic, define formulas and edge cases
+- Role card `gameplay-programmer` -- Implement the core gameplay code
+- Role card `ai-programmer` -- Implement NPC/enemy AI behavior
+- Role card `technical-artist` -- Create VFX, shader effects, visual feedback
+- Role card `sound-designer` -- Define audio events, impact sounds, ambient audio
+- Role card `[primary engine specialist]` -- Engine idiom validation for architecture and implementation
+- Role card `qa-tester` -- Write test cases and validate implementation
 
-Always provide full context in each agent's prompt (design doc path, relevant code files, constraints). Launch independent agents in parallel where the pipeline allows it (e.g., Phase 3 agents can run simultaneously).
+Always provide full context in each role review brief (design doc path, relevant code files, constraints). Run independent role-card reviews sequentially by default; use parallel agent work only when the user explicitly requests it and tools are available (e.g., Phase 3 role-card reviews can be grouped when the user explicitly asks for parallel agent work).
 
 ## Pipeline
 
@@ -69,20 +73,20 @@ Delegate to **gameplay-programmer** (with **ai-programmer** if AI is involved):
 - Identify integration points with existing systems
 - Output: architecture sketch with file list and interface definitions
 
-Then spawn the **primary engine specialist** to validate the proposed architecture:
+Then run the **primary engine specialist** to validate the proposed architecture:
 - Is the class/node/component structure idiomatic for the pinned engine? (e.g., Godot node hierarchy, Unity MonoBehaviour vs DOTS, Unreal Actor/Component design)
 - Are there engine-native systems that should be used instead of custom implementations?
 - Any proposed APIs that are deprecated or changed in the pinned engine version?
 - Output: engine architecture notes -- incorporate into the architecture before Phase 3 begins
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "Architecture sketch complete. Approve to proceed with parallel implementation."
 - Options:
-  - `[A] Proceed -- spawn implementation agents (gameplay-programmer, ai-programmer, technical-artist, sound-designer)`
+  - `[A] Proceed -- run implementation agents (gameplay-programmer, ai-programmer, technical-artist, sound-designer)`
   - `[B] Revise the architecture first -- I'll describe what needs to change`
   - `[C] Stop here -- I'll continue later`
 
-Only spawn implementation agents if user selects [A].
+Only run implementation agents if user selects [A].
 
 ### Phase 3: Implementation (parallel where possible)
 Delegate in parallel:
@@ -110,15 +114,15 @@ Delegate to **qa-tester**:
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 Common blockers:
 - Input file missing (story not found, GDD absent) -> redirect to the skill that creates it
@@ -129,7 +133,7 @@ Common blockers:
 ## File Write Protocol
 
 All file writes (design documents, implementation files, test cases) are
-delegated to sub-agents spawned via Task. Each sub-agent enforces the
+delegated to role-card reviews run as role-card reviews. Each role-card review enforces the
 "May I write to [path]?" protocol. This orchestrator does not write files directly.
 
 ## Output

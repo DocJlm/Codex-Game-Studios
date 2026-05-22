@@ -5,18 +5,22 @@ description: "Codex Game Studios skill adapted from original /team-live-ops. Use
 
 # CGS: team-live-ops
 
-> Codex adaptation: this skill is migrated from the upstream `/team-live-ops` workflow. Invoke it as `$cgs-team-live-ops`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/team-live-ops` workflow; invoke it as `$cgs-team-live-ops`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 **Argument check:** If no season name or event description is provided, output:
 > "Usage: `$cgs-team-live-ops [season name or event description]` -- Provide the name or description of the season or live event to plan."
-Then stop immediately without spawning any subagents or reading any files.
+Then stop immediately without running any role-card reviews or reading any files.
 
 When this skill is invoked with a valid argument, orchestrate the live-ops team through a structured planning pipeline.
 
-**Decision Points:** At each phase transition, use `ask the user directly or use available Codex UI question tools` to present
-the user with the subagent's proposals as selectable options. Write the agent's
+**Decision Points:** At each phase transition, use `ask one concise question` to present
+the user with the role review's proposals as selectable options. Write the role review's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
@@ -27,9 +31,9 @@ The user must approve before moving to the next phase.
 3. Else default to `lean`.
 
 Modes:
-- `full` -- spawn all director and lead gates as described
+- `full` -- run all director and lead gates as described
 - `lean` -- skip director gates unless they are PHASE-GATE type (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE)
-- `solo` -- skip all director gate spawning entirely; run the skill without any agent gates
+- `solo` -- skip all director gate role reviews entirely; run the skill without any role-card gates
 
 Store the resolved mode for use in all subsequent phases.
 
@@ -43,15 +47,15 @@ Store the resolved mode for use in all subsequent phases.
 
 ## How to Delegate
 
-Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: live-ops-designer` -- Season/event structure and retention mechanics
-- `subagent_type: economy-designer` -- Live economy balance and reward pricing
-- `subagent_type: analytics-engineer` -- Success metrics, A/B tests, event instrumentation
-- `subagent_type: community-manager` -- Player-facing communication and messaging
-- `subagent_type: narrative-director` -- Seasonal theme and narrative framing
-- `subagent_type: writer` -- All player-facing text: event descriptions, item names, copy
+Run these role-card reviews from `plugins/codex-game-studios/references/role-cards/`:
+- Role card `live-ops-designer` -- Season/event structure and retention mechanics
+- Role card `economy-designer` -- Live economy balance and reward pricing
+- Role card `analytics-engineer` -- Success metrics, A/B tests, event instrumentation
+- Role card `community-manager` -- Player-facing communication and messaging
+- Role card `narrative-director` -- Seasonal theme and narrative framing
+- Role card `writer` -- All player-facing text: event descriptions, item names, copy
 
-Always provide full context in each agent's prompt (game concept path, existing season docs, ethics policy path, current economy state). Launch independent agents in parallel where the pipeline allows it (Phases 3 and 4 can run simultaneously).
+Always provide full context in each role review brief (game concept path, existing season docs, ethics policy path, current economy state). Run independent role-card reviews sequentially by default; use parallel agent work only when the user explicitly requests it and tools are available (Phases 3 and 4 can run simultaneously).
 
 ## Pipeline
 
@@ -117,7 +121,7 @@ Present a summary to the user with:
 - **Analytics readiness**: are success criteria defined and instrumented?
 - **Ethics review**: check the Phase 3 economy design against `design/live-ops/ethics-policy.md`
   - If the file does not exist: flag "ETHICS REVIEW SKIPPED: `design/live-ops/ethics-policy.md` not found. Economy design was not reviewed against an ethics policy. Recommend creating one before production begins." Include this flag in the season design output document. Add to next steps: create `design/live-ops/ethics-policy.md`.
-  - If the file exists and a violation is found: flag "ETHICS FLAG: [element] in Phase 3 economy design violates [policy rule]. Approval is blocked until this is resolved." Do NOT issue a COMPLETE verdict or write output documents. Use `ask the user directly or use available Codex UI question tools` with options: revise economy design / override with documented rationale / cancel. If user chooses to revise: re-spawn economy-designer to produce a corrected design, then return to Phase 7 review. If user selects Cancel: end with Verdict: BLOCKED -- "Live ops design cancelled due to unresolved ethics violation. Resolve the flagged issues and re-run $cgs-team-live-ops."
+  - If the file exists and a violation is found: flag "ETHICS FLAG: [element] in Phase 3 economy design violates [policy rule]. Approval is blocked until this is resolved." Do NOT issue a COMPLETE verdict or write output documents. Use `ask one concise question` with options: revise economy design / override with documented rationale / cancel. If user chooses to revise: re-run economy-designer to produce a corrected design, then return to Phase 7 review. If user selects Cancel: end with Verdict: BLOCKED -- "Live ops design cancelled due to unresolved ethics violation. Resolve the flagged issues and re-run $cgs-team-live-ops."
 - **Open questions**: decisions still needed before production begins
 
 Ask the user to approve the season plan before delegating to production teams. Issue the COMPLETE verdict only after the user approves and no unresolved ethics violations remain. If an ethics violation is unresolved, end with Verdict: **BLOCKED**.
@@ -131,22 +135,22 @@ All documents save to `design/live-ops/`:
 
 ## Error Recovery Protocol
 
-If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
+If any role-card review (through role-card review) returns BLOCKED, errors, or cannot complete:
 
 1. **Surface immediately**: Report "[AgentName]: BLOCKED -- [reason]" to the user before continuing to dependent phases
-2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
-3. **Offer options** via ask the user directly or use available Codex UI question tools with choices:
-   - Skip this agent and note the gap in the final report
+2. **Assess dependencies**: Check whether the blocked role-card review's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
+3. **Offer options** via ask one concise question with choices:
+   - Skip this role-card review and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** -- output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** -- output whatever was completed. Never discard work because one role-card review blocked.
 
 If a BLOCKED state is unresolvable, end with Verdict: **BLOCKED** instead of COMPLETE.
 
 ## File Write Protocol
 
 All file writes (season design docs, analytics plans, communication calendars) are
-delegated to sub-agents spawned via Task. Each sub-agent enforces the
+delegated to role-card reviews run as role-card reviews. Each role-card review enforces the
 "May I write to [path]?" protocol. This orchestrator does not write files directly.
 
 ## Output

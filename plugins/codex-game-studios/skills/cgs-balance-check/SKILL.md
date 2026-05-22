@@ -5,13 +5,17 @@ description: "Codex Game Studios skill adapted from original /balance-check. Use
 
 # CGS: balance-check
 
-> Codex adaptation: this skill is migrated from the upstream `/balance-check` workflow. Invoke it as `$cgs-balance-check`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/balance-check` workflow; invoke it as `$cgs-balance-check`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 1: Identify Balance Domain
 
-Determine the balance domain from `$ARGUMENTS[0]`:
+Determine the balance domain from the first argument:
 
 - **Combat** -> weapon/ability DPS, time-to-kill, damage type interactions
 - **Economy** -> resource faucets/sinks, acquisition rates, item pricing
@@ -102,7 +106,7 @@ Run domain-specific checks:
 
 ## Phase 6: Fix & Verify Cycle
 
-After presenting the report, use `ask the user directly or use available Codex UI question tools`:
+After presenting the report, use `ask one concise question`:
 - Prompt: "Balance check complete. What would you like to do next?"
 - Options:
   - `[A] Fix highest-priority issue now -- walk me through it`

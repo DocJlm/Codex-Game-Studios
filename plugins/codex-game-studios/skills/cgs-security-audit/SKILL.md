@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /security-audit. Us
 
 # CGS: security-audit
 
-> Codex adaptation: this skill is migrated from the upstream `/security-audit` workflow. Invoke it as `$cgs-security-audit`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/security-audit` workflow; invoke it as `$cgs-security-audit`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Security Audit
 
@@ -44,9 +48,9 @@ Read `plugins/codex-game-studios/references/studio-docs/technical-preferences.md
 
 ---
 
-## Phase 2: Spawn Security Engineer
+## Phase 2: Run Security Engineer
 
-Spawn `security-engineer` via Task. Pass:
+Run `security-engineer` through role-card review. Pass:
 - The audit scope/mode
 - Engine and language from technical preferences
 - A manifest of all source directories: `src/`, `assets/data/`, any config files

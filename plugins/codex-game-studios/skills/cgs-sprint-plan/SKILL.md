@@ -5,13 +5,17 @@ description: "Codex Game Studios skill adapted from original /sprint-plan. Use w
 
 # CGS: sprint-plan
 
-> Codex adaptation: this skill is migrated from the upstream `/sprint-plan` workflow. Invoke it as `$cgs-sprint-plan`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/sprint-plan` workflow; invoke it as `$cgs-sprint-plan`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 0: Parse Arguments
 
-Extract the mode argument (`new`, `update`, or `status`) and resolve the review mode (once, store for all gate spawns this run):
+Extract the mode argument (`new`, `update`, or `status`) and resolve the review mode (once, store for all gate reviews this run):
 1. If `--review [full|lean|solo]` was passed -> use that
 2. Else read `production/review-mode.txt` -> use that value
 3. Else -> default to `lean`
@@ -20,12 +24,12 @@ See `plugins/codex-game-studios/references/studio-docs/director-gates.md` for th
 
 **Review mode check** (before gates run):
 - Read `production/review-mode.txt` if it exists. Use that mode.
-- If the file doesn't exist and this is a `new` sprint: use `ask the user directly or use available Codex UI question tools`:
+- If the file doesn't exist and this is a `new` sprint: use `ask one concise question`:
   - Prompt: "No review mode is set. Which review depth would you like for this sprint?"
   - Options:
-    - `[A] full -- spawn all director and lead gates`
+    - `[A] full -- run all director and lead gates`
     - `[B] lean -- skip non-phase-gate director reviews (recommended for most sprints)`
-    - `[C] solo -- skip all gate spawning`
+    - `[C] solo -- skip all gate reviews`
   - After selection: write `production/review-mode.txt` with the chosen mode. Say: "Review mode set to [mode] and saved to production/review-mode.txt."
 - If the file doesn't exist and this is NOT a `new` sprint (e.g., updating an existing sprint): default to `lean` silently.
 
@@ -65,15 +69,15 @@ For `new`:
 ## Tasks
 
 ### Must Have (Critical Path)
-| ID | Task | Agent/Owner | Est. Days | Dependencies | Acceptance Criteria |
+| ID | Task | Role/Owner | Est. Days | Dependencies | Acceptance Criteria |
 |----|------|-------------|-----------|-------------|-------------------|
 
 ### Should Have
-| ID | Task | Agent/Owner | Est. Days | Dependencies | Acceptance Criteria |
+| ID | Task | Role/Owner | Est. Days | Dependencies | Acceptance Criteria |
 |----|------|-------------|-----------|-------------|-------------------|
 
 ### Nice to Have
-| ID | Task | Agent/Owner | Est. Days | Dependencies | Acceptance Criteria |
+| ID | Task | Role/Owner | Est. Days | Dependencies | Acceptance Criteria |
 |----|------|-------------|-----------|-------------|-------------------|
 
 ## Carryover from Previous Sprint
@@ -105,7 +109,7 @@ For `update`:
 
 1. Read the most recent sprint plan from `production/sprints/`.
 2. Present the current story list with their current statuses from `production/sprint-status.yaml`.
-3. Ask the user what to change: stories to add, remove, reprioritize, or re-estimate. Use `ask the user directly or use available Codex UI question tools` to gather changes.
+3. Ask the user what to change: stories to add, remove, reprioritize, or re-estimate. Use `ask one concise question` to gather changes.
 4. Apply the changes and re-present the full revised plan for review.
 5. Re-run the producer feasibility gate (Phase 4) on the revised plan.
 6. Write the updated markdown plan and yaml together (same approval as `new` mode).
@@ -200,12 +204,12 @@ stories that haven't changed, add new stories, remove dropped ones.
 
 ## Phase 4: Producer Feasibility Gate
 
-**Review mode check** -- apply before spawning PR-SPRINT:
+**Review mode check** -- apply before running PR-SPRINT:
 - `solo` -> skip. Note: "PR-SPRINT skipped -- Solo mode." Proceed to Phase 5 (QA plan gate).
 - `lean` -> skip (not a PHASE-GATE). Note: "PR-SPRINT skipped -- Lean mode." Proceed to Phase 5 (QA plan gate).
-- `full` -> spawn as normal.
+- `full` -> run as normal.
 
-Before finalising the sprint plan, spawn `producer` via Task using gate **PR-SPRINT** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
+Before finalising the sprint plan, run `producer` through role-card review using gate **PR-SPRINT** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
 
 Pass: proposed story list (titles, estimates, dependencies), total team capacity in hours/days, any carryover from the previous sprint, milestone constraints and deadline.
 
@@ -213,7 +217,7 @@ Present the producer's assessment.
 
 If UNREALISTIC: revise the story selection (defer stories to Should Have or Nice to Have) and re-present the updated plan before asking for write approval.
 
-If CONCERNS, use `ask the user directly or use available Codex UI question tools`:
+If CONCERNS, use `ask one concise question`:
 - Prompt: "Producer flagged concerns with this sprint plan. How do you want to proceed?"
 - Options:
   - `[A] Proceed as planned -- I accept the risk`
@@ -246,7 +250,7 @@ Use `Glob` to look for `production/qa/qa-plan-sprint-[N].md` or any file in `pro
 >
 > Run `$cgs-qa-plan sprint` now, before starting any implementation. It takes one session and produces the test case requirements each story needs."
 
-Use `ask the user directly or use available Codex UI question tools`:
+Use `ask one concise question`:
 - Prompt: "No QA plan found for this sprint. How do you want to proceed?"
 - Options:
   - `[A] Run $cgs-qa-plan sprint now -- I'll do that before starting implementation (Recommended)`
@@ -275,7 +279,7 @@ After the sprint plan is written and QA plan status is resolved:
 
 **Review mode configuration:** All director gates (producer feasibility, QA review, code review) respect the project review mode. The review mode is set in Phase 0 when the file does not exist (for `new` sprints), or can be overridden per-run with `--review full|lean|solo` as an argument. The file `production/review-mode.txt` contains one of:
 - `lean` -- skip automated director gates (default if file is absent -- fastest for solo dev)
-- `full` -- run all director gates as spawned sub-agents
+- `full` -- run all director gate role-card reviews
 - `solo` -- skip all gates unconditionally (single-developer, no review)
 
 This file is read by `$cgs-sprint-plan`, `$cgs-story-readiness`, `$cgs-story-done`, and other skills at startup.

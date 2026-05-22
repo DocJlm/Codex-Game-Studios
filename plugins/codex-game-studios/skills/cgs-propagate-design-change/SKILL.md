@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /propagate-design-c
 
 # CGS: propagate-design-change
 
-> Codex adaptation: this skill is migrated from the upstream `/propagate-design-change` workflow. Invoke it as `$cgs-propagate-design-change`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/propagate-design-change` workflow; invoke it as `$cgs-propagate-design-change`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Propagate Design Change
 
@@ -149,12 +153,12 @@ ADRs referencing this GDD: [M]
 
 ## 6b. Director Gate -- Technical Impact Review
 
-**Review mode check** -- apply before spawning TD-CHANGE-IMPACT:
+**Review mode check** -- apply before running TD-CHANGE-IMPACT:
 - `solo` -> skip. Note: "TD-CHANGE-IMPACT skipped -- Solo mode." Proceed to Phase 7.
 - `lean` -> skip. Note: "TD-CHANGE-IMPACT skipped -- Lean mode." Proceed to Phase 7.
-- `full` -> spawn as normal.
+- `full` -> run as normal.
 
-Spawn `technical-director` via Task using gate **TD-CHANGE-IMPACT** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
+Run `technical-director` through role-card review using gate **TD-CHANGE-IMPACT** (`plugins/codex-game-studios/references/studio-docs/director-gates.md`).
 
 Pass: the full Design Change Impact Report from Phase 6 (change summary, all affected ADRs with their Still Valid / Needs Review / Likely Superseded classifications, and recommended actions).
 
@@ -165,7 +169,7 @@ The technical-director reviews whether:
 
 Apply the verdict:
 - **APPROVE** -> proceed to Phase 7 resolution workflow
-- **CONCERNS** -> surface the specific ADRs or recommendations flagged; use `ask the user directly or use available Codex UI question tools` with options: `Revise the impact assessment` / `Accept with noted concerns` / `Discuss further`
+- **CONCERNS** -> surface the specific ADRs or recommendations flagged; use `ask one concise question` with options: `Revise the impact assessment` / `Accept with noted concerns` / `Discuss further`
 - **REJECT** -> do not proceed to resolution; re-analyze the impact before continuing
 
 ---

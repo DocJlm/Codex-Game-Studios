@@ -5,9 +5,13 @@ description: "Codex Game Studios skill adapted from original /skill-test. Use wh
 
 # CGS: skill-test
 
-> Codex adaptation: this skill is migrated from the upstream `/skill-test` workflow. Invoke it as `$cgs-skill-test`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/skill-test` workflow; invoke it as `$cgs-skill-test`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 # Skill Test
 
@@ -22,7 +26,7 @@ existing skill/hook/template architecture.
 | `static` | `$cgs-skill-test static [name\|all]` | Structural linter -- 7 compliance checks per skill | Low (~1k/skill) |
 | `spec` | `$cgs-skill-test spec [name]` | Behavioral verifier -- evaluates assertions in test spec | Medium (~5k/skill) |
 | `category` | `$cgs-skill-test category [name\|all]` | Category rubric -- checks skill against its category-specific metrics | Low (~2k/skill) |
-| `audit` | `$cgs-skill-test audit` | Coverage report -- skills, agent specs, last test dates | Low (~3k total) |
+| `audit` | `$cgs-skill-test audit` | Coverage report -- skills, role-card specs, last test dates | Low (~3k total) |
 
 ---
 
@@ -257,7 +261,7 @@ For each metric in the category's rubric table:
 
 Metric G1 -- Review mode read:      PASS
 Metric G2 -- Full mode directors:   FAIL
-  Gap: Phase 3 spawns only CD-PHASE-GATE; TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE absent
+  Gap: Phase 3 references only CD-PHASE-GATE; TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE absent
 Metric G3 -- Lean mode: PHASE-GATE only: PASS
 Metric G4 -- Solo mode: no directors:    PASS
 Metric G5 -- No auto-advance:       PASS
@@ -286,7 +290,7 @@ yet (first-run state).
 Glob `plugins/codex-game-studios/skills/*/SKILL.md` to get the complete list of skills.
 Extract skill name from each path (directory name).
 
-Also read the `agents:` section from `CCGS Skill Testing Framework/catalog.yaml` to get the
+Also read the `role cards:` section from `CCGS Skill Testing Framework/catalog.yaml` to get the
 complete list of agents.
 
 ### Step 3 -- Build Skill Coverage Table
@@ -300,7 +304,7 @@ For each skill:
 
 ### Step 3b -- Build Agent Coverage Table
 
-For each agent in catalog's `agents:` section:
+For each agent in catalog's `role cards:` section:
 - Check if a spec file exists (use the `spec:` path from catalog, or glob `CCGS Skill Testing Framework/agents/*/[name].md`)
 - Look up `last_spec`, `last_spec_result`, `category` from catalog
 

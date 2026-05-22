@@ -5,18 +5,22 @@ description: "Codex Game Studios skill adapted from original /design-review. Use
 
 # CGS: design-review
 
-> Codex adaptation: this skill is migrated from the upstream `/design-review` workflow. Invoke it as `$cgs-design-review`. Use Codex tools and the current workspace rules; do not depend on Claude-only frontmatter, settings hooks, or slash-command runtime behavior.
+## Codex Operating Notes
 
-> Migration phase: Full migration. Legacy role names are available as role cards under `plugins/codex-game-studios/references/role-cards/`.
+- This is the Codex-native version of the upstream `/design-review` workflow; invoke it as `$cgs-design-review`.
+- Inspect repository state before asking questions; use `AGENTS.md` and project validators as the execution boundary.
+- When a role perspective is needed, read the matching role card from `plugins/codex-game-studios/references/role-cards/` and apply it in the current session.
+- Run role-card reviews sequentially by default. Use parallel agent work only when the user explicitly requests it and suitable tools are available.
+- Treat legacy hook behavior as explicit checks: run relevant validators or project tests instead of relying on hidden runtime hooks.
 
 ## Phase 0: Parse Arguments
 
 Extract `--depth [full|lean|solo]` if present. Default is `full` when no flag is given.
 
-**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist agents are spawned). It is independent of the global review mode in `production/review-mode.txt`, which controls director gate spawning. These are two different concepts -- `--depth` is about how thoroughly *this* skill analyses the document.
+**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist role-card reviews run). It is independent of the global review mode in `production/review-mode.txt`, which controls director gate role reviews. These are two different concepts -- `--depth` is about how thoroughly *this* skill analyses the document.
 
-- **`full`**: Complete review -- all phases + specialist agent delegation (Phase 3b)
-- **`lean`**: All phases, no specialist agents -- faster, single-session analysis
+- **`full`**: Complete review -- all phases + specialist role-card review delegation (Phase 3b)
+- **`lean`**: All phases, no specialist role-card reviews -- faster, single-session analysis
 - **`solo`**: Phases 1-4 only, no delegation, no Phase 5 next-step prompt -- use when called from within another skill
 
 ---
@@ -73,14 +77,14 @@ Evaluate against the Design Document Standard checklist:
 
 **This phase is MANDATORY in full mode.** Do not skip it.
 
-**Before spawning any agents**, print this notice:
-> "Full review: spawning specialist agents in parallel. This typically takes 8-15 minutes. Use `--review lean` for faster single-session analysis."
+**Before running role-card reviews**, print this notice:
+> "Full review: running specialist role-card reviews in parallel. This typically takes 8-15 minutes. Use `--review lean` for faster single-session analysis."
 
 ### Step 1 -- Identify all domains the GDD touches
 
 Read the GDD and identify every domain present. A GDD can touch multiple domains simultaneously -- be thorough. Common signals:
 
-| If the GDD contains... | Spawn these agents |
+| If the GDD contains... | Consult these role cards |
 |------------------------|-------------------|
 | Costs, prices, drops, rewards, economy | `economy-designer` |
 | Combat stats, damage, health, DPS | `game-designer`, `systems-designer` |
@@ -98,18 +102,18 @@ Read the GDD and identify every domain present. A GDD can touch multiple domains
 | Data schema, resource structure | `systems-designer` |
 | Any gameplay system | `game-designer` (always) |
 
-Spawn `game-designer` for all GDDs that describe gameplay mechanics or player-facing rules.
-Spawn `systems-designer` for all GDDs that contain formulas or system interaction rules.
+Run `game-designer` for all GDDs that describe gameplay mechanics or player-facing rules.
+Run `systems-designer` for all GDDs that contain formulas or system interaction rules.
 These are the most common baselines -- but not required for pure UI specs, audio specs, or lore documents. Use the domain table above to determine which specialists are truly relevant.
 
-### Step 2 -- Spawn all relevant specialists in parallel
+### Step 2 -- Run all relevant specialists in parallel
 
-**CRITICAL: Task in this skill spawns a SUBAGENT -- a separate independent Codex session
+**CRITICAL: This review uses role-card perspective prompts inside the current Codex session
 with its own context window. It is NOT task tracking. Do NOT simulate specialist
 perspectives internally. Do NOT reason through domain views yourself. You MUST issue
-actual Task calls. A simulated review is not a specialist review.**
+actual role-card review passes. A simulated review is not a specialist review.**
 
-Issue all Task calls simultaneously. Do NOT spawn one at a time.
+Issue all role-card review passes simultaneously. Do NOT run one at a time.
 
 **Prompt each specialist adversarially:**
 > "Here is the GDD for [system] and the main review's structural findings so far.
@@ -128,7 +132,7 @@ Issue all Task calls simultaneously. Do NOT spawn one at a time.
 
 ### Step 3 -- Senior lead review
 
-After all specialists respond, spawn `creative-director` as the **senior reviewer**:
+After all specialists respond, run `creative-director` as the **senior reviewer**:
 - Provide: the GDD, all specialist findings, any disagreements between them
 - Ask: "Synthesise these findings. What are the most important issues? Do you agree with the specialists? What is your overall verdict on this design?"
 - The creative-director's synthesis becomes the **final verdict** in Phase 4.
@@ -145,7 +149,7 @@ Mark every finding with its source: `[game-designer]`, `[economy-designer]`, `[c
 
 ```
 ## Design Review: [Document Title]
-Specialists consulted: [list agents spawned]
+Specialists consulted: [list role cards consulted]
 Re-review: [Yes -- prior verdict was X on YYYY-MM-DD / No -- first review]
 
 ### Completeness: [X/8 sections present]
@@ -163,7 +167,7 @@ Re-review: [Yes -- prior verdict was X on YYYY-MM-DD / No -- first review]
 [Numbered list -- important but not blocking. Source-tagged.]
 
 ### Specialist Disagreements
-[Any cases where agents disagreed with each other or with the main review.
+[Any cases where role-card reviews disagreed with each other or with the main review.
 Present both sides -- do not silently resolve.]
 
 ### Nice-to-Have
@@ -190,7 +194,7 @@ This skill is read-only -- no files are written during Phase 4.
 
 ## Phase 5: Next Steps
 
-Use `ask the user directly or use available Codex UI question tools` for ALL closing interactions. Never plain text.
+Use `ask one concise question` for ALL closing interactions. Never plain text.
 
 **First widget -- what to do next:**
 
@@ -203,9 +207,9 @@ If NEEDS REVISION or MAJOR REVISION NEEDED, options:
 
 **If user selects [A] -- Revise now:**
 
-Work through all blocking items, asking for design decisions only where you cannot resolve the issue from the GDD and existing docs alone. Group all design-decision questions into a single multi-tab `ask the user directly or use available Codex UI question tools` before making any edits -- do not interrupt mid-revision for each blocker individually.
+Work through all blocking items, asking for design decisions only where you cannot resolve the issue from the GDD and existing docs alone. Group all design-decision questions into a single multi-tab `ask one concise question` before making any edits -- do not interrupt mid-revision for each blocker individually.
 
-After all revisions are complete, show a summary table (blocker -> fix applied) and use `ask the user directly or use available Codex UI question tools` for a **post-revision closing widget**:
+After all revisions are complete, show a summary table (blocker -> fix applied) and use `ask one concise question` for a **post-revision closing widget**:
 
 - Prompt: "Revisions complete -- [N] blockers resolved. What next?"
 - Note current context usage: if context is above ~50%, add: "(Recommended: /clear before re-review -- this session has used X% context. A full re-review runs 5 agents and needs clean context.)"
@@ -219,7 +223,7 @@ Never end the revision flow with plain text. Always close with this widget.
 
 **Second widget -- tracking records (combined, for APPROVED path):**
 
-When the verdict is APPROVED, use a single `ask the user directly or use available Codex UI question tools` with `multiSelect: true` to batch the two tracking updates:
+When the verdict is APPROVED, use a single `ask one concise question` with `multiSelect: true` to batch the two tracking updates:
 - Prompt: "Verdict: APPROVED. I can update the tracking records now. Select any you'd like me to complete:"
 - Options:
   - `Update systems-index.md status to 'Approved' for [system]`
@@ -229,11 +233,11 @@ If the review-log option is selected, append the same format as below. Execute b
 
 When the verdict is NEEDS REVISION or MAJOR REVISION NEEDED, use separate widgets as before:
 
-Use a second `ask the user directly or use available Codex UI question tools`:
+Use a second `ask one concise question`:
 - Prompt: "May I update `design/gdd/systems-index.md` to mark [system] as [In Review / Approved]?"
 - Options: `[A] Yes -- update it` / `[B] No -- leave it as-is`
 
-Use a third `ask the user directly or use available Codex UI question tools`:
+Use a third `ask one concise question`:
 - Prompt: "May I append this review summary to `design/gdd/reviews/[doc-name]-review-log.md`? This creates a revision history so future re-reviews can track what changed."
 - Options: `[A] Yes -- append to review log` / `[B] No -- skip`
 
@@ -251,7 +255,7 @@ Prior verdict resolved: [Yes / No / First review]
 
 **Final closing widget -- always show after all file writes complete:**
 
-Once the systems-index and review-log widgets are answered, check project state and show one final `ask the user directly or use available Codex UI question tools`:
+Once the systems-index and review-log widgets are answered, check project state and show one final `ask one concise question`:
 
 Before building options, read:
 - `design/gdd/systems-index.md` -- find any system with Status: In Review or NEEDS REVISION (other than the one just reviewed)
